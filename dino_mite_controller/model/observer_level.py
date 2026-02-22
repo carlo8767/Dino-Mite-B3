@@ -12,6 +12,6 @@ class Obsever_Levels:
     def receive_notification_level_one_init (self):
         init = LevelOne()
         # TEMPORARY
-        init.creation_level_one()
+        return init.creation_level_one()
 
         # call level one
