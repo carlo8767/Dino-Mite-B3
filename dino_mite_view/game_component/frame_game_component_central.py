@@ -6,8 +6,8 @@ from dino_mite_view.event_game_notifications.event_view import EventsView
 
 
 class FrameGameComponent:
-    WIDTH = 1000
-    HEIGHT = 1000
+    WIDTH = 3000
+    HEIGHT = 3000
     RUN_GAME = True
     GAME_STATE = ""
 
