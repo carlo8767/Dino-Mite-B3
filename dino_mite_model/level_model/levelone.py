@@ -1,34 +1,16 @@
+import os
 
-import pygame
+from dino_mite_model.character_game.Character import CharacterDino
+from dino_mite_model.character_game.Hazard import Meteor
 
 
 class LevelOne:
 
 
-    WIDTH = 1000
-    HEIGHT = 1000
-
-
-
-    def creation_level_one(self):
-        # VERIFY HOW TO KEEP UPDATE THE VIEW WITHOUT LOOP
-        # DRAW HAZARD  AND OTHER COMPONENTS!!
-
-        # UPDATE THE VIEW THOUGH
-        pass
-
-
-
-
-
-
-
-
-
-
-
-
-if  __name__ ==  '__main__':
-
-    s  = LevelOne()
+    def __init__(self):
+        self.width = 0
+        self.height = 0
+        self.hazard_level_one = Meteor()
+        self.character = CharacterDino()
+        self.image = os.path.join('./image', 'backgroundLevelOne.jpeg')
 
