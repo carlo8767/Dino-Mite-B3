@@ -1,46 +1,38 @@
 import pygame
 
+from dino_mite_utility import utilities_names
+
+
 
 class ViewLevelOne:
 
-
-    RUN_LEVEL_ONE = True
-
-
-
-
-
-    # VERIFY IF TURN AROUND
-    def draw_window_level_one(self, window, level_one):
-         clock = pygame.time.Clock()
-         sprite_image_background = pygame.image.load(level_one.image).convert().convert_alpha()
-         # WE CAN AS WELL REZISE TRANSFORM SCALE
-         sprite_image_hazard = pygame.image.load(level_one.hazard_level_one.image_meteor).convert()
-         rectangle_hazard = sprite_image_hazard.get_rect()
-         # SET ALPHA
-
-         pygame.display.set_caption("LEVEL ONE")
-         y =level_one.hazard_level_one.speed
-         while True:
-             clock.tick(60)
-             # RECTANGLE THIS
-             window.blit(sprite_image_background, (0, 0))
-             # DRAW HAZARD
-             # pygame.draw.rect(window, (0,255,255), rectangle_hazard)
-             # DRAW IMAGE MOVE RECTANGLE
-             window.blit(sprite_image_hazard, rectangle_hazard)
-             y+=2
-             rectangle_hazard.topleft =(400,y)
-             window.blit(sprite_image_hazard, rectangle_hazard)
-
-             pygame.display.update()
-             if y > 800:
-                 y = level_one.hazard_level_one.speed
-
-
-
-
-
+   def draw_screen_level_one(self, window, model_level_one):
+       print(">> Enter in View Level One")
+       # FRAME IMAGE
+       clock = pygame.time.Clock()
+       clock.tick(60)
+       # UPLOAD CAPTION
+       pygame.display.set_caption(utilities_names.LEVEL_ONE)
+       # UPLOAD IMAGE BACKGROUND
+       sprite_image_background = pygame.image.load(model_level_one.image).convert()
+       while True:
+         # CREATION UTILITY EVENT
+         for event in pygame.event.get():
+             pass
+         keys = pygame.key.get_pressed()
+         # CHARACTER MOVE
+         if keys[pygame.K_LEFT]:
+             model_level_one.character.rectangle.x -= 2
+         if keys[pygame.K_RIGHT]:
+              model_level_one.character.rectangle.x += 2
+         window.blit(sprite_image_background, (0, 0))
+         # UPLOAD IMAGE HAZARD
+         window.blit(model_level_one.hazard_level_one.image_loaded, model_level_one.hazard_level_one.rectangle)
+         # CHANGE HAZARD POST
+         model_level_one.hazard_level_one.rectangle.y +=2
+         # UPLOAD IMAGE CHARACTER
+         window.blit(model_level_one.character.image_loaded, model_level_one.character.rectangle)
+         pygame.display.update()
 
 
 

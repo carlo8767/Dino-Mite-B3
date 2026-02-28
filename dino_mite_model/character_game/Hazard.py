@@ -8,10 +8,17 @@ class Meteor():
 
 
     def __init__(self):
+        self.position_x = 400
+        self.position_y = 2
         self.speed = 3
-        self.image_meteor = os.path.join("./image","meteor.jpeg")
+        self.image_meteor = os.path.join("./image", "meteor.jpeg")
+        self.image_loaded = pygame.image.load(self.image_meteor).convert()
+        self.rectangle = self.image_loaded.get_rect()
+        self.rectangle.center = (self.position_x, self.position_y)
 
 
+    def update_positions(self, x, y):
+        self.position = (x, y)
 
     """
         # CHANGE WITH REALISTIC VALUES
