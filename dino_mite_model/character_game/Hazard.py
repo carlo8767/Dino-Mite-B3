@@ -5,32 +5,35 @@ import random
 
 
 class Meteor():
-
+    """The meteor spawns with the random X position at the very top of the screen and falls down\n"
+    "vertically with the set speed"""
 
     def __init__(self):
-        self.position_x = 400
-        self.position_y = 2
-        self.speed = 3
-        self.image_meteor = os.path.join("./image", "meteor.jpeg")
-        self.image_loaded = pygame.image.load(self.image_meteor).convert()
+        self.screen_width = 1024
+        self.screen_height = 768
+
+        self.position_x = random.randint(50, self.screen_width - 50)
+        self.position_y = -60
+
+        self.speed = 4
+
+        self.is_active = True
+
+        self.image_path = os.path.join("./image", "meteor.jpg")
+
+        self.image_loaded = pygame.image.load(self.image_path).convert_alpha()
+        self.image_loaded = pygame.transform.scale(self.image_loaded, (60, 60))
+
         self.rectangle = self.image_loaded.get_rect()
         self.rectangle.center = (self.position_x, self.position_y)
 
+    """ Moves the meteor from top os the screen to the bottom"""
 
-    def update_positions(self, x, y):
-        self.position = (x, y)
+    def update_positions(self):
+        self.rectangle.y += self.speed
 
-    """
-        # CHANGE WITH REALISTIC VALUES
-        def _init_(self, screen_width):
-        super()._init_()
-        self.image = pygame.Surface((10, 10))  # replace with avatar later
-        self.image.fill((0, 0, 0))
+        if self.rectangle.top > self.screen_height:
+            self.kill()
 
-        x = random.randint(50, screen_width - 50)
-        self.rect = self.image.get_rect(topleft=(x, 0))
-
-        self.speed = 3 #can be also randomised. Will be adjusted later on
-        def move(self):
-            self.rect.y += self.speed
-    """
+    def kill(self):
+        self.is_active = False  # pass flag to the controller for removing and object
