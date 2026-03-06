@@ -1,24 +1,35 @@
 import os.path
 
 import pygame
-import random
 
 
-class Meteor():
+class Meteor(pygame.sprite.Sprite):
 
-
+    
     def __init__(self):
+        super().__init__()
         self.position_x = 400
         self.position_y = 2
         self.speed = 3
         self.image_meteor = os.path.join("./image", "meteor.jpeg")
         self.image_loaded = pygame.image.load(self.image_meteor).convert()
-        self.rectangle = self.image_loaded.get_rect()
-        self.rectangle.center = (self.position_x, self.position_y)
+        self.rect = self.image_loaded.get_rect()
+        self.rect.center = (self.position_x, self.position_y)
+
+
+
 
 
     def update_positions(self, x, y):
-        self.position = (x, y)
+        self.rect.x = x
+        self.rect.y = y
+
+    def current_position(self):
+        return self.rect.x, self.position_y
+
+
+
+
 
     """
         # CHANGE WITH REALISTIC VALUES

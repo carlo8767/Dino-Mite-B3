@@ -1,16 +1,20 @@
 import os
 
+import pygame.sprite
+
 from dino_mite_model.character_game.Character import CharacterDino
 from dino_mite_model.character_game.Hazard import Meteor
 
 
-class LevelOne:
+class LevelOne(pygame.sprite.Sprite):
 
 
     def __init__(self):
+        super().__init__()
         self.width = 0
         self.height = 0
         self.hazard_level_one = Meteor()
         self.character = CharacterDino()
         self.image = os.path.join('./image', 'backgroundLevelOne.jpeg')
+
 
