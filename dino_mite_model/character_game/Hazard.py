@@ -1,47 +1,39 @@
 import os.path
 
 import pygame
+import random
 
 
-class Meteor(pygame.sprite.Sprite):
+class Meteor():
+    """The meteor spawns with the random X position at the very top of the screen and falls down\n"
+    "vertically with the set speed"""
 
-    
     def __init__(self):
-        super().__init__()
-        self.position_x = 400
-        self.position_y = 2
-        self.speed = 3
-        self.image_meteor = os.path.join("./image", "meteor.jpeg")
-        self.image_loaded = pygame.image.load(self.image_meteor).convert()
-        self.rect = self.image_loaded.get_rect()
-        self.rect.center = (self.position_x, self.position_y)
+        self.screen_width = 1024
+        self.screen_height = 768
 
+        self.position_x = random.randint(50, self.screen_width - 50)
+        self.position_y = -60
 
+        self.speed = 4
 
+        self.is_active = True
 
+        self.image_path = os.path.join("./image", "meteor.jpg")
 
-    def update_positions(self, x, y):
-        self.rect.x = x
-        self.rect.y = y
+        self.image_loaded = pygame.image.load(self.image_path).convert_alpha()
+        self.image_loaded = pygame.transform.scale(self.image_loaded, (60, 60))
 
-    def current_position(self):
-        return self.rect.x, self.position_y
+        self.rectangle = self.image_loaded.get_rect()
+        self.rectangle.center = (self.position_x, self.position_y)
 
+    """ Moves the meteor from top os the screen to the bottom"""
 
+    def update_positions(self):
+        self.rectangle.y += self.speed
 
+        if self.rectangle.top > self.screen_height:
+            self.kill()
 
-
-    """
-        # CHANGE WITH REALISTIC VALUES
-        def _init_(self, screen_width):
-        super()._init_()
-        self.image = pygame.Surface((10, 10))  # replace with avatar later
-        self.image.fill((0, 0, 0))
-
-        x = random.randint(50, screen_width - 50)
-        self.rect = self.image.get_rect(topleft=(x, 0))
-
-        self.speed = 3 #can be also randomised. Will be adjusted later on
-        def move(self):
-            self.rect.y += self.speed
-    """
+    def kill(self):
+        self.is_active = False  # pass flag to the controller for removing and object
