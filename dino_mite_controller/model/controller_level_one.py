@@ -1,7 +1,7 @@
 from dino_mite_model.character_game.Hazard import Meteor
 from dino_mite_model.level_model.levelone import LevelOne
 
-
+import pygame
 
 
 class ControllerLevelOne:
@@ -21,3 +21,28 @@ class ControllerLevelOne:
 
     def start_level_one (self):
         return self.level_one
+
+    def detection_collision_character(self, sprite, group) -> bool:
+        sprites_group = pygame.sprite.Group()
+        sprites_group.add(group)
+        if pygame.sprite.spritecollide(sprite, sprites_group, True):
+            print("collude")
+            return True
+        return False
+        """"
+        https://www.pygame.org/docs/tut/SpriteIntro.html
+        """
+
+
+    def update_collision_position(self):
+       self.level_one.hazard_level_one.update_position_collision()
+
+    def screen_collision(self, x ,y):
+        if int(y) > 800:
+            print("Ok")
+        return self.level_one.verification_limit_screen_colision(x,y)
+
+
+
+
+
