@@ -100,6 +100,11 @@ class RollingRock():
 
         # Reset to left side when rock exits the right side
         if self.rectangle.left > self.screen_width:
-            self.rectangle.right = 0
+            self.kill()
 
+    def kill(self):
+        self.is_active = False 
+
+
+    
 
