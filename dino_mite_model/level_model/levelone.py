@@ -20,9 +20,20 @@ class LevelOne(pygame.sprite.Sprite):
         self.image = os.path.join('./image', 'backgroundLevelOne.jpeg')
 
 
-
-
-    def verification_limit_screen_colision(self, x, y):
-        if x > WIDTH or  y > HEIGHT:
-            return True
+    def verification_limit_screen_colision(self, x, y, verse_x="N"):
+        if verse_x == "L":
+            if x < 0  or y > HEIGHT:
+                return True
+        # THINK HOW TO FIX CARLO
+        elif verse_x == "R":
+            if x > (WIDTH-60) or y > HEIGHT:
+                return True
+        elif verse_x == "N":
+            if  y > HEIGHT:
+                return True
         return False
+
+
+
+
+

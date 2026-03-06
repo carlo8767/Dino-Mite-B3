@@ -9,6 +9,7 @@ class Meteor(pygame.sprite.Sprite):
     "vertically with the set speed"""
 
     def __init__(self):
+        super().__init__()
         self.screen_width = WIDTH
         self.screen_height = HEIGHT
         self.position_x = random.randint(50, self.screen_width - 50)
@@ -20,6 +21,7 @@ class Meteor(pygame.sprite.Sprite):
         self.image_loaded = pygame.transform.scale(self.image_loaded, (60, 60))
         self.rect = self.image_loaded.get_rect()
         self.rect.center = (self.position_x, self.position_y)
+        self.name = "Hazard"
 
     """ Moves the meteor from top os the screen to the bottom"""
     def update_positions(self, meteor):
@@ -32,7 +34,8 @@ class Meteor(pygame.sprite.Sprite):
         self.rect.y = -60
         self.rect.x = random.randint(50, self.screen_width - 50)
 
-
+    def get_current_position(self):
+        return self.rect.x, self.rect.y
 
     def kill(self,):
         self.is_active = False  # pass flag to the controller for removing and object

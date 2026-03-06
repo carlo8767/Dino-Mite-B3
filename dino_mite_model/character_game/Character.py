@@ -1,15 +1,19 @@
 import os
+import random
 
 import pygame.sprite
 
+from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
 class CharacterDino(pygame.sprite.Sprite):
 
     def __init__(self):
         super().__init__()
-        self.move_x = 3
-        self.move_y = 3
-        self.position_x = 0
+        self.screen_width = WIDTH
+        self.screen_height = HEIGHT
+        self.move_x = 2
+        self.move_y = 2
+        self.position_x = 100
         self.position_y = 700
         self.image_dino_path = os.path.join("./image","character.png")
         self.image_loaded = pygame.image.load(self.image_dino_path).convert()
@@ -19,11 +23,26 @@ class CharacterDino(pygame.sprite.Sprite):
         )
         self.rect = self.image_loaded.get_rect()
         self.rect.center = (self.position_x, self.position_y)
+        self.name = "Dino"
 
-    def movement_character(self, move_x):
-        self.move_x = move_x
-        self.move_y = self.move_y
+    def movement_character_left(self):
+        self.rect.x -=self.move_x
+
+    def movement_character_right(self):
+        self.rect.x += self.move_x
 
     def set_position_rectangle(self, position_x, position_y):
         self.rect.center = (position_x, position_y)
+
+    def get_current_position(self):
+        return self.rect.x, self.rect.y
+
+    def set_current_position(self, x,y):
+        self.rect.x = x
+        self.rect.y = y
+
+
+    def update_position_collision(self):
+        self.rect.y = 700
+        self.rect.x = random.randint(50, self.screen_width - 50)
 
