@@ -10,23 +10,39 @@ class ControllerLevelOne:
     def __init__(self):
         # ADD MODEL  VERIFY IF HERE
         self.level_one = LevelOne()
-        self.hazards = []
+        self.meteors = []        # separate list
+        self.rolling_rocks = []  # separate list
         self.models = dict()
 
     def update_level_one(self):
-        for hazard in self.hazards:
-            hazard.update_position()
-        self.hazards = [hazard for hazard in self.hazards if hazard.is_active]
+        for meteor in self.meteors:
+            meteor.update_position()
+        self.meteors = [m for m in self.meteors if m.is_active]
+
+        for rock in self.rolling_rocks:
+            rock.update_position()
+        self.rolling_rocks = [r for r in self.rolling_rocks if r.is_active]
 
     def spawn_meteor(self):
-        self.hazards.append(Meteor())
+        self.meteors.append(Meteor())
+
+    def spawn_rolling_rock(self):
+        self.rolling_rocks.append(RollingRock())
+    
+    '''
+    if frame_count % 60 == 0:   # meteor every 60 frames
+        controller.spawn_meteor()
+
+    if frame_count % 120 == 0:  # rock every 120 frames
+        controller.spawn_rolling_rock() 
+    '''
 
     def start_level_one (self):
         return self.level_one
 
     def detection_collision_character(self, sprite, group) -> bool:
         sprites_group = pygame.sprite.Group()
-        sprites_group.add(group)
+        sprites_group.add(group)  # pass self.meteors or self.rolling_rocks
         # IF COLLUDE RESTART THE LEVEL !!
         if pygame.sprite.spritecollide(sprite, sprites_group, True):
             print("collude")
