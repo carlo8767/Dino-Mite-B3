@@ -60,7 +60,7 @@ class ControllerLevelOne:
 
     def movement_character_right(self):
         if self.screen_collision_character("R"):
-            print("SCRREN")
+            print("SCREEN")
             x, y = self.level_one.character.get_current_position()
             print(x)
             self.level_one.character.set_current_position(x,y)
