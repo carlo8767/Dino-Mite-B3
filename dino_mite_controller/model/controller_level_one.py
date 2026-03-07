@@ -3,8 +3,6 @@ from dino_mite_model.character_game.Hazard import RollingRock
 from dino_mite_model.level_model.levelone import LevelOne
 
 import pygame
-
-
 class ControllerLevelOne:
 
     def __init__(self):
