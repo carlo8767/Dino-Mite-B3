@@ -118,9 +118,9 @@ self.image_loaded = pygame.image.load(
     self.image_dino_path
 ).convert()
 
-self.rectangle = self.image_loaded.get_rect()
+self.rect = self.image_loaded.get_rect()
 
-self.rectangle.center = (
+self.rect.center = (
     self.position_x,
     self.position_y
 )
@@ -144,11 +144,10 @@ for event in pygame.event.get():
 
     # CHARACTER MOVE
     if keys[pygame.K_LEFT]:
-        model_level_one.character.rectangle.x -= 5
+        model_level_one.character.rect.x -= 5
 
     if keys[pygame.K_RIGHT]:
-        model_level_one.character.rectangle.x += 5
-
+        model_level_one.character.rect.x += 5
 
 # DRAW BACKGROUND
 window.blit(
@@ -156,24 +155,20 @@ window.blit(
     (0, 0)
 )
 
-
 # DRAW HAZARD
 window.blit(
     model_level_one.hazard_level_one.image_loaded,
-    model_level_one.hazard_level_one.rectangle
+    model_level_one.hazard_level_one.rect
 )
 
-
 # UPDATE HAZARD POSITION
-model_level_one.hazard_level_one.rectangle.y += 2
-
+model_level_one.hazard_level_one.rect.y += 2
 
 # DRAW CHARACTER
 window.blit(
     model_level_one.character.image_loaded,
-    model_level_one.character.rectangle
+    model_level_one.character.rect
 )
-
 
 # UPDATE DISPLAY
 pygame.display.update()
