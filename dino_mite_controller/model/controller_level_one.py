@@ -1,5 +1,6 @@
 from dino_mite_model.character_game.Hazard import Meteor
 from dino_mite_model.level_model.levelone import LevelOne
+from dino_mite_model.character_game.player_movement import Player_Movement
 
 import pygame
 
@@ -68,6 +69,18 @@ class ControllerLevelOne:
     def add_models(self):
         self.models[self.level_one.hazard_level_one.name] = self.level_one.hazard_level_one
         self.models[self.level_one.character.name] = self.level_one.character
+
+    # ADDED: forwards keys and events down to player_movement in the model
+    def handle_player_input(self, keys, events):
+        self.level_one.character.player_movement.handle_key_input(keys, events)
+
+    # ADDED: forwards gravity call down to player_movement in the model
+    def apply_player_gravity(self):
+        self.level_one.character.player_movement.gravity()
+
+    # ADDED: forwards draw call down to player_movement which picks the correct image
+    def draw_character(self, window):
+        self.level_one.character.player_movement.draw(window)
 
 
 

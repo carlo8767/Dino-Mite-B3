@@ -4,6 +4,8 @@ import random
 import pygame.sprite
 
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
+from dino_mite_model.character_game.player_movement import Player_Movement
+
 
 class CharacterDino(pygame.sprite.Sprite):
 
@@ -24,6 +26,7 @@ class CharacterDino(pygame.sprite.Sprite):
         self.rect = self.image_loaded.get_rect()
         self.rect.center = (self.position_x, self.position_y)
         self.name = "Dino"
+        self.player_movement = Player_Movement()
 
     def movement_character_left(self):
         self.rect.x -=self.move_x
