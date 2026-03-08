@@ -16,7 +16,7 @@ class Meteor(pygame.sprite.Sprite):
         self.position_y = -60
         self.speed = 4
         self.is_active = True
-        self.image_path = os.path.join("./image", "meteor.jpg")
+        self.image_path = os.path.join("./image", "meteor.png")
         self.image_loaded = pygame.image.load(self.image_path).convert_alpha()
         self.image_loaded = pygame.transform.scale(self.image_loaded, (60, 60))
         self.rect = self.image_loaded.get_rect()
