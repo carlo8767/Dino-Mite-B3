@@ -2,6 +2,7 @@ import random
 import pygame
 from dino_mite_view.game_component.pause_menu import PauseMenu
 from dino_mite_utility import utilities_names
+from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
 class ViewLevelOne:
 
@@ -58,6 +59,8 @@ class ViewLevelOne:
 
                 # Update all hazards
                 ctr_levelOne.update_level_one()
+                # VERIFY IF CHANGE THE IMAGE
+                sprite_image_background = pygame.transform.scale(sprite_image_background, (WIDTH, HEIGHT))
 
                 # Collision detection
                 for hazard in ctr_levelOne.meteors + ctr_levelOne.rolling_rocks:
@@ -95,3 +98,12 @@ class ViewLevelOne:
 
             pygame.display.update()
             clock.tick(60)
+
+    def draw_component_levels_one(self, window, ctr_level_one):
+        window.blit(ctr_level_one.level_one.hazard_meteor.image_loaded, ctr_level_one.level_one.hazard_meteor.rect)
+        # CHANGE HAZARD POSITION PASS THE LOGIC IN THE CONTROLLER?
+        ctr_level_one.level_one.hazard_meteor.rect.y += 2
+        window.blit(ctr_level_one.level_one.hazard_rollingRock.image_loaded, ctr_level_one.level_one.hazard_rollingRock.rect)
+        ctr_level_one.level_one.hazard_rollingRock.rect.y += 2
+        window.blit(ctr_level_one.level_one.character.image_loaded, ctr_level_one.level_one.character.rect)
+        # VERIFY IF THEY REACH THE LIMIT SCREEN

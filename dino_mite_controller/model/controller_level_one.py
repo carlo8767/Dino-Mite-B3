@@ -34,14 +34,20 @@ class ControllerLevelOne:
     def start_level_one (self):
         return self.level_one
 
-    def detection_collision_character(self, sprite, group) -> bool:
-        sprites_group = pygame.sprite.Group()
-        sprites_group.add(group)  # pass self.meteors or self.rolling_rocks
-        # IF COLLUDE RESTART THE LEVEL !!
-        if pygame.sprite.spritecollide(sprite, sprites_group, True):
-            print("collude")
-            return True
-        """"
+    def detection_collision_character(self, sprite) -> tuple[bool, str]:
+        for g,v in  self.models_collision.items():
+            # VERIFY THE THE SPRITE IS NOT THE GROUP
+            if g == sprite:
+                continue
+            sprites_group = pygame.sprite.Group()
+            sprites_group.add(g)  # pass self.meteors or self.rolling_rocks
+                # IF COLLUDE RESTART THE LEVEL !!
+            if pygame.sprite.spritecollide(sprite, sprites_group, True):
+                    print("collude")
+                    sprites_group.remove(g)
+                    return True, v
+        return  False , ""
+        """
         https://www.pygame.org/docs/tut/SpriteIntro.html
         """
 
@@ -61,24 +67,34 @@ class ControllerLevelOne:
         else:
             self.level_one.character.movement_character_right()
 
-    def update_collision_position_hazard(self):
-       self.level_one.hazard_level_one.update_position_collision()
+
+    def update_collision_position(self, name):
+         [k.update_position_collision() for k,v in self.models_collision.items() if v == name]
 
 
-    def screen_collision_hazard(self):
-        x, y = self.level_one.hazard_level_one.get_current_position()
-        if self.level_one.verification_limit_screen_colision(x,y):
-            self.update_collision_position_hazard()
+
 
     def screen_collision_character(self, verse_x):
         x, y = self.level_one.character.get_current_position()
         return self.level_one.verification_limit_screen_colision(x,y, verse_x)
 
 
-    # JUST ADD MODELS COMPONENT LEVELS ONE
-    def add_models(self):
-        self.models[self.level_one.hazard_level_one.name] = self.level_one.hazard_level_one
-        self.models[self.level_one.character.name] = self.level_one.character
+    def screen_collision_hazard(self):
+        print("verify collision hazard")
+        # VERIF IF WE ADD A LIST IF YES I NEED
+        x, y = self.level_one.hazard_meteor.get_current_position()
+        if  self.level_one.verification_limit_screen_colision(x,y):
+            self.update_collision_position(self.level_one.hazard_meteor.name)
+        x ,y =self.level_one.hazard_rollingRock.get_current_position()
+        if self.level_one.verification_limit_screen_colision(x,y):
+            self.update_collision_position(self.level_one.hazard_rollingRock.name)
 
+
+
+    # JUST ADD MODELS COMPONENT LEVELS ONE
+    def add_models_collision(self):
+        self.models_collision[self.level_one.character] = self.level_one.character.name  # THINK HOW TO REMOVE FROM COLLISION
+        self.models_collision[self.level_one.hazard_meteor] = self.level_one.hazard_meteor.name
+        self.models_collision[self.level_one.hazard_rollingRock] = self.level_one.hazard_rollingRock.name
 
 
