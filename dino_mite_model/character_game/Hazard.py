@@ -21,11 +21,20 @@ class Meteor(pygame.sprite.Sprite):
         self.image_loaded = pygame.transform.scale(self.image_loaded, (60, 60))
         self.rect = self.image_loaded.get_rect()
         self.rect.center = (self.position_x, self.position_y)
-        self.name = "Hazard"
+        self.name = "Meteor"
 
     """ Moves the meteor from top os the screen to the bottom"""
-    def update_positions(self, meteor):
-        meteor.rect.y += meteor.speed
+    def update_position(self):
+        self.rect.y += self.speed
+
+
+    def get_current_position(self):
+        return self.rect.x, self.rect.y
+
+    def update_position_collision(self):
+        self.rect.y = self.position_y = -60
+        self.rect.x = random.randint(50, self.screen_width - 50)
+
 
     """
         # CHANGE WITH REALISTIC VALUES
@@ -64,20 +73,31 @@ class RollingRock(pygame.sprite.Sprite):
         super().__init__()
         self.move_x = 4
         self.move_y = 0
-        self.position_x = -80
-        self.position_y = 680
+        self.position_x = 80
+        self.position_y = -80
         self.screen_width = WIDTH
         self.is_active = True  # ADD THIS
         self.name = "RollingRock"  # ADD THIS
-
         self.image_rock_path = os.path.join("./image", "rolling_rock.png")
         self.image_loaded = pygame.image.load(self.image_rock_path).convert_alpha()
-        self.image_loaded = pygame.transform.scale(self.image_loaded, (80, 80))
-        self.rectangle = self.image_loaded.get_rect()
-        self.rectangle.center = (self.position_x, self.position_y)
+        self.image_loaded = pygame.transform.scale(self.image_loaded, (60, 60))
+        self.rect = self.image_loaded.get_rect()
+        self.rect.center = (self.position_x, self.position_y)
+
+    def get_current_position(self):
+        return self.rect.x, self.rect.y
 
     def update_position(self):
-        self.rectangle.x += self.move_x
-        if self.rectangle.left > self.screen_width:
+        self.rect.x += self.move_x
+        if self.rect.left > self.screen_width:
             self.is_active = False  # CHANGED from kill() to match Meteor pattern
+
+    # VERIFY HOW TO COLLUDE PROPERLY
+    def update_position_collision(self):
+        self.rect.y = self.position_y = -80
+        self.rect.x = random.randint(50, self.screen_width - 50)
+
+
+
+
 

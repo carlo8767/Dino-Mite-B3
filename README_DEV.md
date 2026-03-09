@@ -157,12 +157,12 @@ window.blit(
 
 # DRAW HAZARD
 window.blit(
-    model_level_one.hazard_level_one.image_loaded,
-    model_level_one.hazard_level_one.rect
+    model_level_one.hazard_meteor.image_loaded,
+    model_level_one.hazard_meteor.rect
 )
 
 # UPDATE HAZARD POSITION
-model_level_one.hazard_level_one.rect.y += 2
+model_level_one.hazard_meteor.rect.y += 2
 
 # DRAW CHARACTER
 window.blit(
