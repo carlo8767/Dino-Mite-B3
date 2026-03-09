@@ -6,17 +6,21 @@ import pygame
 class ControllerLevelOne:
 
     def __init__(self):
-        # ADD MODEL  VERIFY IF HERE
         self.level_one = LevelOne()
-        self.meteors = []        # separate list
-        self.rolling_rocks = []  # separate list
+        self.meteors = [Meteor() for _ in range(5)]  # 5 meteors always active
+        self.rolling_rocks = []
+        self.is_paused = False
         self.models = dict()
 
+    def toggle_pause(self):
+        self.is_paused = not self.is_paused
+
     def update_level_one(self):
+        # Meteors just update, never removed
         for meteor in self.meteors:
             meteor.update_position()
-        self.meteors = [m for m in self.meteors if m.is_active]
 
+        # Rolling rocks removed when they exit screen
         for rock in self.rolling_rocks:
             rock.update_position()
         self.rolling_rocks = [r for r in self.rolling_rocks if r.is_active]
@@ -26,14 +30,6 @@ class ControllerLevelOne:
 
     def spawn_rolling_rock(self):
         self.rolling_rocks.append(RollingRock())
-    
-    '''
-    if frame_count % 60 == 0:   # meteor every 60 frames
-        controller.spawn_meteor()
-
-    if frame_count % 120 == 0:  # rock every 120 frames
-        controller.spawn_rolling_rock() 
-    '''
 
     def start_level_one (self):
         return self.level_one

@@ -24,8 +24,11 @@ class Meteor(pygame.sprite.Sprite):
         self.name = "Hazard"
 
     """ Moves the meteor from top os the screen to the bottom"""
-    def update_positions(self, meteor):
-        meteor.rect.y += meteor.speed
+    def update_position(self):
+        self.rect.y += self.speed
+        # When meteor hits the floor, reset to top with new random x
+        if self.rect.top > self.screen_height:
+            self.rect.center = (random.randint(50, self.screen_width - 50), -60)
 
     """
         # CHANGE WITH REALISTIC VALUES
