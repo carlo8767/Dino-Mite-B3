@@ -54,7 +54,7 @@ class ViewLevelOne:
                     ctr_levelOne.spawn_rolling_rock()
                     self.next_rock_spawn = frame_count + random.randint(3600, 7200)
 
-                # No meteor spawning needed - 5 are pre-spawned and loop forever
+                # No meteor spawning needed — 5 are pre-spawned and loop forever
 
                 # Update all hazards
                 ctr_levelOne.update_level_one()
