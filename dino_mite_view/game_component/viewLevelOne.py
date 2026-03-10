@@ -1,4 +1,5 @@
 import pygame
+import time
 from dino_mite_view.game_component.pause_menu import PauseMenu
 from dino_mite_utility import utilities_names
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
@@ -9,9 +10,11 @@ class ViewLevelOne:
     View component for Level One.
     """
 
-    dict_elements_view = dict()
 
     def draw_screen_level_one(self, window, ctr_levelOne):
+
+        FONT_TYPE = pygame.font.SysFont("Comic Sans MS", 40)
+        color_timer = (0, 0, 0)
         """
         Main game loop for Level One.
         Handles events, updates game state via controller, and draws everything.
@@ -39,8 +42,15 @@ class ViewLevelOne:
         # Register all sprites for collision detection in the controller
         # REMOVE CARLO NOT NECESSARY ALREADY IN THE CONSTRCUTOR
         # ctr_levelOne.add_models_collision()
-
+        # TIME
+        time_begins = time.time()
+        duration = 200
         while running:
+            # TIME
+            remaining = int(duration - (time.time() - time_begins))
+            print(remaining)
+            if remaining <=0:
+                print("NEXT LEVEL")
             # Collect events once per frame
             events = pygame.event.get()
             # ==================== EVENT HANDLING ====================
@@ -100,6 +110,9 @@ class ViewLevelOne:
             if ctr_levelOne.is_paused:
                 pause_menu.draw()
 
+
+            time_left = "TIME LEFT "+str(remaining)
+            self.draw_timer(time_left,FONT_TYPE, color_timer, 400, 50, window)
             pygame.display.update()
             clock.tick(60)
 
@@ -141,6 +154,17 @@ class ViewLevelOne:
                 # Draw any active rolling rocks from the controller's list
             for rock in ctr_levelOne.rolling_rocks:
                 window.blit(rock.image_loaded, rock.rect)
+
+
+    def draw_timer(self, text, font, text_color, x_pos, y_pos, window):
+        img = font.render(text, True, text_color)
+        rect = img.get_rect()
+        rect.center = (x_pos, y_pos)
+        pygame.draw.rect(window, (0, 0, 0), rect, 2)
+        window.blit(img, rect)
+
+
+
 
 
 

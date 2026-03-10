@@ -54,7 +54,7 @@ class ControllerLevelOne:
                 continue
             sprites_group = pygame.sprite.Group()
             sprites_group.add(g)
-            # spritecollide returns a list of colliding sprites
+            # spritecollide returns a list of colliding sprites and remove from the group
             if pygame.sprite.spritecollide(sprite, sprites_group, True, pygame.sprite.collide_mask):
                 print("collude")
                 return True, v
