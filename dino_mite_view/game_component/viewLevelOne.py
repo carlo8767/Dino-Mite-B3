@@ -80,7 +80,9 @@ class ViewLevelOne:
                     ctr_levelOne.level_one.character
                 )
                 if collided:
+                    # HERE THE ISSUE !!!
                     print(f"Collision detected with {name} — game over")
+                    ctr_levelOne.update_collision_position(name)
                     running = False
 
                 # Reset hazards that have left the screen bounds
