@@ -1,109 +1,125 @@
-import random
 import pygame
 from dino_mite_view.game_component.pause_menu import PauseMenu
 from dino_mite_utility import utilities_names
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
+
 class ViewLevelOne:
+    """
+    View component for Level One.
+    """
 
     dict_elements_view = dict()
 
     def draw_screen_level_one(self, window, ctr_levelOne):
+        """
+        Main game loop for Level One.
+        Handles events, updates game state via controller, and draws everything.
+
+        :param window: The main pygame display surface.
+        :param ctr_levelOne: The ControllerLevelOne instance that manages game logic.
+        """
         print(">> Enter in View Level One")
         clock = pygame.time.Clock()
         pygame.display.set_caption(utilities_names.LEVEL_ONE)
 
+        # Load and scale the background image to fill the window
         sprite_image_background = pygame.image.load(
             ctr_levelOne.level_one.image
         ).convert()
+        sprite_image_background = pygame.transform.scale(
+            sprite_image_background, (WIDTH, HEIGHT)
+        )
 
+        # Initialise the pause menu overlay
         pause_menu = PauseMenu(window)
         frame_count = 0
         running = True
 
+        # Register all sprites for collision detection in the controller
+        ctr_levelOne.add_models_collision()
+
         while running:
-            # --- EVENTS ---
+            # ==================== EVENT HANDLING ====================
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
 
+                # Toggle pause with Escape key
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         ctr_levelOne.toggle_pause()
 
+                # Handle clicks on the pause menu buttons (only when paused)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if ctr_levelOne.is_paused:
                         result = pause_menu.handle_click(pygame.mouse.get_pos())
                         if result == "CONTINUE":
                             ctr_levelOne.toggle_pause()
-                        if result == "EXIT":
-                            running = False  # back to main menu
+                        elif result == "EXIT":
+                            running = False
 
-            # --- UPDATE (only when not paused) ---
+            # ==================== UPDATE (skip when paused) ====================
             if not ctr_levelOne.is_paused:
+                # Continuous key-press movement (not event-based)
                 keys = pygame.key.get_pressed()
                 if keys[pygame.K_LEFT]:
                     ctr_levelOne.movement_character_left()
                 elif keys[pygame.K_RIGHT]:
                     ctr_levelOne.movement_character_right()
 
-                # Spawn rolling rock every 1-2 minutes (randomly between 3600-7200 frames)
-                if not hasattr(self, 'next_rock_spawn'):
-                    self.next_rock_spawn = random.randint(3600, 7200)
-
-                if frame_count == self.next_rock_spawn:
-                    ctr_levelOne.spawn_rolling_rock()
-                    self.next_rock_spawn = frame_count + random.randint(3600, 7200)
-
-                # No meteor spawning needed — 5 are pre-spawned and loop forever
-
-                # Update all hazards
+                # Update hazard positions via the controller
                 ctr_levelOne.update_level_one()
-                # VERIFY IF CHANGE THE IMAGE
-                sprite_image_background = pygame.transform.scale(sprite_image_background, (WIDTH, HEIGHT))
 
-                # Collision detection
-                for hazard in ctr_levelOne.meteors + ctr_levelOne.rolling_rocks:
-                    if ctr_levelOne.detection_collision_character(
-                        ctr_levelOne.level_one.character, hazard
-                    ):
-                        print("collision - game over")
-                        running = False
+                # Check if the character collides with any hazard
+                # NOTE: collision only checks models_collision (Carlo's system).
+                # The 5 meteors in ctr_levelOne.meteors are NOT registered there
+                collided, name = ctr_levelOne.detection_collision_character(
+                    ctr_levelOne.level_one.character
+                )
+                if collided:
+                    print(f"Collision detected with {name} — game over")
+                    running = False
 
-                # Screen collision for hazards
+                # Reset hazards that have left the screen bounds
                 ctr_levelOne.screen_collision_hazard()
 
                 frame_count += 1
 
-            # --- DRAW ---
+            # ==================== DRAW ====================
+            # Background
             window.blit(sprite_image_background, (0, 0))
 
-            # Draw character
+            # Character
             window.blit(
                 ctr_levelOne.level_one.character.image_loaded,
-                ctr_levelOne.level_one.character.rect
+                ctr_levelOne.level_one.character.rect,
             )
 
-            # Draw all meteors
+            # Draw the original single hazard instances from the LevelOne model
+            window.blit(
+                ctr_levelOne.level_one.hazard_meteor.image_loaded,
+                ctr_levelOne.level_one.hazard_meteor.rect,
+            )
+            window.blit(
+                ctr_levelOne.level_one.hazard_rollingRock.image_loaded,
+                ctr_levelOne.level_one.hazard_rollingRock.rect,
+            )
+
+            # Draw all 5 meteors from the controller's meteor list.
+            # These are separate from hazard_meteor above.
+            # Collision for these is NOT wired up yet — that is for
+            # Carlo to add to models_collision when ready.
             for meteor in ctr_levelOne.meteors:
                 window.blit(meteor.image_loaded, meteor.rect)
 
-            # Draw all rolling rocks
+            # Draw any active rolling rocks from the controller's list
             for rock in ctr_levelOne.rolling_rocks:
-                window.blit(rock.image_loaded, rock.rectangle)
+                window.blit(rock.image_loaded, rock.rect)
 
-            # Draw pause menu on top if paused
+            # Pause overlay drawn last so it sits on top of everything
             if ctr_levelOne.is_paused:
                 pause_menu.draw()
 
             pygame.display.update()
             clock.tick(60)
-
-    def draw_component_levels_one(self, window, ctr_level_one):
-        window.blit(ctr_level_one.level_one.hazard_meteor.image_loaded, ctr_level_one.level_one.hazard_meteor.rect)
-        # CHANGE HAZARD POSITION PASS THE LOGIC IN THE CONTROLLER?
-        ctr_level_one.level_one.hazard_meteor.rect.y += 2
-        window.blit(ctr_level_one.level_one.hazard_rollingRock.image_loaded, ctr_level_one.level_one.hazard_rollingRock.rect)
-        ctr_level_one.level_one.hazard_rollingRock.rect.y += 2
-        window.blit(ctr_level_one.level_one.character.image_loaded, ctr_level_one.level_one.character.rect)
-        # VERIFY IF THEY REACH THE LIMIT SCREEN

@@ -3,6 +3,9 @@ from dino_mite_model.character_game.Hazard import RollingRock
 from dino_mite_model.level_model.levelone import LevelOne
 
 import pygame
+from dino_mite_utility.utilities_names import WIDTH, HEIGHT
+
+
 class ControllerLevelOne:
 
     def __init__(self):
@@ -10,17 +13,23 @@ class ControllerLevelOne:
         self.meteors = [Meteor() for _ in range(5)]  # 5 meteors always active
         self.rolling_rocks = []
         self.is_paused = False
-        self.models = dict()
+        self.models_collision = dict()
+
+        self.add_models_collision()
 
     def toggle_pause(self):
         self.is_paused = not self.is_paused
 
     def update_level_one(self):
-        # Meteors just update, never removed
+        # Update the single model hazards (the ones actually drawn on screen)
+        self.level_one.hazard_meteor.update_position()
+        self.level_one.hazard_rollingRock.update_position()
+
+        # Update list-based meteors
         for meteor in self.meteors:
             meteor.update_position()
 
-        # Rolling rocks removed when they exit screen
+        # Update list-based rolling rocks, remove when off-screen
         for rock in self.rolling_rocks:
             rock.update_position()
         self.rolling_rocks = [r for r in self.rolling_rocks if r.is_active]
@@ -31,30 +40,27 @@ class ControllerLevelOne:
     def spawn_rolling_rock(self):
         self.rolling_rocks.append(RollingRock())
 
-    def start_level_one (self):
+    def start_level_one(self):
         return self.level_one
 
     def detection_collision_character(self, sprite) -> tuple[bool, str]:
-        for g,v in  self.models_collision.items():
-            # VERIFY THE THE SPRITE IS NOT THE GROUP
+        for g, v in self.models_collision.items():
+            # Skip the sprite we are testing (the character itself)
             if g == sprite:
                 continue
             sprites_group = pygame.sprite.Group()
-            sprites_group.add(g)  # pass self.meteors or self.rolling_rocks
-                # IF COLLUDE RESTART THE LEVEL !!
+            sprites_group.add(g)
+            # spritecollide returns a list of colliding sprites
             if pygame.sprite.spritecollide(sprite, sprites_group, True):
-                    print("collude")
-                    sprites_group.remove(g)
-                    return True, v
-        return  False , ""
-        """
-        https://www.pygame.org/docs/tut/SpriteIntro.html
-        """
+                print("collude")
+                sprites_group.remove(g)
+                return True, v
+        return False, ""
 
     def movement_character_left(self):
         if self.screen_collision_character("L"):
             x, y = self.level_one.character.get_current_position()
-            self.level_one.character.set_current_position(x,y)
+            self.level_one.character.set_current_position(x, y)
         else:
             self.level_one.character.movement_character_left()
 
@@ -63,38 +69,50 @@ class ControllerLevelOne:
             print("SCREEN")
             x, y = self.level_one.character.get_current_position()
             print(x)
-            self.level_one.character.set_current_position(x,y)
+            self.level_one.character.set_current_position(x, y)
         else:
             self.level_one.character.movement_character_right()
 
-
     def update_collision_position(self, name):
-         [k.update_position_collision() for k,v in self.models_collision.items() if v == name]
-
-
-
+        [k.update_position_collision() for k, v in self.models_collision.items() if v == name]
 
     def screen_collision_character(self, verse_x):
         x, y = self.level_one.character.get_current_position()
-        return self.level_one.verification_limit_screen_colision(x,y, verse_x)
+        return self.level_one.verification_limit_screen_colision(x, y, verse_x)
 
+    # ==================== SPLIT SCREEN COLLISION (Carlo) ====================
+    # Meteor and RollingRock have different behaviour when they leave
+    # the screen, so they are handled separately.
+
+    def screen_collision_meteor(self):
+        """
+        Meteor falls top to bottom.
+        When it goes past the bottom of the screen, reset it back to
+        the top with a new random x position (handled by update_position_collision).
+        """
+        x, y = self.level_one.hazard_meteor.get_current_position()
+        if y > HEIGHT:
+            self.update_collision_position(self.level_one.hazard_meteor.name)
+
+    def screen_collision_rolling_rock(self):
+        """
+        Rolling rock moves left to right along the ground.
+        When it exits the right side of the screen, reset it back to
+        the left side so it loops around.
+        """
+        x, y = self.level_one.hazard_rollingRock.get_current_position()
+        if x > WIDTH:
+            # Reset to just off the left edge, keep same y (ground level)
+            self.level_one.hazard_rollingRock.rect.x = -60
+            self.level_one.hazard_rollingRock.rect.y = self.level_one.hazard_rollingRock.position_y
 
     def screen_collision_hazard(self):
-        print("verify collision hazard")
-        # VERIF IF WE ADD A LIST IF YES I NEED
-        x, y = self.level_one.hazard_meteor.get_current_position()
-        if  self.level_one.verification_limit_screen_colision(x,y):
-            self.update_collision_position(self.level_one.hazard_meteor.name)
-        x ,y =self.level_one.hazard_rollingRock.get_current_position()
-        if self.level_one.verification_limit_screen_colision(x,y):
-            self.update_collision_position(self.level_one.hazard_rollingRock.name)
+        """Checks all hazards for screen-edge resets."""
+        self.screen_collision_meteor()
+        self.screen_collision_rolling_rock()
 
-
-
-    # JUST ADD MODELS COMPONENT LEVELS ONE
     def add_models_collision(self):
-        self.models_collision[self.level_one.character] = self.level_one.character.name  # THINK HOW TO REMOVE FROM COLLISION
+        """Register all level-one sprites for collision checking."""
+        self.models_collision[self.level_one.character] = self.level_one.character.name
         self.models_collision[self.level_one.hazard_meteor] = self.level_one.hazard_meteor.name
         self.models_collision[self.level_one.hazard_rollingRock] = self.level_one.hazard_rollingRock.name
-
-
