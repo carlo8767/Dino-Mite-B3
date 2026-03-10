@@ -56,10 +56,16 @@ class CharacterDino(pygame.sprite.Sprite):
         if keys[pygame.K_a]:
             self.rect.x -= 5
             self.game_state = "walk_left"   # A = Walk left
+            if self.rect.left < 0:
+                self.rect.x  -=-5
+                print("overcome limit left")
 
         elif keys[pygame.K_d]:
             self.rect.x += 5
             self.game_state = "walk_right"  # D = Walk right
+            if self.rect.right > self.screen_width:
+                self.rect.x -= 5
+                print("overcome limit right")
 
         elif keys[pygame.K_s]:
             self.game_state = "duck"        # S = Duck
@@ -109,3 +115,6 @@ class CharacterDino(pygame.sprite.Sprite):
     def update_position_collision(self):
         self.rect.y = 700
         self.rect.x = random.randint(50, self.screen_width - 50)
+        if self.rect.left > self.screen_width:
+            print("OVERCOME LIMIT")
+
