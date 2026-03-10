@@ -1,6 +1,7 @@
 from dino_mite_model.character_game.Hazard import Meteor
 from dino_mite_model.character_game.Hazard import RollingRock
 from dino_mite_model.level_model.levelone import LevelOne
+from dino_mite_model.character_game.player_movement import Player_Movement
 
 import pygame
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
@@ -57,30 +58,29 @@ class ControllerLevelOne:
                 return True, v
         return False, ""
 
-    def movement_character_left(self):
-        if self.screen_collision_character("L"):
-            x, y = self.level_one.character.get_current_position()
-            self.level_one.character.set_current_position(x, y)
-        else:
-            self.level_one.character.movement_character_left()
+    # ==================== PLAYER INPUT (forwarded to model) ====================
 
-    def movement_character_right(self):
-        if self.screen_collision_character("R"):
-            print("SCREEN")
-            x, y = self.level_one.character.get_current_position()
-            print(x)
-            self.level_one.character.set_current_position(x, y)
-        else:
-            self.level_one.character.movement_character_right()
+    def handle_player_input(self, keys, events):
+        """Forward keyboard input to the player_movement model."""
+        self.level_one.character.player_movement.handle_key_input(keys, events)
+
+    def apply_player_gravity(self):
+        """Forward gravity call to the player_movement model."""
+        self.level_one.character.player_movement.gravity()
+
+    # ==================== SCREEN COLLISION (character) ====================
+
+    def screen_collision_character(self, verse_x):
+        """Check if the character has hit the edge of the screen."""
+        x, y = self.level_one.character.get_current_position()
+        return self.level_one.verification_limit_screen_colision(x, y, verse_x)
+
+    # ==================== COLLISION HELPERS ====================
 
     def update_collision_position(self, name):
         [k.update_position_collision() for k, v in self.models_collision.items() if v == name]
 
-    def screen_collision_character(self, verse_x):
-        x, y = self.level_one.character.get_current_position()
-        return self.level_one.verification_limit_screen_colision(x, y, verse_x)
-
-    # ==================== SPLIT SCREEN COLLISION (Carlo) ====================
+    # ==================== SPLIT SCREEN COLLISION (hazards) ====================
     # Meteor and RollingRock have different behaviour when they leave
     # the screen, so they are handled separately.
 

@@ -61,12 +61,12 @@ class ViewLevelOne:
 
             # ==================== UPDATE (skip when paused) ====================
             if not ctr_levelOne.is_paused:
-                # Continuous key-press movement (not event-based)
+                # Pass raw inputs to the controller, it decides what to do
                 keys = pygame.key.get_pressed()
-                if keys[pygame.K_LEFT]:
-                    ctr_levelOne.movement_character_left()
-                elif keys[pygame.K_RIGHT]:
-                    ctr_levelOne.movement_character_right()
+                ctr_levelOne.handle_player_input(keys)
+
+                # Controller handles gravity
+                ctr_levelOne.apply_player_gravity()
 
                 # Update hazard positions via the controller
                 ctr_levelOne.update_level_one()
@@ -91,10 +91,7 @@ class ViewLevelOne:
             window.blit(sprite_image_background, (0, 0))
 
             # Character
-            window.blit(
-                ctr_levelOne.level_one.character.image_loaded,
-                ctr_levelOne.level_one.character.rect,
-            )
+            ctr_levelOne.level_one.character.player_movement.draw(window)
 
             # Draw the original single hazard instances from the LevelOne model
             window.blit(
