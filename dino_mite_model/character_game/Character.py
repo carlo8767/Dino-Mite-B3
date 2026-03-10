@@ -28,6 +28,7 @@ class CharacterDino(pygame.sprite.Sprite):
         self.game_state = "idle"    # Current game state
         self.rect = self.images[self.game_state].get_rect()
         self.rect.center = (self.position_x, self.position_y)
+        self.mask = pygame.mask.from_surface(self.images[self.game_state])
         self.speed_y = 0            # For gravity and jumping
         self.png_on_ground = True
         self.standing_height = 120

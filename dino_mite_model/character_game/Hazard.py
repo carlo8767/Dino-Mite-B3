@@ -21,6 +21,7 @@ class Meteor(pygame.sprite.Sprite):
         self.image_loaded = pygame.transform.scale(self.image_loaded, (80, 80))
         self.rect = self.image_loaded.get_rect()
         self.rect.center = (self.position_x, self.position_y)
+        self.mask = pygame.mask.from_surface(self.image_loaded)
         self.name = "Meteor"
 
     """ Moves the meteor from top os the screen to the bottom"""
@@ -84,6 +85,7 @@ class RollingRock(pygame.sprite.Sprite):
         self.image_loaded = pygame.transform.scale(self.image_loaded, (60, 60))
         self.rect = self.image_loaded.get_rect()
         self.rect.center = (self.position_x, self.position_y)
+        self.mask = pygame.mask.from_surface(self.image_loaded)
 
     def get_current_position(self):
         return self.rect.x, self.rect.y
