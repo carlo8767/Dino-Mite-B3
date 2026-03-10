@@ -2,7 +2,6 @@ import os
 
 import pygame.sprite
 
-
 from dino_mite_model.character_game.Character import CharacterDino
 from dino_mite_model.character_game.Hazard import Meteor, RollingRock
 

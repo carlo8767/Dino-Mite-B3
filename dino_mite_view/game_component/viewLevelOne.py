@@ -37,7 +37,8 @@ class ViewLevelOne:
         running = True
 
         # Register all sprites for collision detection in the controller
-        ctr_levelOne.add_models_collision()
+        # REMOVE CARLO NOT NECESSARY ALREADY IN THE CONSTRCUTOR
+        # ctr_levelOne.add_models_collision()
 
         while running:
             # Collect events once per frame
@@ -55,11 +56,14 @@ class ViewLevelOne:
                 # Handle clicks on the pause menu buttons (only when paused)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if ctr_levelOne.is_paused:
+                        # CARLO MOVE IS ANOTHER VIEW ?
                         result = pause_menu.handle_click(pygame.mouse.get_pos())
                         if result == "CONTINUE":
                             ctr_levelOne.toggle_pause()
                         elif result == "EXIT":
                             running = False
+
+
 
             # ==================== UPDATE (skip when paused) ====================
             if not ctr_levelOne.is_paused:
@@ -68,10 +72,11 @@ class ViewLevelOne:
                 ctr_levelOne.handle_player_input(keys,events)
 
                 # Controller handles gravity
+                # CARLO
                 ctr_levelOne.apply_player_gravity()
 
-                # Update hazard positions via the controller
-                ctr_levelOne.update_level_one()
+                # Update hazard positions via the controller # I CAN JUST MOVE THE UPDATE
+                ctr_levelOne.update_movement_level_one()
 
                 # Check if the character collides with any hazard
                 # NOTE: collision only checks models_collision (Carlo's system).
@@ -83,19 +88,28 @@ class ViewLevelOne:
                     # HERE THE ISSUE !!!
                     print(f"Collision detected with {name} — game over")
                     ctr_levelOne.update_collision_position(name)
-                    running = False
+                    # running = False THINK ABOUT ANOHTER LOGIC
 
                 # Reset hazards that have left the screen bounds
-                ctr_levelOne.screen_collision_hazard()
+                # ctr_levelOne.screen_collision_hazard()
 
-                frame_count += 1
+                # CARLO DELETE WHY FRAM COUNT
+                # frame_count += 1
+            self.draw_elements(window, ctr_levelOne,sprite_image_background)
 
+            if ctr_levelOne.is_paused:
+                pause_menu.draw()
+
+            pygame.display.update()
+            clock.tick(60)
+
+    def draw_elements(self, window, ctr_levelOne,sprite_image_background ):
             # ==================== DRAW ====================
             # Background
             window.blit(sprite_image_background, (0, 0))
 
-            # Character
-            ctr_levelOne.level_one.character.player_movement.draw(window)
+            # Character draw various images  CARLO
+            ctr_levelOne.level_one.character.draw(window)
 
             # Draw the original single hazard instances from the LevelOne model
             window.blit(
@@ -111,16 +125,66 @@ class ViewLevelOne:
             # These are separate from hazard_meteor above.
             # Collision for these is NOT wired up yet — that is for
             # Carlo to add to models_collision when ready.
+            # MOVE IN CONTROLLER VIEW DOES NOT INTERACT WITH THTE CARLO VIEW!
+
+            #  CARLO
+            # self.draw_multiple_rock(ctr_levelOne,window)
+            # Pause overlay drawn last so it sits on top of everything
+
+
+
+    # ELIMINATE CARLO NOT NECESSARY
+    def draw_multiple_rock (self, ctr_levelOne, window):
             for meteor in ctr_levelOne.meteors:
                 window.blit(meteor.image_loaded, meteor.rect)
 
-            # Draw any active rolling rocks from the controller's list
+                # Draw any active rolling rocks from the controller's list
             for rock in ctr_levelOne.rolling_rocks:
                 window.blit(rock.image_loaded, rock.rect)
 
-            # Pause overlay drawn last so it sits on top of everything
-            if ctr_levelOne.is_paused:
-                pause_menu.draw()
 
-            pygame.display.update()
-            clock.tick(60)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def handle_key_input(self, keys, events):
+        # Check key press for JUMP
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w and self.png_on_ground:
+                    self.speed_y = -15  # Launch upward
+                    self.game_state = "jump"
+
+        # Check which keys are pressed
+        # Move the png accordingly
+        if keys[pygame.K_a]:
+            self.rect.x -= 5
+            self.game_state = "walk_left"   # A = Walk left
+
+        elif keys[pygame.K_d]:
+            self.rect.x += 5
+            self.game_state = "walk_right"  # D = Walk right
+
+        elif keys[pygame.K_s]:
+            self.game_state = "duck"        # S = Duck
+            self.rect.height = self.duck_height
+            self.rect.y = self.constant_ground - self.duck_height  # Crouch at ground level
+
+        elif self.png_on_ground and self.game_state != "jump":
+            self.game_state = "idle"        # Nothing pressed, stay idle
+            self.rect.height = self.standing_height # Restore when standing
+
+

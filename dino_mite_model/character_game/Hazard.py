@@ -72,10 +72,10 @@ class RollingRock(pygame.sprite.Sprite):
     """
     def __init__(self):
         super().__init__()
-        self.move_x = 4
+        self.move_x = 2
         self.move_y = 0
-        self.position_x = -60 
-        self.position_y = 600
+        self.position_x = -300
+        self.position_y = 580
         self.screen_width = WIDTH
         self.is_active = True  # ADD THIS
         self.name = "RollingRock"  # ADD THIS
@@ -90,8 +90,11 @@ class RollingRock(pygame.sprite.Sprite):
 
     def update_position(self):
         self.rect.x += self.move_x
+        # VERIFY THAT IS NOT OVERCOME THE LIMIT
         if self.rect.left > self.screen_width:
-            self.is_active = False  # CHANGED from kill() to match Meteor pattern
+            self.rect.x = self.position_x
+            # REMOVE CARLO
+           # self.is_active = False  # CHANGED from kill() to match Meteor pattern
 
     # VERIFY HOW TO COLLUDE PROPERLY
     def update_position_collision(self):
