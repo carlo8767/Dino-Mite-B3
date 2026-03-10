@@ -16,7 +16,7 @@ class CharacterDino(pygame.sprite.Sprite):
         self.move_x = 2
         self.move_y = 2
         self.position_x = 100
-        self.position_y = 700
+        self.position_y = 600
         self.image_dino_path = os.path.join("./image","character.png")
         self.image_loaded = pygame.image.load(self.image_dino_path).convert()
         self.image_loaded = pygame.transform.scale(

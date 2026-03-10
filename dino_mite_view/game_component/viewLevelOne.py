@@ -40,8 +40,10 @@ class ViewLevelOne:
         ctr_levelOne.add_models_collision()
 
         while running:
+            # Collect events once per frame
+            events = pygame.event.get()
             # ==================== EVENT HANDLING ====================
-            for event in pygame.event.get():
+            for event in events:
                 if event.type == pygame.QUIT:
                     running = False
 
@@ -63,7 +65,7 @@ class ViewLevelOne:
             if not ctr_levelOne.is_paused:
                 # Pass raw inputs to the controller, it decides what to do
                 keys = pygame.key.get_pressed()
-                ctr_levelOne.handle_player_input(keys)
+                ctr_levelOne.handle_player_input(keys,events)
 
                 # Controller handles gravity
                 ctr_levelOne.apply_player_gravity()
