@@ -1,5 +1,5 @@
 import pygame
-from sklearn.datasets import load_sample_images
+# from sklearn.datasets import load_sample_images
 
 import os
 import random
