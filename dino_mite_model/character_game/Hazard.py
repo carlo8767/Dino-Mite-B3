@@ -14,11 +14,11 @@ class Meteor(pygame.sprite.Sprite):
         self.screen_height = HEIGHT
         self.position_x = random.randint(50, self.screen_width - 50)
         self.position_y = -60
-        self.speed = 4
+        self.speed = 6
         self.is_active = True
         self.image_path = os.path.join("./image", "meteor.png")
         self.image_loaded = pygame.image.load(self.image_path).convert_alpha()
-        self.image_loaded = pygame.transform.scale(self.image_loaded, (80, 80))
+        self.image_loaded = pygame.transform.scale(self.image_loaded, (120, 120))
         self.rect = self.image_loaded.get_rect()
         self.rect.center = (self.position_x, self.position_y)
         self.mask = pygame.mask.from_surface(self.image_loaded)
