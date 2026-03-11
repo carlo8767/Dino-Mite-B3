@@ -73,8 +73,6 @@ class ViewLevelOne:
                         elif result == "EXIT":
                             running = False
 
-
-
             # ==================== UPDATE (skip when paused) ====================
             if not ctr_levelOne.is_paused:
                 # Pass raw inputs to the controller, it decides what to do

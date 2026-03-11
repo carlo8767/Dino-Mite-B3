@@ -42,12 +42,6 @@ class ControllerLevelOne:
 
     def spawn_rolling_rock(self):
         self.rolling_rocks.append(RollingRock())
-
-
-
-
-
-
         return self.level_one
 
     def detection_collision_character(self, sprite) -> tuple[bool, str]:
