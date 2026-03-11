@@ -4,6 +4,7 @@ from dino_mite_view.event_game_notifications.event_controller import EventsContr
 from dino_mite_view.game_component.viewLevelOne import ViewLevelOne
 from dino_mite_utility import utilities_names
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
+from dino_mite_view.game_component.start_menu import MainMenu
 
 
 class FrameGameComponent:
@@ -31,9 +32,9 @@ class FrameGameComponent:
         # Set up helpers
         init_event = EventsController()
         view_level_one = ViewLevelOne()
+        main_menu = MainMenu(window)
 
-        # Start on Level One
-        self.GAME_STATE = utilities_names.LEVEL_ONE
+        self.GAME_STATE = "MAIN_MENU"
         controller_level_one = None
 
         while self.RUN_GAME:
@@ -41,6 +42,14 @@ class FrameGameComponent:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.RUN_GAME = False
+                if self.GAME_STATE == "MAIN_MENU":
+                    action = main_menu.handle_event(event)
+                    if action == "START":
+                        self.GAME_STATE = utilities_names.LEVEL_ONE
+                    elif action == "EXIT":
+                        self.RUN_GAME = False
+            if self.GAME_STATE == "MAIN_MENU":
+                main_menu.draw()
 
             # ---- Game State (runs once per frame, NOT per event) ----
 
