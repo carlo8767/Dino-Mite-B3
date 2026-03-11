@@ -21,6 +21,7 @@ class Meteor(pygame.sprite.Sprite):
         self.image_loaded = pygame.transform.scale(self.image_loaded, (120, 120))
         self.rect = self.image_loaded.get_rect()
         self.rect.center = (self.position_x, self.position_y)
+        self.mask = pygame.mask.from_surface(self.image_loaded)
         self.name = "Meteor"
 
     """ Moves the meteor from top os the screen to the bottom"""
@@ -72,9 +73,9 @@ class RollingRock(pygame.sprite.Sprite):
     """
     def __init__(self):
         super().__init__()
-        self.move_x = 4
+        self.move_x = 2
         self.move_y = 0
-        self.position_x = -60 
+        self.position_x = -300
         self.position_y = 600
         self.screen_width = WIDTH
         self.is_active = True  # ADD THIS
@@ -84,14 +85,18 @@ class RollingRock(pygame.sprite.Sprite):
         self.image_loaded = pygame.transform.scale(self.image_loaded, (60, 60))
         self.rect = self.image_loaded.get_rect()
         self.rect.center = (self.position_x, self.position_y)
+        self.mask = pygame.mask.from_surface(self.image_loaded)
 
     def get_current_position(self):
         return self.rect.x, self.rect.y
 
     def update_position(self):
         self.rect.x += self.move_x
+        # VERIFY THAT IS NOT OVERCOME THE LIMIT
         if self.rect.left > self.screen_width:
-            self.is_active = False  # CHANGED from kill() to match Meteor pattern
+            self.rect.x = self.position_x
+            # REMOVE CARLO
+           # self.is_active = False  # CHANGED from kill() to match Meteor pattern
 
     # VERIFY HOW TO COLLUDE PROPERLY
     def update_position_collision(self):
