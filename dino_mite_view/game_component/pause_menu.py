@@ -3,32 +3,49 @@ import pygame
 class PauseMenu:
     def __init__(self, screen):
         self.screen = screen
-        self.font_title = pygame.font.SysFont("Arial", 60, bold=True)
-        self.font_button = pygame.font.SysFont("Arial", 36)
-
-        # Button rectangles
-        self.continue_rect = pygame.Rect(362, 300, 300, 60)
-        self.exit_rect = pygame.Rect(362, 400, 300, 60)
+        self.font_title = pygame.font.SysFont("Arial", 42, bold=True)
+        self.font_button = pygame.font.SysFont("Arial", 24)
 
     def draw(self):
-        # Dark transparent overlay
-        overlay = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
+        screen_w, screen_h = self.screen.get_size()
+
+        # Dark Transparent Background
+        overlay = pygame.Surface((screen_w, screen_h), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 150))
         self.screen.blit(overlay, (0, 0))
 
-        # Title
+        # Central Panel 
+        panel_w, panel_h = 260, 220
+        panel_x = screen_w // 2 - panel_w // 2
+        panel_y = screen_h // 2 - panel_h // 2
+        panel_rect = pygame.Rect(panel_x, panel_y, panel_w, panel_h)
+        pygame.draw.rect(self.screen, (30, 30, 30, 200), panel_rect, border_radius=12) 
+        pygame.draw.rect(self.screen, (80, 80, 80), panel_rect, width=2, border_radius=12)
+
+        # Title centered in panel
         title = self.font_title.render("PAUSED", True, (255, 255, 255))
-        self.screen.blit(title, (430, 200))
+        self.screen.blit(title, (
+            panel_x + (panel_w - title.get_width()) // 2,
+            panel_y + 20
+        ))
 
-        # Continue button
-        pygame.draw.rect(self.screen, (70, 130, 70), self.continue_rect, border_radius=8)
-        continue_text = self.font_button.render("Continue", True, (255, 255, 255))
-        self.screen.blit(continue_text, (430, 315))
+        # Buttons
+        btn_w, btn_h = 180, 45
+        btn_x = panel_x + (panel_w - btn_w) // 2
+        self.continue_rect = pygame.Rect(btn_x, panel_y + 85, btn_w, btn_h)
+        self.exit_rect = pygame.Rect(btn_x, panel_y + 145, btn_w, btn_h)
 
-        # Exit button
-        pygame.draw.rect(self.screen, (130, 70, 70), self.exit_rect, border_radius=8)
-        exit_text = self.font_button.render("Exit", True, (255, 255, 255))
-        self.screen.blit(exit_text, (410, 415))
+        pygame.draw.rect(self.screen, (40, 160, 40), self.continue_rect, border_radius=8)
+        self._draw_centered_text("Continue", self.continue_rect)
+
+        pygame.draw.rect(self.screen, (190, 45, 45), self.exit_rect, border_radius=8)
+        self._draw_centered_text("Exit", self.exit_rect)
+
+    def _draw_centered_text(self, text, rect):
+        surface = self.font_button.render(text, True, (255, 255, 255))
+        x = rect.x + (rect.width - surface.get_width()) // 2
+        y = rect.y + (rect.height - surface.get_height()) // 2
+        self.screen.blit(surface, (x, y))
 
     def handle_click(self, mouse_pos):
         if self.continue_rect.collidepoint(mouse_pos):
