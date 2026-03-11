@@ -7,6 +7,7 @@ class MainMenu:
     def __init__(self, screen):
         self.screen = screen
         self.screen_width, self.screen_height = screen.get_size()
+        self.font_title = pygame.font.SysFont("Arial", 60, bold=True)
         
         # Load background
         try:
@@ -25,6 +26,9 @@ class MainMenu:
         self.screen.blit(self.background, (0, 0))
         self.start_button.draw_function(self.screen)
         self.exit_button.draw_function(self.screen)
+
+        title = self.font_title.render("Welcome to Dino-Mite!", True, (255, 255, 255))
+        self.screen.blit(title, (100, 100))
 
     def handle_event(self, event):
         if self.start_button.is_clicked(event):
