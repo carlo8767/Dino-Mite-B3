@@ -76,7 +76,7 @@ class RollingRock(pygame.sprite.Sprite):
         self.move_x = 2
         self.move_y = 0
         self.position_x = -300
-        self.position_y = 580
+        self.position_y = 600
         self.screen_width = WIDTH
         self.is_active = True  # ADD THIS
         self.name = "RollingRock"  # ADD THIS

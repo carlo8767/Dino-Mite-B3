@@ -13,14 +13,14 @@ class CharacterDino(pygame.sprite.Sprite):
         # Load all images for dino PNG
         # self.images = self.load_images_movements()
         self.images = {
-            "idle": pygame.transform.scale(pygame.image.load("./image/character.png").convert_alpha(), (120, 120)),
-            "walk_right": pygame.transform.scale(pygame.image.load("./image/character.png").convert_alpha(),
+            "idle": pygame.transform.scale(pygame.image.load("./image/idle.png").convert_alpha(), (120, 120)),
+            "walk_right": pygame.transform.scale(pygame.image.load("./image/running.png").convert_alpha(),
                                                  (120, 120)),
             "walk_left": pygame.transform.flip(
-                pygame.transform.scale(pygame.image.load("./image/character.png").convert_alpha(), (120, 120)), True,
+                pygame.transform.scale(pygame.image.load("./image/running.png").convert_alpha(), (120, 120)), True,
                 False),
-            "duck": pygame.transform.scale(pygame.image.load("./image/character.png").convert_alpha(), (120, 60)),
-            "jump": pygame.transform.scale(pygame.image.load("./image/character.png").convert_alpha(), (120, 120)),
+            "duck": pygame.transform.scale(pygame.image.load("./image/crouch.png").convert_alpha(), (120, 60)),
+            "jump": pygame.transform.scale(pygame.image.load("./image/jump.png").convert_alpha(), (120, 120)),
         }
         self.position_x = 200
         self.position_y = 510
