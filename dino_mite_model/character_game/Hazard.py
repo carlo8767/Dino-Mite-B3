@@ -3,22 +3,40 @@ import os.path
 import pygame
 import random
 
-
-class Meteor():
-
+from dino_mite_utility.utilities_names import WIDTH, HEIGHT
+class Meteor(pygame.sprite.Sprite):
+    """The meteor spawns with the random X position at the very top of the screen and falls down\n"
+    "vertically with the set speed"""
 
     def __init__(self):
-        self.position_x = 400
-        self.position_y = 2
-        self.speed = 3
-        self.image_meteor = os.path.join("./image", "meteor.jpeg")
-        self.image_loaded = pygame.image.load(self.image_meteor).convert()
-        self.rectangle = self.image_loaded.get_rect()
-        self.rectangle.center = (self.position_x, self.position_y)
+        super().__init__()
+        self.screen_width = WIDTH
+        self.screen_height = HEIGHT
+        self.position_x = random.randint(50, self.screen_width - 50)
+        self.position_y = -60
+        self.speed = 4
+        self.is_active = True
+        self.image_path = os.path.join("./image", "meteor.png")
+        self.image_loaded = pygame.image.load(self.image_path).convert_alpha()
+        self.image_loaded = pygame.transform.scale(self.image_loaded, (80, 80))
+        self.rect = self.image_loaded.get_rect()
+        self.rect.center = (self.position_x, self.position_y)
+        self.mask = pygame.mask.from_surface(self.image_loaded)
+        self.name = "Meteor"
 
+    """ Moves the meteor from top os the screen to the bottom"""
+    def update_position(self):
+            self.rect.y += self.speed
+            # When meteor hits the floor, reset to top with new random x
+            if self.rect.top > self.screen_height:
+                self.rect.center = (random.randint(50, self.screen_width - 50), -60)
 
-    def update_positions(self, x, y):
-        self.position = (x, y)
+    def get_current_position(self):
+        return self.rect.x, self.rect.y
+
+    def update_position_collision(self):
+        self.rect.y = self.position_y = -60
+        self.rect.x = random.randint(50, self.screen_width - 50)
 
     """
         # CHANGE WITH REALISTIC VALUES
@@ -34,3 +52,58 @@ class Meteor():
         def move(self):
             self.rect.y += self.speed
     """
+ 
+class RollingRock(pygame.sprite.Sprite):
+    """
+    HOW A ROLLING ROCK MOVES:
+    The rock rolls from left to right across the bottom of the screen.
+    When it exits the right side, it resets back to the left side.
+    This creates a looping hazard the player must avoid.
+
+    HOW TO USE THIS:
+    # In the controller or game component:
+    from dino_mite_model.level_model.rolling_rock import RollingRock
+
+    rock = RollingRock()
+
+    # Game loop:
+    rock.update_position()                          # moves it
+    window.blit(rock.image_loaded, rock.rectangle)  # draws it
+    # Collision dev uses: rock.rectangle
+    """
+    def __init__(self):
+        super().__init__()
+        self.move_x = 2
+        self.move_y = 0
+        self.position_x = -300
+        self.position_y = 600
+        self.screen_width = WIDTH
+        self.is_active = True  # ADD THIS
+        self.name = "RollingRock"  # ADD THIS
+        self.image_rock_path = os.path.join("./image", "rolling_rock.png")
+        self.image_loaded = pygame.image.load(self.image_rock_path).convert_alpha()
+        self.image_loaded = pygame.transform.scale(self.image_loaded, (60, 60))
+        self.rect = self.image_loaded.get_rect()
+        self.rect.center = (self.position_x, self.position_y)
+        self.mask = pygame.mask.from_surface(self.image_loaded)
+
+    def get_current_position(self):
+        return self.rect.x, self.rect.y
+
+    def update_position(self):
+        self.rect.x += self.move_x
+        # VERIFY THAT IS NOT OVERCOME THE LIMIT
+        if self.rect.left > self.screen_width:
+            self.rect.x = self.position_x
+            # REMOVE CARLO
+           # self.is_active = False  # CHANGED from kill() to match Meteor pattern
+
+    # VERIFY HOW TO COLLUDE PROPERLY
+    def update_position_collision(self):
+        self.rect.y = self.position_y = -80
+        self.rect.x = random.randint(50, self.screen_width - 50)
+
+
+
+
+
