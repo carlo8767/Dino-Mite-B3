@@ -23,7 +23,10 @@ class ControllerLevelOne:
 
     def update_movement_level_one(self):
         # Update the single model hazards (the ones actually drawn on screen)
+        # CARLO SEE HOW
         self.level_one.hazard_meteor.update_position()
+        self.level_one.hazard_meteorOne.update_position()
+        self.level_one.hazard_meteorTwo.update_position()
         # Update list-based meteors
         for meteor in self.meteors:
             meteor.update_position()
@@ -55,7 +58,7 @@ class ControllerLevelOne:
             sprites_group = pygame.sprite.Group()
             sprites_group.add(g)
             # spritecollide returns a list of colliding sprites and remove from the group
-            if pygame.sprite.spritecollide(sprite, sprites_group, True, pygame.sprite.collide_mask):
+            if pygame.sprite.spritecollide(sprite, sprites_group, False, pygame.sprite.collide_mask):
                 print("collude")
                 return True, v
         return False, ""
@@ -120,4 +123,7 @@ class ControllerLevelOne:
         """Register all level-one sprites for collision checking."""
         self.models_collision[self.level_one.character] = self.level_one.character.name
         self.models_collision[self.level_one.hazard_meteor] = self.level_one.hazard_meteor.name
+        self.models_collision[self.level_one.hazard_meteorOne] = self.level_one.hazard_meteor.name
+        self.models_collision[self.level_one.hazard_meteorTwo] = self.level_one.hazard_meteor.name
         self.models_collision[self.level_one.hazard_rollingRock] = self.level_one.hazard_rollingRock.name
+

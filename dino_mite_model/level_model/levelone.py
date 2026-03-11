@@ -15,6 +15,8 @@ class LevelOne(pygame.sprite.Sprite):
         self.screen_width = WIDTH
         self.screen_height = HEIGHT
         self.hazard_meteor = Meteor()
+        self.hazard_meteorOne = Meteor()
+        self.hazard_meteorTwo = Meteor()
         self.hazard_rollingRock = RollingRock()
         self.character = CharacterDino()
         self.image = os.path.join('./image', 'backgroundLevelOne.jpeg')

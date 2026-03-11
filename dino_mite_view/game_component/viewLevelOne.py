@@ -130,9 +130,21 @@ class ViewLevelOne:
                 ctr_levelOne.level_one.hazard_meteor.rect,
             )
             window.blit(
+                ctr_levelOne.level_one.hazard_meteorOne.image_loaded,
+                ctr_levelOne.level_one.hazard_meteorOne.rect,
+            )
+            window.blit(
+                ctr_levelOne.level_one.hazard_meteorTwo.image_loaded,
+                ctr_levelOne.level_one.hazard_meteorTwo.rect,
+            )
+
+
+
+            window.blit(
                 ctr_levelOne.level_one.hazard_rollingRock.image_loaded,
                 ctr_levelOne.level_one.hazard_rollingRock.rect,
             )
+
 
             # Draw all 5 meteors from the controller's meteor list.
             # These are separate from hazard_meteor above.
@@ -141,7 +153,7 @@ class ViewLevelOne:
             # MOVE IN CONTROLLER VIEW DOES NOT INTERACT WITH THTE CARLO VIEW!
 
             #  CARLO
-            # self.draw_multiple_rock(ctr_levelOne,window)
+           # self.draw_multiple_rock(ctr_levelOne,window)
             # Pause overlay drawn last so it sits on top of everything
 
 
@@ -149,11 +161,11 @@ class ViewLevelOne:
     # ELIMINATE CARLO NOT NECESSARY
     def draw_multiple_rock (self, ctr_levelOne, window):
             for meteor in ctr_levelOne.meteors:
-                window.blit(meteor.image_loaded, meteor.rect)
+              window.blit(meteor.image_loaded, meteor.rect)
 
                 # Draw any active rolling rocks from the controller's list
-            for rock in ctr_levelOne.rolling_rocks:
-                window.blit(rock.image_loaded, rock.rect)
+            #for rock in ctr_levelOne.rolling_rocks:
+             #   window.blit(rock.image_loaded, rock.rect)
 
 
     def draw_timer(self, text, font, text_color, x_pos, y_pos, window):
