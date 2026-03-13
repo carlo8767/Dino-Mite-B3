@@ -1,6 +1,7 @@
 import pygame
 import time
 from dino_mite_view.game_component.pause_menu import PauseMenu
+from dino_mite_view.game_component.game_over import GameOverMenu
 from dino_mite_utility import utilities_names
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
@@ -36,6 +37,10 @@ class ViewLevelOne:
 
         # Initialise the pause menu overlay
         pause_menu = PauseMenu(window)
+        # initialise game over menu and game_over flag
+        game_over_menu = GameOverMenu(window)
+        game_over = False
+
         frame_count = 0
         running = True
 
@@ -70,11 +75,21 @@ class ViewLevelOne:
                         result = pause_menu.handle_click(pygame.mouse.get_pos())
                         if result == "CONTINUE":
                             ctr_levelOne.toggle_pause()
-                        elif result == "RETURNTOMENU":
-                            return "MAIN_MENU"
+            
+              # handle game over menu button clicks
+                if game_over:
+                    result = game_over_menu.handle_event(event)
+                    if result == "RETRY":
+                        # reset game state instead of returning, restarts the level
+                        game_over = False
+                        time_begins = time.time()         # reset the timer
+                        ctr_levelOne.reset_level()        # reset hazards and character position
+                    elif result == "RETURNTOMENU":
+                        return "MAIN_MENU"
 
             # ==================== UPDATE (skip when paused) ====================
-            if not ctr_levelOne.is_paused:
+            # added "and not game_over" so game freezes on game over screen
+            if not ctr_levelOne.is_paused and not game_over:
                 # Pass raw inputs to the controller, it decides what to do
                 keys = pygame.key.get_pressed()
                 ctr_levelOne.handle_player_input(keys,events)
@@ -93,9 +108,10 @@ class ViewLevelOne:
                     ctr_levelOne.level_one.character
                 )
                 if collided:
-                    # HERE THE ISSUE !!!
+                    # set game_over to True to trigger game over screen
                     print(f"Collision detected with {name} — game over")
                     ctr_levelOne.update_collision_position(name)
+                    game_over = True
                     # running = False THINK ABOUT ANOHTER LOGIC
 
                 # Reset hazards that have left the screen bounds
@@ -103,11 +119,15 @@ class ViewLevelOne:
 
                 # CARLO DELETE WHY FRAM COUNT
                 # frame_count += 1
+
             self.draw_elements(window, ctr_levelOne,sprite_image_background)
 
             if ctr_levelOne.is_paused:
                 pause_menu.draw()
 
+            # draw game over menu on top of everything when triggered
+            if game_over:
+                game_over_menu.draw()
 
             time_left = "TIME LEFT "+str(remaining)
             self.draw_timer(time_left,FONT_TYPE, color_timer, 400, 50, window)
@@ -141,7 +161,6 @@ class ViewLevelOne:
                 ctr_levelOne.level_one.hazard_rollingRock.rect,
             )
 
-
             # Draw all 5 meteors from the controller's meteor list.
             # These are separate from hazard_meteor above.
             # Collision for these is NOT wired up yet — that is for
@@ -152,8 +171,6 @@ class ViewLevelOne:
            # self.draw_multiple_rock(ctr_levelOne,window)
             # Pause overlay drawn last so it sits on top of everything
 
-
-
     # ELIMINATE CARLO NOT NECESSARY
     def draw_multiple_rock (self, ctr_levelOne, window):
             for meteor in ctr_levelOne.meteors:
@@ -163,39 +180,9 @@ class ViewLevelOne:
             #for rock in ctr_levelOne.rolling_rocks:
              #   window.blit(rock.image_loaded, rock.rect)
 
-
     def draw_timer(self, text, font, text_color, x_pos, y_pos, window):
         img = font.render(text, True, text_color)
         rect = img.get_rect()
         rect.center = (x_pos, y_pos)
         pygame.draw.rect(window, (0, 0, 0), rect, 2)
         window.blit(img, rect)
-
-    def handle_key_input(self, keys, events):
-        # Check key press for JUMP
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_w and self.png_on_ground:
-                    self.speed_y = -15  # Launch upward
-                    self.game_state = "jump"
-
-        # Check which keys are pressed
-        # Move the png accordingly
-        if keys[pygame.K_a]:
-            self.rect.x -= 5
-            self.game_state = "walk_left"   # A = Walk left
-
-        elif keys[pygame.K_d]:
-            self.rect.x += 5
-            self.game_state = "walk_right"  # D = Walk right
-
-        elif keys[pygame.K_s]:
-            self.game_state = "duck"        # S = Duck
-            self.rect.height = self.duck_height
-            self.rect.y = self.constant_ground - self.duck_height  # Crouch at ground level
-
-        elif self.png_on_ground and self.game_state != "jump":
-            self.game_state = "idle"        # Nothing pressed, stay idle
-            self.rect.height = self.standing_height # Restore when standing
-
-
