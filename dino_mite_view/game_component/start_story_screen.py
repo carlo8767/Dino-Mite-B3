@@ -19,7 +19,7 @@ class Start_Story_Screen:
             self.background.fill((50, 50, 50))
 
         try:
-            story_file =  "start_story.txt"
+            story_file =  os.path.join("./text_files", "start_story.txt")
             with open (story_file, 'r', encoding='utf-8') as f:
                 self.story_text = f.read()
         except FileNotFoundError:
