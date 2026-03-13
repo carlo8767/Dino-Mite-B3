@@ -70,8 +70,8 @@ class ViewLevelOne:
                         result = pause_menu.handle_click(pygame.mouse.get_pos())
                         if result == "CONTINUE":
                             ctr_levelOne.toggle_pause()
-                        elif result == "EXIT":
-                            running = False
+                        elif result == "RETURNTOMENU":
+                            return "MAIN_MENU"
 
             # ==================== UPDATE (skip when paused) ====================
             if not ctr_levelOne.is_paused:
@@ -136,8 +136,6 @@ class ViewLevelOne:
                 ctr_levelOne.level_one.hazard_meteorTwo.rect,
             )
 
-
-
             window.blit(
                 ctr_levelOne.level_one.hazard_rollingRock.image_loaded,
                 ctr_levelOne.level_one.hazard_rollingRock.rect,
@@ -172,27 +170,6 @@ class ViewLevelOne:
         rect.center = (x_pos, y_pos)
         pygame.draw.rect(window, (0, 0, 0), rect, 2)
         window.blit(img, rect)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     def handle_key_input(self, keys, events):
         # Check key press for JUMP
