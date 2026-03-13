@@ -11,6 +11,11 @@ class FrameGameComponent:
     """
     Top-level game frame that owns the pygame window and manages
     which screen is currently active.
+
+    Game states:
+        MAIN_MENU    - Shows the start/exit menu
+        LEVEL_ONE    - Initialises level one controller
+        DrawLevelOne - Runs the level one game loop
     """
 
     RUN_GAME = True
@@ -20,16 +25,11 @@ class FrameGameComponent:
         self.init_game()
 
     def init_game(self):
-        """
-        Initialise pygame, create the window, and enter the main
-        application loop that renders the correct level view.
-        """
         pygame.init()
         window = pygame.display.set_mode((WIDTH, HEIGHT), 0, 32)
         pygame.display.set_caption(utilities_names.INIT_GAME)
         fps = pygame.time.Clock()
 
-        # Set up helpers
         init_event = EventsController()
         view_level_one = ViewLevelOne()
         main_menu = MainMenu(window)
@@ -38,34 +38,42 @@ class FrameGameComponent:
         controller_level_one = None
 
         while self.RUN_GAME:
-            # ---- Handle top-level quit events ----
+
+            # ==================== GLOBAL EVENTS ====================
+            # Handle window close from any state
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.RUN_GAME = False
+
+                # Forward events to main menu when active
                 if self.GAME_STATE == "MAIN_MENU":
                     action = main_menu.handle_event(event)
                     if action == "START":
                         self.GAME_STATE = utilities_names.LEVEL_ONE
                     elif action == "EXIT":
                         self.RUN_GAME = False
+
+            # ==================== STATE: MAIN MENU ====================
             if self.GAME_STATE == "MAIN_MENU":
                 main_menu.draw()
 
-            # ---- Game State (runs once per frame, NOT per event) ----
-
+            # ==================== STATE: LEVEL ONE INIT ====================
+            # Create the controller once, then move to the draw state
             if self.GAME_STATE == utilities_names.LEVEL_ONE:
                 controller_level_one = init_event.event_level_one_notification()
                 self.GAME_STATE = "DrawLevelOne"
 
+            # ==================== STATE: LEVEL ONE RUNNING ====================
+            # The level view runs its own game loop internally.
+            # When it returns, we check the result:
+            #  "MAIN_MENU" - player paused and chose "Return to Menu"
+            #   None        - player closed the window
             if self.GAME_STATE == "DrawLevelOne":
-                # Hand control to the Level One view (its own game loop runs
-                # inside draw_screen_level_one and returns when the level ends)
-                view_level_one.draw_screen_level_one(window, controller_level_one)
-
-                # Once the level view returns, stop the outer loop.
-                # (Replace with a state transition when more levels exist,
-                #  e.g. self.GAME_STATE = utilities_names.LEVEL_TWO)
-                self.RUN_GAME = False
+                result = view_level_one.draw_screen_level_one(window, controller_level_one)
+                if result == "MAIN_MENU":
+                    self.GAME_STATE = "MAIN_MENU"
+                else:
+                    self.RUN_GAME = False
 
             pygame.display.update()
             fps.tick(60)
