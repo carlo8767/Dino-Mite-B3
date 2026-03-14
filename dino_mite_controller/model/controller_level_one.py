@@ -121,3 +121,14 @@ class ControllerLevelOne:
         self.models_collision[self.level_one.hazard_meteorTwo] = self.level_one.hazard_meteor.name
         self.models_collision[self.level_one.hazard_rollingRock] = self.level_one.hazard_rollingRock.name
 
+    def reset_level(self):
+        # reset character position and game state
+        self.level_one.character.rect.center = (self.level_one.character.position_x, self.level_one.character.constant_ground)
+        self.level_one.character.game_state = "idle"
+        self.level_one.character.speed_y = 0
+        self.level_one.character.png_on_ground = True
+        # reset hazard positions
+        self.level_one.hazard_meteor.update_position_collision()
+        self.level_one.hazard_meteorOne.update_position_collision()
+        self.level_one.hazard_meteorTwo.update_position_collision()
+        self.level_one.hazard_rollingRock.update_position_collision()
