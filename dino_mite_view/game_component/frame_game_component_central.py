@@ -5,6 +5,7 @@ from dino_mite_view.game_component.viewLevelOne import ViewLevelOne
 from dino_mite_utility import utilities_names
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 from dino_mite_view.game_component.start_menu import MainMenu
+from dino_mite_view.game_component.start_story_screen import Start_Story_Screen
 
 
 class FrameGameComponent:
@@ -33,8 +34,9 @@ class FrameGameComponent:
         init_event = EventsController()
         view_level_one = ViewLevelOne()
         main_menu = MainMenu(window)
+        story_screen = Start_Story_Screen(window)
 
-        self.GAME_STATE = "MAIN_MENU"
+        self.GAME_STATE = "STORY"
         controller_level_one = None
 
         while self.RUN_GAME:
@@ -44,9 +46,12 @@ class FrameGameComponent:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.RUN_GAME = False
-
+                if self.GAME_STATE == "STORY":
+                    action = story_screen.handle_event(event)
+                    if action == "SKIP":
+                        self.GAME_STATE = "MAIN_MENU"
                 # Forward events to main menu when active
-                if self.GAME_STATE == "MAIN_MENU":
+                elif self.GAME_STATE == "MAIN_MENU":
                     action = main_menu.handle_event(event)
                     if action == "START":
                         self.GAME_STATE = utilities_names.LEVEL_ONE
@@ -54,12 +59,14 @@ class FrameGameComponent:
                         self.RUN_GAME = False
 
             # ==================== STATE: MAIN MENU ====================
-            if self.GAME_STATE == "MAIN_MENU":
+            if self.GAME_STATE == "STORY":
+                story_screen.draw()
+            elif self.GAME_STATE == "MAIN_MENU":
                 main_menu.draw()
 
             # ==================== STATE: LEVEL ONE INIT ====================
             # Create the controller once, then move to the draw state
-            if self.GAME_STATE == utilities_names.LEVEL_ONE:
+            elif self.GAME_STATE == utilities_names.LEVEL_ONE:
                 controller_level_one = init_event.event_level_one_notification()
                 self.GAME_STATE = "DrawLevelOne"
 
