@@ -18,6 +18,14 @@ class ControllerLevelOne:
 
         self.add_models_collision()
 
+
+    def init_music(self):
+        pygame.mixer.music.load(self.level_one.sound)
+        pygame.mixer.music.play(-1, 0.0) # Forever Loop
+
+    def stop_music(self):
+        pygame.mixer.music.stop()
+
     def toggle_pause(self):
         self.is_paused = not self.is_paused
 

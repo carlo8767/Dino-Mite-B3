@@ -7,15 +7,21 @@ from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
 
 class ViewLevelOne:
+
+    def __init__(self):
+        self.pause_time_resume = 0
+        self.start_ticks = pygame.time.get_ticks()
+        self.pause_time_total = 0
+        self.pause_start = 0
+        self.eventually_time = ""
     """
     View component for Level One.
     """
 
 
     def draw_screen_level_one(self, window, ctr_levelOne):
-
-        FONT_TYPE = pygame.font.SysFont("Comic Sans MS", 40)
-        color_timer = (0, 0, 0)
+        total_seconds = 2 * 60
+        ctr_levelOne.init_music()
         """
         Main game loop for Level One.
         Handles events, updates game state via controller, and draws everything.
@@ -47,15 +53,7 @@ class ViewLevelOne:
         # Register all sprites for collision detection in the controller
         # REMOVE CARLO NOT NECESSARY ALREADY IN THE CONSTRCUTOR
         # ctr_levelOne.add_models_collision()
-        # TIME
-        time_begins = time.time()
-        duration = 200
         while running:
-            # TIME
-            remaining = int(duration - (time.time() - time_begins))
-            print(remaining)
-            if remaining <=0:
-                print("NEXT LEVEL")
             # Collect events once per frame
             events = pygame.event.get()
             # ==================== EVENT HANDLING ====================
@@ -65,7 +63,15 @@ class ViewLevelOne:
 
                 # Toggle pause with Escape key
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
+                    if event.key == pygame.K_ESCAPE and  not ctr_levelOne.is_paused:
+                        self.pause_time_start = pygame.time.get_ticks()
+                        ctr_levelOne.toggle_pause()
+
+                    # ADD FOR TIME LOGIC FOR KEEPING THE SAME WHEN RESET
+                    elif event.key == pygame.K_ESCAPE and ctr_levelOne.is_paused:
+                        # WHEN IT PRESSED
+                        pause_duration = pygame.time.get_ticks() - self.pause_time_start
+                        self.pause_time_total += pause_duration
                         ctr_levelOne.toggle_pause()
 
                 # Handle clicks on the pause menu buttons (only when paused)
@@ -75,12 +81,15 @@ class ViewLevelOne:
                         result = pause_menu.handle_click(pygame.mouse.get_pos())
                         if result == "CONTINUE":
                             ctr_levelOne.toggle_pause()
+                            pause_duration = pygame.time.get_ticks() - self.pause_time_start
+                            self.pause_time_total += pause_duration
             
               # handle game over menu button clicks
                 if game_over:
                     result = game_over_menu.handle_event(event)
                     if result == "RETRY":
                         # reset game state instead of returning, restarts the level
+                        ctr_levelOne.init_music()
                         game_over = False
                         time_begins = time.time()         # reset the timer
                         ctr_levelOne.reset_level()        # reset hazards and character position
@@ -111,7 +120,9 @@ class ViewLevelOne:
                     # set game_over to True to trigger game over screen
                     print(f"Collision detected with {name} — game over")
                     ctr_levelOne.update_collision_position(name)
+                    ctr_levelOne.stop_music()
                     game_over = True
+
                     # running = False THINK ABOUT ANOHTER LOGIC
 
                 # Reset hazards that have left the screen bounds
@@ -120,7 +131,8 @@ class ViewLevelOne:
                 # CARLO DELETE WHY FRAM COUNT
                 # frame_count += 1
 
-            self.draw_elements(window, ctr_levelOne,sprite_image_background)
+            self.calculate_timer(total_seconds, ctr_levelOne.is_paused)
+            self.draw_elements(window, ctr_levelOne, sprite_image_background, )
 
             if ctr_levelOne.is_paused:
                 pause_menu.draw()
@@ -129,10 +141,16 @@ class ViewLevelOne:
             if game_over:
                 game_over_menu.draw()
 
-            time_left = "TIME LEFT "+str(remaining)
-            self.draw_timer(time_left,FONT_TYPE, color_timer, 400, 50, window)
             pygame.display.update()
             clock.tick(60)
+
+    def calculate_timer(self, total_seconds, is_paused):
+        if not is_paused:
+            elapsed_ms = pygame.time.get_ticks() - self.start_ticks - self.pause_time_total
+            remaining_seconds = max(0, total_seconds - elapsed_ms // 1000)
+            mins, secs = divmod(remaining_seconds, 60)
+            timer_text = f"Time to jump: {mins:02d}:{secs:02d}"
+            self.eventually_time = timer_text
 
     def draw_elements(self, window, ctr_levelOne,sprite_image_background ):
             # ==================== DRAW ====================
@@ -160,6 +178,14 @@ class ViewLevelOne:
                 ctr_levelOne.level_one.hazard_rollingRock.image_loaded,
                 ctr_levelOne.level_one.hazard_rollingRock.rect,
             )
+            # ==================== DRAW  TIMER ====================
+            FONT_TYPE = pygame.font.SysFont("Comic Sans MS", 40)
+            color_timer = (0, 0, 0)
+            img = FONT_TYPE.render(self.eventually_time, True, color_timer)
+            rect = img.get_rect()
+            rect.center = (400, 20)
+            pygame.draw.rect(window, (0, 0, 0), rect, 2)
+            window.blit(img, rect)
 
             # Draw all 5 meteors from the controller's meteor list.
             # These are separate from hazard_meteor above.
@@ -180,9 +206,3 @@ class ViewLevelOne:
             #for rock in ctr_levelOne.rolling_rocks:
              #   window.blit(rock.image_loaded, rock.rect)
 
-    def draw_timer(self, text, font, text_color, x_pos, y_pos, window):
-        img = font.render(text, True, text_color)
-        rect = img.get_rect()
-        rect.center = (x_pos, y_pos)
-        pygame.draw.rect(window, (0, 0, 0), rect, 2)
-        window.blit(img, rect)
