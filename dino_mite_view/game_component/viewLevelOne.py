@@ -1,7 +1,7 @@
 import pygame
-import time
+
 from dino_mite_view.game_component.pause_menu import PauseMenu
-from dino_mite_view.game_component.game_over import GameOverMenu
+
 from dino_mite_utility import utilities_names
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
@@ -44,10 +44,7 @@ class ViewLevelOne:
         # Initialise the pause menu overlay
         pause_menu = PauseMenu(window)
         # initialise game over menu and game_over flag
-        game_over_menu = GameOverMenu(window)
         game_over = False
-
-        frame_count = 0
         running = True
 
         # Register all sprites for collision detection in the controller
@@ -64,13 +61,13 @@ class ViewLevelOne:
                 # Toggle pause with Escape key
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE and  not ctr_levelOne.is_paused:
-                        self.pause_time_start = pygame.time.get_ticks()
+                        self.pause_start = pygame.time.get_ticks()
                         ctr_levelOne.toggle_pause()
 
                     # ADD FOR TIME LOGIC FOR KEEPING THE SAME WHEN RESET
                     elif event.key == pygame.K_ESCAPE and ctr_levelOne.is_paused:
                         # WHEN IT PRESSED
-                        pause_duration = pygame.time.get_ticks() - self.pause_time_start
+                        pause_duration = pygame.time.get_ticks() - self.pause_start
                         self.pause_time_total += pause_duration
                         ctr_levelOne.toggle_pause()
 
@@ -81,21 +78,14 @@ class ViewLevelOne:
                         result = pause_menu.handle_click(pygame.mouse.get_pos())
                         if result == "CONTINUE":
                             ctr_levelOne.toggle_pause()
-                            pause_duration = pygame.time.get_ticks() - self.pause_time_start
+                            pause_duration = pygame.time.get_ticks() - self.pause_start
                             self.pause_time_total += pause_duration
-            
-              # handle game over menu button clicks
-                if game_over:
-                    result = game_over_menu.handle_event(event)
-                    if result == "RETRY":
-                        # reset game state instead of returning, restarts the level
-                        ctr_levelOne.init_music()
-                        game_over = False
-                        time_begins = time.time()         # reset the timer
-                        ctr_levelOne.reset_level()        # reset hazards and character position
-                    elif result == "RETURNTOMENU":
-                        return "MAIN_MENU"
+                        elif result == "RETURN_TO_MENU":
+                             ctr_levelOne.toggle_pause()
+                             ctr_levelOne.stop_music()
+                             return "MAIN_MENU"
 
+            
             # ==================== UPDATE (skip when paused) ====================
             # added "and not game_over" so game freezes on game over screen
             if not ctr_levelOne.is_paused and not game_over:
@@ -123,24 +113,15 @@ class ViewLevelOne:
                     ctr_levelOne.stop_music()
                     game_over = True
 
-                    # running = False THINK ABOUT ANOHTER LOGIC
-
-                # Reset hazards that have left the screen bounds
-                # ctr_levelOne.screen_collision_hazard()
-
-                # CARLO DELETE WHY FRAM COUNT
-                # frame_count += 1
-
             self.calculate_timer(total_seconds, ctr_levelOne.is_paused)
             self.draw_elements(window, ctr_levelOne, sprite_image_background, )
 
             if ctr_levelOne.is_paused:
                 pause_menu.draw()
-
-            # draw game over menu on top of everything when triggered
+            # GAME OVER
             if game_over:
-                game_over_menu.draw()
-
+                # pygame.time.delay(2500)
+                return "GAME OVER"
             pygame.display.update()
             clock.tick(60)
 

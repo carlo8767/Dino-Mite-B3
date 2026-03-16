@@ -1,13 +1,33 @@
 import pygame
+from IPython.utils.timing import clock
+
+from dino_mite_utility.utilities_names import LEVEL_ONE
 
 
-class GameOverMenu:
+class ViewGameOverMenu:
     def __init__(self, screen):
         self.screen = screen
         self.font_title = pygame.font.SysFont("Arial", 52, bold=True)
         self.font_button = pygame.font.SysFont("Arial", 24)
+        self.running = True
 
-    def draw(self):
+
+    def init_game_over(self):
+        clock = pygame.time.Clock()
+        while self.running:
+            events = pygame.event.get()
+            for event in events:
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if self.play_again_rect.collidepoint(pygame.mouse.get_pos()):
+                            return LEVEL_ONE
+                        if self.menu_rect.collidepoint(pygame.mouse.get_pos()):
+                            return "MAIN_MENU"
+            self.draw_game_over()
+            pygame.display.update()
+            clock.tick(60)
+
+
+    def draw_game_over(self):
         screen_w, screen_h = self.screen.get_size()
 
         # Dark transparent overlay
@@ -48,10 +68,3 @@ class GameOverMenu:
         y = rect.y + (rect.height - surface.get_height()) // 2
         self.screen.blit(surface, (x, y))
 
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.play_again_rect.collidepoint(pygame.mouse.get_pos()):
-                return "RETRY"
-            if self.menu_rect.collidepoint(pygame.mouse.get_pos()):
-                return "RETURNTOMENU"
-        return None

@@ -51,5 +51,5 @@ class PauseMenu:
         if self.continue_rect.collidepoint(mouse_pos):
             return "CONTINUE"
         if self.exit_rect.collidepoint(mouse_pos):
-            return "RETURNTOMENU"
+            return "RETURN_TO_MENU"
         return None
