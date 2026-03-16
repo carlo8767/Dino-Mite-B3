@@ -14,14 +14,10 @@ class ViewLevelOne:
         self.pause_time_total = 0
         self.pause_start = 0
         self.eventually_time = ""
-    """
-    View component for Level One.
-    """
 
-
-    def draw_screen_level_one(self, window, ctr_levelOne):
+    def draw_screen_level_one(self, window, ctr_level_one):
         total_seconds = 2 * 60
-        ctr_levelOne.init_music()
+        ctr_level_one.init_music()
         """
         Main game loop for Level One.
         Handles events, updates game state via controller, and draws everything.
@@ -35,88 +31,75 @@ class ViewLevelOne:
 
         # Load and scale the background image to fill the window
         sprite_image_background = pygame.image.load(
-            ctr_levelOne.level_one.image
+            ctr_level_one.level_one.image
         ).convert()
         sprite_image_background = pygame.transform.scale(
             sprite_image_background, (WIDTH, HEIGHT)
         )
-
-        # Initialise the pause menu overlay
         pause_menu = PauseMenu(window)
-        # initialise game over menu and game_over flag
         game_over = False
         running = True
-
-        # Register all sprites for collision detection in the controller
-        # REMOVE CARLO NOT NECESSARY ALREADY IN THE CONSTRCUTOR
-        # ctr_levelOne.add_models_collision()
         while running:
-            # Collect events once per frame
-            events = pygame.event.get()
             # ==================== EVENT HANDLING ====================
+            events = pygame.event.get()
             for event in events:
                 if event.type == pygame.QUIT:
                     running = False
-
                 # Toggle pause with Escape key
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE and  not ctr_levelOne.is_paused:
+                    if event.key == pygame.K_ESCAPE and  not ctr_level_one.is_paused:
                         self.pause_start = pygame.time.get_ticks()
-                        ctr_levelOne.toggle_pause()
-
+                        ctr_level_one.toggle_pause()
                     # ADD FOR TIME LOGIC FOR KEEPING THE SAME WHEN RESET
-                    elif event.key == pygame.K_ESCAPE and ctr_levelOne.is_paused:
-                        # WHEN IT PRESSED
+                    elif event.key == pygame.K_ESCAPE and ctr_level_one.is_paused:
                         pause_duration = pygame.time.get_ticks() - self.pause_start
                         self.pause_time_total += pause_duration
-                        ctr_levelOne.toggle_pause()
+                        ctr_level_one.toggle_pause()
 
                 # Handle clicks on the pause menu buttons (only when paused)
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if ctr_levelOne.is_paused:
-                        # CARLO MOVE IS ANOTHER VIEW ?
+                    if ctr_level_one.is_paused:
                         result = pause_menu.handle_click(pygame.mouse.get_pos())
                         if result == "CONTINUE":
-                            ctr_levelOne.toggle_pause()
+                            ctr_level_one.toggle_pause()
                             pause_duration = pygame.time.get_ticks() - self.pause_start
                             self.pause_time_total += pause_duration
                         elif result == "RETURN_TO_MENU":
-                             ctr_levelOne.toggle_pause()
-                             ctr_levelOne.stop_music()
+                             ctr_level_one.toggle_pause()
+                             ctr_level_one.stop_music()
                              return "MAIN_MENU"
 
-            
             # ==================== UPDATE (skip when paused) ====================
             # added "and not game_over" so game freezes on game over screen
-            if not ctr_levelOne.is_paused and not game_over:
+            if not ctr_level_one.is_paused and not game_over:
                 # Pass raw inputs to the controller, it decides what to do
                 keys = pygame.key.get_pressed()
-                ctr_levelOne.handle_player_input(keys,events)
+                ctr_level_one.handle_player_input(keys,events)
 
                 # Controller handles gravity
                 # CARLO
-                ctr_levelOne.apply_player_gravity()
+                ctr_level_one.apply_player_gravity()
 
                 # Update hazard positions via the controller # I CAN JUST MOVE THE UPDATE
-                ctr_levelOne.update_movement_level_one()
+                ctr_level_one.update_movement_level_one()
 
                 # Check if the character collides with any hazard
                 # NOTE: collision only checks models_collision (Carlo's system).
                 # The 5 meteors in ctr_levelOne.meteors are NOT registered there
-                collided, name = ctr_levelOne.detection_collision_character(
-                    ctr_levelOne.level_one.character
+                collided, name = ctr_level_one.detection_collision_character(
+                    ctr_level_one.level_one.character
                 )
                 if collided:
                     # set game_over to True to trigger game over screen
                     print(f"Collision detected with {name} — game over")
-                    ctr_levelOne.update_collision_position(name)
-                    ctr_levelOne.stop_music()
+                    ctr_level_one.update_collision_position(name)
+                    ctr_level_one.stop_music()
                     game_over = True
 
-            self.calculate_timer(total_seconds, ctr_levelOne.is_paused)
-            self.draw_elements(window, ctr_levelOne, sprite_image_background, )
+            self.calculate_timer(total_seconds, ctr_level_one.is_paused)
+            self.draw_elements(window, ctr_level_one, sprite_image_background, )
 
-            if ctr_levelOne.is_paused:
+            if ctr_level_one.is_paused:
                 pause_menu.draw()
             # GAME OVER
             if game_over:
@@ -133,57 +116,37 @@ class ViewLevelOne:
             timer_text = f"Time to jump: {mins:02d}:{secs:02d}"
             self.eventually_time = timer_text
 
-    def draw_elements(self, window, ctr_levelOne,sprite_image_background ):
+    def draw_elements(self, window, ctr_level_one,sprite_image_background ):
             # ==================== DRAW ====================
             # Background
             window.blit(sprite_image_background, (0, 0))
 
             # Character draw various images  CARLO
-            ctr_levelOne.level_one.character.draw(window)
+            ctr_level_one.level_one.character.draw(window)
 
             # Draw the original single hazard instances from the LevelOne model
             window.blit(
-                ctr_levelOne.level_one.hazard_meteor.image_loaded,
-                ctr_levelOne.level_one.hazard_meteor.rect,
+                ctr_level_one.level_one.hazard_meteor.image_loaded,
+                ctr_level_one.level_one.hazard_meteor.rect,
             )
             window.blit(
-                ctr_levelOne.level_one.hazard_meteorOne.image_loaded,
-                ctr_levelOne.level_one.hazard_meteorOne.rect,
+                ctr_level_one.level_one.hazard_meteorOne.image_loaded,
+                ctr_level_one.level_one.hazard_meteorOne.rect,
             )
             window.blit(
-                ctr_levelOne.level_one.hazard_meteorTwo.image_loaded,
-                ctr_levelOne.level_one.hazard_meteorTwo.rect,
+                ctr_level_one.level_one.hazard_meteorTwo.image_loaded,
+                ctr_level_one.level_one.hazard_meteorTwo.rect,
             )
 
             window.blit(
-                ctr_levelOne.level_one.hazard_rollingRock.image_loaded,
-                ctr_levelOne.level_one.hazard_rollingRock.rect,
+                ctr_level_one.level_one.hazard_rollingRock.image_loaded,
+                ctr_level_one.level_one.hazard_rollingRock.rect,
             )
             # ==================== DRAW  TIMER ====================
-            FONT_TYPE = pygame.font.SysFont("Comic Sans MS", 40)
+            font_type = pygame.font.SysFont("Comic Sans MS", 40)
             color_timer = (0, 0, 0)
-            img = FONT_TYPE.render(self.eventually_time, True, color_timer)
+            img = font_type.render(self.eventually_time, True, color_timer)
             rect = img.get_rect()
             rect.center = (400, 20)
             pygame.draw.rect(window, (0, 0, 0), rect, 2)
             window.blit(img, rect)
-
-            # Draw all 5 meteors from the controller's meteor list.
-            # These are separate from hazard_meteor above.
-            # Collision for these is NOT wired up yet — that is for
-            # Carlo to add to models_collision when ready.
-            # MOVE IN CONTROLLER VIEW DOES NOT INTERACT WITH THTE CARLO VIEW!
-
-            #  CARLO
-           # self.draw_multiple_rock(ctr_levelOne,window)
-            # Pause overlay drawn last so it sits on top of everything
-
-    # ELIMINATE CARLO NOT NECESSARY
-    def draw_multiple_rock (self, ctr_levelOne, window):
-            for meteor in ctr_levelOne.meteors:
-              window.blit(meteor.image_loaded, meteor.rect)
-
-                # Draw any active rolling rocks from the controller's list
-            #for rock in ctr_levelOne.rolling_rocks:
-             #   window.blit(rock.image_loaded, rock.rect)
-
