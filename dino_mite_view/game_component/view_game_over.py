@@ -1,7 +1,7 @@
-import pygame
-from IPython.utils.timing import clock
+import logging
 
-from dino_mite_utility.utilities_names import LEVEL_ONE
+import pygame
+
 
 
 class ViewGameOverMenu:
@@ -13,6 +13,7 @@ class ViewGameOverMenu:
 
 
     def init_game_over(self):
+        logging.info(f'enter in view game over')
         clock = pygame.time.Clock()
         while self.running:
             events = pygame.event.get()

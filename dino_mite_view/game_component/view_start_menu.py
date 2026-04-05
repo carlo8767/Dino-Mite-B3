@@ -1,3 +1,5 @@
+import logging
+
 import pygame
 import sys
 from dino_mite_view.game_component.button import Button
@@ -22,6 +24,7 @@ class View_MainMenu:
         self.exit_button = Button("Exit", 200, 60, (self.screen_width // 2) - 100, 350, (200, 0, 0), (255, 255, 255), 20)
 
     def draw_start_menu(self):
+        logging.info("Enter in view start menu")
         fps = pygame.time.Clock()
         self.screen.blit(self.background, (0, 0))
         self.start_button.draw_function(self.screen)

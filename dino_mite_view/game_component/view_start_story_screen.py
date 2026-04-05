@@ -1,3 +1,5 @@
+import logging
+
 import pygame
 from dino_mite_view.game_component.button import Button
 import os
@@ -23,7 +25,7 @@ class ViewStartStoryScreen:
                                         (255, 255, 255), 20)
 
     def draw_story_screen(self, screen):
-
+        logging.info("Enter in view story screen")
         fps = pygame.time.Clock()
         split_text = self.story_text.split("\n")
         pos_x = 400

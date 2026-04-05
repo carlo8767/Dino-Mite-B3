@@ -1,3 +1,5 @@
+import logging
+
 import pygame
 import os
 import random
