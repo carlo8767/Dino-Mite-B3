@@ -14,23 +14,29 @@ class ViewStartStoryScreen:
         self.font_title = pygame.font.SysFont("Arial", 20, bold=True)
         self.story_text  = self.store_text
         # Load background
-        self.image_path = os.path.join("./image", "menu_background.jpeg")
-        self.background = pygame.image.load(self.image_path).convert_alpha()
-        self.background = pygame.transform.scale(self.background, (WIDTH, HEIGHT))
-        self.background = pygame.Surface((WIDTH, HEIGHT))
-        self.background.fill((50, 50, 50))
+        try:
+            self.image_path = os.path.join("./image", "story_background.png")
+            self.background = pygame.image.load(self.image_path).convert_alpha()
+            self.background = pygame.transform.scale(self.background, (WIDTH, HEIGHT))
+        except:
+            self.background = pygame.Surface((WIDTH, HEIGHT))
+            self.background.fill((50, 50, 50))
 
         # Create Buttons
-        self.skip_story_button = Button("Skip", 200, 60, (self.width_int // 2) - 100, self.height_int - 150, (0, 150, 0),
-                                        (255, 255, 255), 20)
+        self.skip_story_button = Button("Go", 200, 60, (self.width_int // 2) - 100, self.height_int - 130, (0, 150, 0),
+                                        (255, 255, 255), 30)
 
     def draw_story_screen(self, screen):
         logging.info("Enter in view story screen")
         fps = pygame.time.Clock()
         split_text = self.story_text.split("\n")
         pos_x = 400
-        pos_y = 30
-        text_font = pygame.font.SysFont("Comic Sans MS", 30)
+        pos_y = 50
+        font_path = os.path.join("./fonts", "Jersey10-Regular.ttf")
+        try:
+            text_font = pygame.font.Font(font_path, 30)
+        except FileNotFoundError:
+            text_font = pygame.font.SysFont("Comic Sans MS", 30)
         color_timer = (0, 0, 0)
         screen.blit(self.background, (0, 0))
         while True:
