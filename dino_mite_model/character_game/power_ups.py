@@ -5,10 +5,10 @@ from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
 class PowerUp(pygame.sprite.Sprite):
     """
-    Base class for all powerups.
-    Mirrors the Hazard class structure — falls from the sky,
-    disappears when it hits the ground.
-    Subclasses override apply_effect to define what happens on collection.
+    Base class for all powerups
+    Mirrors the Hazard class structure-falls from the sky,
+    disappears when it hits the ground or is collected
+    Subclasses override apply_effect to define what happens on collection
     """
     def __init__(self, image_path, speed=3):
         super().__init__()
@@ -31,7 +31,7 @@ class PowerUp(pygame.sprite.Sprite):
         self.name = "PowerUp"
 
     def update_position(self):
-        # Falls downward every frame like a meteor
+        # Falls downward every frame 
         self.rect.y += self.speed
 
         # If it hits the ground it disappears
@@ -57,8 +57,7 @@ class PowerUp(pygame.sprite.Sprite):
 
 class ShieldBubble(PowerUp):
     """
-    ShieldBubble powerup — gives the player a shield for 5 seconds.
-    Falls from the sky, player must jump to catch it.
+    ShieldBubble powerup - gives the player a shield for 5 seconds
     """
     def __init__(self):
         # update path to your actual shield image

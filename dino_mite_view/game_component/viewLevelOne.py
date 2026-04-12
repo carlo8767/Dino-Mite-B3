@@ -147,6 +147,10 @@ class ViewLevelOne:
                 ctr_level_one.level_one.hazard_rollingRock.image_loaded,
                 ctr_level_one.level_one.hazard_rollingRock.rect,
             )
+
+            if ctr_level_one.current_powerup and ctr_level_one.current_powerup.is_active:
+                ctr_level_one.current_powerup.draw(window)
+
             # ==================== DRAW  TIMER ====================
             font_type = pygame.font.SysFont("Comic Sans MS", 40)
             color_timer = (0, 0, 0)
@@ -156,5 +160,4 @@ class ViewLevelOne:
             pygame.draw.rect(window, (0, 0, 0), rect, 2)
             window.blit(img, rect)
 
-            if ctr_level_one.current_powerup and ctr_level_one.current_powerup.is_active:
-                ctr_level_one.current_powerup.draw(window)
+    

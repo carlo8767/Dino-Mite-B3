@@ -37,7 +37,6 @@ class ControllerLevelOne:
 
     def update_movement_level_one(self):
         # Update the single model hazards (the ones actually drawn on screen)
-        # CARLO SEE HOW
         self.level_one.hazard_meteor.update_position()
         self.level_one.hazard_meteorOne.update_position()
         self.level_one.hazard_meteorTwo.update_position()
@@ -59,6 +58,9 @@ class ControllerLevelOne:
         return self.level_one
 
     def detection_collision_character(self, sprite) -> tuple[bool, str]:
+        # If shield is active, hazard collisions are blocked
+        if getattr(sprite, 'shield_active', False):
+            return False, ""
         for g, v in self.models_collision.items():
             # Skip the sprite we are testing (the character itself)
             if g == sprite:
@@ -154,6 +156,14 @@ class ControllerLevelOne:
 
     # update powerup each frame, handles spawn timer
     def update_powerup(self, dt):
+        # Tick down the shield timer if active
+        character = self.level_one.character
+        if getattr(character, 'shield_active', False):
+            character.shield_timer -= dt
+            if character.shield_timer <= 0:
+                character.shield_active = False
+                character.shield_timer = 0
+
         # If no powerup is active, count up spawn timer
         if self.current_powerup is None or not self.current_powerup.is_active:
             self.powerup_spawn_timer += dt
