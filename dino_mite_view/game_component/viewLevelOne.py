@@ -39,6 +39,7 @@ class ViewLevelOne:
         pause_menu = PauseMenu(window)
         game_over = False
         running = True
+        delta_time = 0
         while running:
             # ==================== EVENT HANDLING ====================
             events = pygame.event.get()
@@ -84,8 +85,7 @@ class ViewLevelOne:
                 ctr_level_one.update_movement_level_one()
 
                 # update powerup position and spawn timer
-                dt = clock.tick(60)
-                ctr_level_one.update_powerup(dt)
+                ctr_level_one.update_powerup(delta_time)
                 ctr_level_one.detection_collision_powerup()
 
                 # Check if the character collides with any hazard
@@ -111,7 +111,7 @@ class ViewLevelOne:
                 # pygame.time.delay(2500)
                 return "GAME OVER"
             pygame.display.update()
-            #clock.tick(60)
+            delta_time = clock.tick(60)
 
     def calculate_timer(self, total_seconds, is_paused):
         if not is_paused:
