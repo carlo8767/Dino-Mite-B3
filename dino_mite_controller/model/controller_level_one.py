@@ -1,6 +1,8 @@
 from dino_mite_model.character_game.Hazard import Meteor
 from dino_mite_model.character_game.Hazard import RollingRock
 from dino_mite_model.level_model.levelone import LevelOne
+from dino_mite_model.character_game.power_ups import ShieldBubble
+
 
 
 import pygame
@@ -18,6 +20,10 @@ class ControllerLevelOne:
 
         self.add_models_collision()
 
+        # Powerup Setup
+        self.current_powerup = None        # one powerup at a time
+        self.powerup_spawn_timer = 0       # counts up in milliseconds
+        self.powerup_spawn_interval = 8000 # spawn every 8 seconds
 
     def init_music(self):
         pygame.mixer.music.load(self.level_one.sound)
@@ -140,3 +146,34 @@ class ControllerLevelOne:
         self.level_one.hazard_meteorOne.update_position_collision()
         self.level_one.hazard_meteorTwo.update_position_collision()
         self.level_one.hazard_rollingRock.update_position_collision()
+
+
+    # spawns the shield bubble powerup
+    def spawn_powerup(self):
+        self.current_powerup = ShieldBubble()
+
+    # update powerup each frame, handles spawn timer
+    def update_powerup(self, dt):
+        # If no powerup is active, count up spawn timer
+        if self.current_powerup is None or not self.current_powerup.is_active:
+            self.powerup_spawn_timer += dt
+            if self.powerup_spawn_timer >= self.powerup_spawn_interval:
+                self.spawn_powerup()
+                self.powerup_spawn_timer = 0  # reset timer
+        else:
+            # Powerup is active, update its position
+            self.current_powerup.update_position()
+
+    # check if character collided with powerup
+    def detection_collision_powerup(self):
+        if self.current_powerup is None or not self.current_powerup.is_active:
+            return
+        # Use mask collision like hazards
+        group = pygame.sprite.Group()
+        group.add(self.current_powerup)
+        if pygame.sprite.spritecollide(
+            self.level_one.character, group, False, pygame.sprite.collide_mask):
+            self.current_powerup.apply_effect(self.level_one.character)
+            self.current_powerup.is_active = False
+            self.current_powerup = None
+            print("Powerup collected!")
