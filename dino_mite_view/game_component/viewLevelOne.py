@@ -1,5 +1,5 @@
 from curses.ascii import ctrl
-
+import os
 import pygame
 import logging
 from dino_mite_view.game_component.pause_menu import PauseMenu
@@ -19,6 +19,7 @@ class ViewLevelOne:
         self.pause_start = 0
         self.eventually_time = ""
         self.time_duration_level = 120
+        self.store_text_end = self.upload_file()
 
 
     def draw_screen_level_one(self, window, ctr_level_one):
@@ -97,14 +98,36 @@ class ViewLevelOne:
             if game_over:
                 # ADD HERE CHANGE IMAGE CHARACTER
                 ctr_level_one.init_music_end_level_one()
-                pygame.time.delay(500)
                 fade = pygame.Surface((WIDTH, HEIGHT))
                 fade.fill((0, 0, 0))
+                self.draw_text_end(window)
+                pygame.time.delay(500)
+                screen_copy = window.copy()
+                countdown = 5000
+                while(countdown >0):
+                    for alpha in range(0, 255, 20):
+                        fade.set_alpha(alpha)
+                        window.blit(screen_copy, (0, 0))
+                        window.blit(fade, (0, 0))
+                        ctr_level_one.level_one.character.draw_status(window, "dead")
+                        pygame.display.update()
+                        clock.tick(60)
+
+                    for alpha in range(255, 0, 20):
+                        fade.set_alpha(alpha)
+                        window.blit(screen_copy, (0, 0))
+                        window.blit(fade, (0, 0))
+                        ctr_level_one.level_one.character.draw_status(window, "dead")
+                        pygame.display.update()
+                        clock.tick(60)
+                    countdown -= 500
                 for alpha in range(0, 255, 1):
                     fade.set_alpha(alpha)
+                    window.blit(screen_copy, (0, 0))
                     window.blit(fade, (0, 0))
                     ctr_level_one.level_one.character.draw_status(window, "dead")
                     pygame.display.update()
+                    pygame.time.delay(10)
                     clock.tick(60)
                 logging.info(f'game over')
                 # HERE TRANSITION
@@ -155,3 +178,30 @@ class ViewLevelOne:
             pygame.draw.rect(window, (0, 0, 0), rect, 2)
             window.blit(img, rect)
 
+    def draw_text_end(self, window):
+        split_text = self.store_text_end.split("\n")
+        pos_x = 400
+        pos_y = 50
+        font_type = pygame.font.SysFont("Comic Sans MS", 70)
+        color_text = (255, 255, 255)
+        img = font_type.render(split_text[0], True, color_text)
+        rect = img.get_rect()
+        rect.center = (pos_x, pos_y)
+        window.blit(img, rect)
+        pos_y += 150
+        img = font_type.render(split_text[1], True, color_text)
+        rect = img.get_rect()
+        rect.center = (pos_x, pos_y)
+        window.blit(img, rect)
+
+
+
+    def upload_file(self):
+        try:
+            content  = ""
+            os_path  = os.path.join("./text_files", "end_story.txt")
+            with open(os_path, 'r', encoding='utf-8') as f:
+                content+= f.read()
+        except FileNotFoundError:
+            content = "file is missing"
+        return content
