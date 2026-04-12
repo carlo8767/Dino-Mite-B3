@@ -1,3 +1,5 @@
+from curses.ascii import ctrl
+
 import pygame
 import logging
 from dino_mite_view.game_component.pause_menu import PauseMenu
@@ -78,19 +80,34 @@ class ViewLevelOne:
                 )
                 if collided:
                     # set game_over to True to trigger game over screen
+
                     logging.info(f"Collision detected with {name} — game over")
                     ctr_level_one.update_collision_position(name)
+
                     ctr_level_one.stop_music()
                     game_over = True
 
             self.calculate_timer(self.time_duration_level, ctr_level_one.is_paused)
+            # DRAVE ALL THE ELEMENT
             self.draw_elements(window, ctr_level_one, sprite_image_background, )
 
             if ctr_level_one.is_paused:
                 pause_menu.draw()
             # GAME OVER
             if game_over:
+                # ADD HERE CHANGE IMAGE CHARACTER
+                ctr_level_one.init_music_end_level_one()
+                pygame.time.delay(500)
+                fade = pygame.Surface((WIDTH, HEIGHT))
+                fade.fill((0, 0, 0))
+                for alpha in range(0, 255, 1):
+                    fade.set_alpha(alpha)
+                    window.blit(fade, (0, 0))
+                    ctr_level_one.level_one.character.draw_status(window, "dead")
+                    pygame.display.update()
+                    clock.tick(60)
                 logging.info(f'game over')
+                # HERE TRANSITION
                 # pygame.time.delay(2500)
                 return "GAME OVER"
             pygame.display.update()
@@ -137,3 +154,4 @@ class ViewLevelOne:
             rect.center = (400, 20)
             pygame.draw.rect(window, (0, 0, 0), rect, 2)
             window.blit(img, rect)
+

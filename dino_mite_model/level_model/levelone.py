@@ -21,7 +21,7 @@ class LevelOne(pygame.sprite.Sprite):
         self.character = CharacterDino()
         self.image = os.path.join('./image', 'backgroundLevelOne.jpeg')
         self.sound = os.path.join('./music',  'SoundLevelOne.mp3')
-        self.sound_lone = pygame.mixer.Sound(self.sound)
+        self.sound_end_game =  os.path.join('./music', 'EndGameLevelOne.mp3')
 
 
 

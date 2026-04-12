@@ -20,8 +20,10 @@ class ViewGameOverMenu:
             for event in events:
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if self.play_again_rect.collidepoint(pygame.mouse.get_pos()):
+                            pygame.mixer.music.stop()
                             return "DRAW_LEVEL_ONE"
                         if self.menu_rect.collidepoint(pygame.mouse.get_pos()):
+                            pygame.mixer.music.stop()
                             return "MAIN_MENU"
             self.draw_game_over()
             pygame.display.update()
