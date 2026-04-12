@@ -1,5 +1,5 @@
 import pygame
-from IPython.utils.timing import clock
+#from IPython.utils.timing import clock
 
 from dino_mite_utility.utilities_names import LEVEL_ONE
 

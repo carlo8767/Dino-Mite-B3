@@ -83,6 +83,11 @@ class ViewLevelOne:
                 # Update hazard positions via the controller # I CAN JUST MOVE THE UPDATE
                 ctr_level_one.update_movement_level_one()
 
+                # update powerup position and spawn timer
+                dt = clock.tick(60)
+                ctr_level_one.update_powerup(dt)
+                ctr_level_one.detection_collision_powerup()
+
                 # Check if the character collides with any hazard
                 # NOTE: collision only checks models_collision (Carlo's system).
                 # The 5 meteors in ctr_levelOne.meteors are NOT registered there
@@ -106,7 +111,7 @@ class ViewLevelOne:
                 # pygame.time.delay(2500)
                 return "GAME OVER"
             pygame.display.update()
-            clock.tick(60)
+            #clock.tick(60)
 
     def calculate_timer(self, total_seconds, is_paused):
         if not is_paused:
@@ -150,3 +155,6 @@ class ViewLevelOne:
             rect.center = (400, 20)
             pygame.draw.rect(window, (0, 0, 0), rect, 2)
             window.blit(img, rect)
+
+            if ctr_level_one.current_powerup and ctr_level_one.current_powerup.is_active:
+                ctr_level_one.current_powerup.draw(window)
