@@ -13,9 +13,13 @@ class PowerUp(pygame.sprite.Sprite):
     def __init__(self, image_path, speed=3):
         super().__init__()
 
-        # Load and scale image
-        self.image_loaded = pygame.image.load(image_path).convert_alpha()
-        self.image_loaded = pygame.transform.scale(self.image_loaded, (60, 60))
+        # Load and scale image, or use a red placeholder if no path given
+        if image_path is not None:
+            self.image_loaded = pygame.image.load(image_path).convert_alpha()
+            self.image_loaded = pygame.transform.scale(self.image_loaded, (60, 60))
+        else:
+            self.image_loaded = pygame.Surface((60, 60), pygame.SRCALPHA)
+            self.image_loaded.fill((255, 0, 0))
         self.image = self.image_loaded
 
         # Random x position, spawn above screen
@@ -60,8 +64,9 @@ class ShieldBubble(PowerUp):
     ShieldBubble powerup - gives the player a shield for 5 seconds
     """
     def __init__(self):
-        # update path to your actual shield image
-        super().__init__("./image/shield.png", speed=3)
+        # TODO: replace placeholder with real shield image
+        # super().__init__("./image/shield.png", speed=3)
+        super().__init__(None, speed=3)
         self.name = "ShieldBubble"
 
     def apply_effect(self, character):
