@@ -152,9 +152,12 @@ class ControllerLevelOne:
         self.level_one.hazard_rollingRock.update_position_collision()
 
 
-    # spawns the shield bubble powerup
+    # spawns a random powerup: 75% shield, 25% time reduction
     def spawn_powerup(self):
-        self.current_powerup = ShieldBubble()
+        if random.random() < 0.25:
+            self.current_powerup = TimeReduction()
+        else:
+            self.current_powerup = ShieldBubble()
 
     # update powerup each frame, handles spawn timer
     def update_powerup(self, dt):
@@ -186,6 +189,7 @@ class ControllerLevelOne:
         if pygame.sprite.spritecollide(
             self.level_one.character, group, False, pygame.sprite.collide_mask):
             self.current_powerup.apply_effect(self.level_one.character)
+            self.time_penalty_ms += self.current_powerup.time_penalty
             self.current_powerup.is_active = False
             self.current_powerup = None
             print("Powerup collected!")

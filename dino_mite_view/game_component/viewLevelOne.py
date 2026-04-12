@@ -101,7 +101,7 @@ class ViewLevelOne:
                     ctr_level_one.stop_music()
                     game_over = True
 
-            self.calculate_timer(total_seconds, ctr_level_one.is_paused)
+            self.calculate_timer(total_seconds, ctr_level_one.is_paused, ctr_level_one)
             self.draw_elements(window, ctr_level_one, sprite_image_background, )
 
             if ctr_level_one.is_paused:
@@ -113,9 +113,11 @@ class ViewLevelOne:
             pygame.display.update()
             delta_time = clock.tick(60)
 
-    def calculate_timer(self, total_seconds, is_paused):
+    def calculate_timer(self, total_seconds, is_paused, ctr_level_one):
         if not is_paused:
-            elapsed_ms = pygame.time.get_ticks() - self.start_ticks - self.pause_time_total
+            elapsed_ms = (pygame.time.get_ticks() - self.start_ticks
+                          - self.pause_time_total
+                          + ctr_level_one.time_penalty_ms)
             remaining_seconds = max(0, total_seconds - elapsed_ms // 1000)
             mins, secs = divmod(remaining_seconds, 60)
             timer_text = f"Time to jump: {mins:02d}:{secs:02d}"
