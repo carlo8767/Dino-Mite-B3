@@ -59,7 +59,6 @@ class PowerUp(pygame.sprite.Sprite):
     def draw(self, screen):
         screen.blit(self.image_loaded, self.rect)
 
-
 class ShieldBubble(PowerUp):
     """
     ShieldBubble powerup - gives the player a shield for 5 seconds
