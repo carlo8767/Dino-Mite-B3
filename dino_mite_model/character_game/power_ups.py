@@ -10,16 +10,16 @@ class PowerUp(pygame.sprite.Sprite):
     disappears when it hits the ground or is collected
     Subclasses override apply_effect to define what happens on collection
     """
-    def __init__(self, image_path, speed=3):
+    def __init__(self, image_path, speed=3, placeholder_color=(255, 0, 0)):
         super().__init__()
 
-        # Load and scale image, or use a red placeholder if no path given
+        # Load and scale image, or draw a colored placeholder if no path given
         if image_path is not None:
             self.image_loaded = pygame.image.load(image_path).convert_alpha()
             self.image_loaded = pygame.transform.scale(self.image_loaded, (60, 60))
         else:
             self.image_loaded = pygame.Surface((60, 60), pygame.SRCALPHA)
-            self.image_loaded.fill((255, 0, 0))
+            self.image_loaded.fill(placeholder_color)
         self.image = self.image_loaded
 
         # Random x position, spawn above screen
@@ -33,6 +33,7 @@ class PowerUp(pygame.sprite.Sprite):
         self.speed = speed
         self.is_active = True
         self.name = "PowerUp"
+        self.time_penalty = 0  # ms to add to elapsed time on collection (0 = no effect)
 
     def update_position(self):
         # Falls downward every frame 
@@ -66,12 +67,25 @@ class ShieldBubble(PowerUp):
     def __init__(self):
         # TODO: replace placeholder with real shield image
         # super().__init__("./image/shield.png", speed=3)
-        super().__init__(None, speed=3)
+        super().__init__(None, speed=3, placeholder_color=(255, 0, 0))  # red placeholder
         self.name = "ShieldBubble"
 
     def apply_effect(self, character):
-        # Activates shield on the character
-        # Controller calls this when collision is detected
         character.shield_active = True
         character.shield_timer = 5000  # 5 seconds in milliseconds
         print("Shield activated!")
+
+
+class TimeReduction(PowerUp):
+    """
+    TimeReduction powerup - removes 5 seconds from the remaining timer
+    """
+    def __init__(self):
+        # TODO: replace placeholder with real time reduction image
+        # super().__init__("./image/time_reduction.png", speed=4)
+        super().__init__(None, speed=4, placeholder_color=(255, 215, 0))  # yellow placeholder
+        self.name = "TimeReduction"
+        self.time_penalty = 5000  # 5 seconds in milliseconds added to elapsed time
+
+    def apply_effect(self, _character):
+        print("Time reduced by 5 seconds!")

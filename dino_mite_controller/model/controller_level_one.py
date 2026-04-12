@@ -1,7 +1,8 @@
 from dino_mite_model.character_game.Hazard import Meteor
 from dino_mite_model.character_game.Hazard import RollingRock
 from dino_mite_model.level_model.levelone import LevelOne
-from dino_mite_model.character_game.power_ups import ShieldBubble
+from dino_mite_model.character_game.power_ups import ShieldBubble, TimeReduction
+import random
 
 
 
@@ -23,7 +24,8 @@ class ControllerLevelOne:
         # Powerup Setup
         self.current_powerup = None        # one powerup at a time
         self.powerup_spawn_timer = 0       # counts up in milliseconds
-        self.powerup_spawn_interval = 8000 # spawn every 8 seconds
+        self.powerup_spawn_interval = 15000 # spawn every 15s → ~8 powerups in 2 min
+        self.time_penalty_ms = 0           # accumulated ms penalty applied to the timer
 
     def init_music(self):
         pygame.mixer.music.load(self.level_one.sound)
