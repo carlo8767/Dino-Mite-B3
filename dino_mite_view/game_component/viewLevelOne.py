@@ -52,7 +52,7 @@ class ViewLevelOne:
                 # Handle clicks on the pause menu buttons (only when paused)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if ctr_level_one.is_paused:
-                        result = pause_menu.handle_click(pygame.mouse.get_pos())
+                        result = pause_menu.handle_click(event) #pass event instead of coordinates 
                         if result == "CONTINUE":
                             ctr_level_one.toggle_pause_menu()
                             pause_duration = pygame.time.get_ticks() - self.pause_start

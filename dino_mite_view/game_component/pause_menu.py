@@ -1,5 +1,7 @@
 import pygame
 from dino_mite_view.game_component.button import Button
+import os
+import logging
 
 class PauseMenu:
     def __init__(self, screen):
@@ -9,43 +11,47 @@ class PauseMenu:
         self.font = pygame.font.Font(font_path, 42)
 
         # Central Panel 
-        self.panel_w, self.panel_h = 260, 220
-        self.panel_x = screen_w // 2 - panel_w // 2
-        self.panel_y = screen_h // 2 - panel_h // 2
+        self.panel_w, self.panel_h = 280, 240
+        self.panel_x = self.screen_w // 2 - self.panel_w // 2
+        self.panel_y = self.screen_h // 2 - self.panel_h // 2
+
+        # Load background
+        try:
+            self.image_path = os.path.join("./image", "story_background.png")
+            self.background = pygame.image.load(self.image_path).convert_alpha()
+            self.background = pygame.transform.scale(self.background, (self.screen_w, self.screen_h))
+        except:
+            self.background = pygame.Surface((self.screen_w, self.screen_h))
+            self.background.fill((50, 50, 50))
 
         button_w = 220
         button_x = self.panel_x + (self.panel_w - button_w) // 2
 
         self.continue_button = Button("Continue", button_w, 50, button_x, self.panel_y + 80, (0, 0, 0), (255, 255,255), 35, "green")
-        self.exit_button = Button("Return", button_w, 50, button_x, self.panel_y + 180, (0, 0, 0), (255, 255, 255),
+        self.exit_button = Button("Return", button_w, 50, button_x, self.panel_y + 150, (0, 0, 0), (255, 255, 255),
                                       35, "red")
-    def draw_pause_menu(self):
-        logging.info("Go view pause menu")
-        fps = pygame.time.Clock()
-        while True:
-            #Background
-            self.screen.blit(self.background, (0,0))
-            overlay = pygame.Surface((self.screen_w, self.screen_h), pygame.SRCALPHA)
-            overlay.fill((0,0,0,150))
-            self.screen.blit(overlay,(0,0))
-            #Central panel
-            panel_rect = pygame.Rect(self.panel_x, self.panel_y, self.panel_w, self.panel_h)
-            pygame.draw.rect(self.screen, (30,30,30), panel_rect, border_radius=12)
-            pygame.draw.rect(self.screen, (90, 90, 90), panel_rect, width=2, border_radius=12)
-            #Title
-            title = self.font.render("PAUSED", True, (255,255,255))
-            self.screen.blit(title, (self.panel_x + (self.panel_w - title.get_width()) // 2, self.panel_y+20))
-            #Buttons
-            self.continue_button.draw_function(self.screen)
-            self.exit_button.draw_fucntion(self.screen)
+    def draw(self):
+        logging.info("Doing pause menu")
+     
+        self.screen.blit(self.background, (0,0))
+        overlay = pygame.Surface((self.screen_w, self.screen_h), pygame.SRCALPHA)
+        overlay.fill((0,0,0,150))
+        self.screen.blit(overlay,(0,0))
+        #Central panel
+        panel_rect = pygame.Rect(self.panel_x, self.panel_y, self.panel_w, self.panel_h)
+        pygame.draw.rect(self.screen, (30,30,30), panel_rect, border_radius=12)
+        pygame.draw.rect(self.screen, (90, 90, 90), panel_rect, width=2, border_radius=12)
+        #Title
+        title = self.font.render("PAUSED", True, (255,255,255))
+        self.screen.blit(title, (self.panel_x + (self.panel_w - title.get_width()) // 2, self.panel_y+20))
+        #Buttons
+        self.continue_button.draw_function(self.screen)
+        self.exit_button.draw_function(self.screen)
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return "EXIT"
-                if self.continue_button.is_clicked(event):
-                    return "CONTINUE"
-                if self.exit_button.is_clicked(event):
-                    return "RETURN_TO_MENU"
-            pygame.display.update()
-            fps.tick(60)
+    def handle_click(self, event):
+        if self.continue_button.is_clicked(event):
+            return "CONTINUE"
+        if self.exit_button.is_clicked(event):
+            return "RETURN_TO_MENU"
+        return None
 

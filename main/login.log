@@ -204,3 +204,1034 @@ INFO:root:Enter in view start menu
 INFO:root:current game state DRAW_LEVEL_ONE
 INFO:root:current game state DRAW_LEVEL_ONE
 INFO:root:Enter in view level one
+INFO:root:current game state STORY
+INFO:root:Enter in view story screen
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:current game state STORY
+INFO:root:Enter in view story screen
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:current game state STORY
+INFO:root:Enter in view story screen
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:{'collude occurs between <CharacterDino Sprite(in 0 groups)> and RollingRock'}
+INFO:root:Collision detected with RollingRock — game over
+INFO:root:game over
+INFO:root:current game state GAME OVER
+INFO:root:enter in view game over
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state EXIT
+INFO:root:current game state STORY
+INFO:root:Enter in view story screen
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:{'collude occurs between <CharacterDino Sprite(in 0 groups)> and Meteor'}
+INFO:root:Collision detected with Meteor — game over
+INFO:root:game over
+INFO:root:current game state GAME OVER
+INFO:root:enter in view game over
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state EXIT
+INFO:root:current game state STORY
+INFO:root:Enter in view story screen
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:{'collude occurs between <CharacterDino Sprite(in 0 groups)> and Meteor'}
+INFO:root:Collision detected with Meteor — game over
+INFO:root:game over
+INFO:root:current game state GAME OVER
+INFO:root:enter in view game over
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:{'collude occurs between <CharacterDino Sprite(in 0 groups)> and RollingRock'}
+INFO:root:Collision detected with RollingRock — game over
+INFO:root:game over
+INFO:root:current game state GAME OVER
+INFO:root:enter in view game over
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:{'collude occurs between <CharacterDino Sprite(in 0 groups)> and RollingRock'}
+INFO:root:Collision detected with RollingRock — game over
+INFO:root:game over
+INFO:root:current game state GAME OVER
+INFO:root:enter in view game over
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:{'collude occurs between <CharacterDino Sprite(in 0 groups)> and Meteor'}
+INFO:root:Collision detected with Meteor — game over
+INFO:root:game over
+INFO:root:current game state GAME OVER
+INFO:root:enter in view game over
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:current game state STORY
+INFO:root:Enter in view story screen
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:Go view pause menu
+INFO:root:current game state STORY
+INFO:root:Enter in view story screen
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:current game state STORY
+INFO:root:Enter in view story screen
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:Go view pause menu
+INFO:root:current game state STORY
+INFO:root:Enter in view story screen
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:current game state STORY
+INFO:root:Enter in view story screen
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:Go view pause menu
+INFO:root:current game state STORY
+INFO:root:Enter in view story screen
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:current game state STORY
+INFO:root:Enter in view story screen
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:{'collude occurs between <CharacterDino Sprite(in 0 groups)> and Meteor'}
+INFO:root:Collision detected with Meteor — game over
+INFO:root:game over
+INFO:root:current game state GAME OVER
+INFO:root:enter in view game over
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:{'collude occurs between <CharacterDino Sprite(in 0 groups)> and Meteor'}
+INFO:root:Collision detected with Meteor — game over
+INFO:root:game over
+INFO:root:current game state GAME OVER
+INFO:root:enter in view game over
+INFO:root:current game state DRAW_LEVEL_ONE
+INFO:root:Enter in view level one
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:Doing pause menu
+INFO:root:{'collude occurs between <CharacterDino Sprite(in 0 groups)> and RollingRock'}
+INFO:root:Collision detected with RollingRock — game over
+INFO:root:game over
+INFO:root:current game state GAME OVER
+INFO:root:enter in view game over
+INFO:root:current game state MAIN_MENU
+INFO:root:Enter in view start menu
+INFO:root:current game state EXIT
