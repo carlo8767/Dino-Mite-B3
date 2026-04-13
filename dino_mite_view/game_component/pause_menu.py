@@ -39,7 +39,7 @@ class PauseMenu:
         self._draw_centered_text("Continue", self.continue_rect)
 
         pygame.draw.rect(self.screen, (190, 45, 45), self.exit_rect, border_radius=8)
-        self._draw_centered_text("Exit", self.exit_rect)
+        self._draw_centered_text("Return to Menu", self.exit_rect)
 
     def _draw_centered_text(self, text, rect):
         surface = self.font_button.render(text, True, (255, 255, 255))
@@ -51,5 +51,5 @@ class PauseMenu:
         if self.continue_rect.collidepoint(mouse_pos):
             return "CONTINUE"
         if self.exit_rect.collidepoint(mouse_pos):
-            return "EXIT"
+            return "RETURN_TO_MENU"
         return None

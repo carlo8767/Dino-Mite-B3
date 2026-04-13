@@ -20,6 +20,8 @@ class LevelOne(pygame.sprite.Sprite):
         self.hazard_rollingRock = RollingRock()
         self.character = CharacterDino()
         self.image = os.path.join('./image', 'backgroundLevelOne.jpeg')
+        self.sound = os.path.join('./music',  'SoundLevelOne.mp3')
+        self.sound_end_game =  os.path.join('./music', 'EndGameLevelOne.mp3')
 
 
 
