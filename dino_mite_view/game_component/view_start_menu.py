@@ -1,14 +1,14 @@
+import logging
+
 import pygame
-import sys
 from dino_mite_view.game_component.button import Button
 import os
 
-class MainMenu:
+class View_MainMenu:
     def __init__(self, screen):
         self.screen = screen
         self.screen_width, self.screen_height = screen.get_size()
         self.font_title = pygame.font.SysFont("Arial", 60, bold=True)
-        
         # Load background
         try:
             self.image_path = os.path.join("./image", "menu_background.jpeg")
@@ -22,18 +22,22 @@ class MainMenu:
         self.start_button = Button("Start", 200, 60, (self.screen_width // 2) - 100, 250, (0, 150, 0), (255, 255, 255), 20)
         self.exit_button = Button("Exit", 200, 60, (self.screen_width // 2) - 100, 350, (200, 0, 0), (255, 255, 255), 20)
 
-    def draw(self):
+    def draw_start_menu(self):
+        logging.info("Enter in view start menu")
+        fps = pygame.time.Clock()
         self.screen.blit(self.background, (0, 0))
         self.start_button.draw_function(self.screen)
         self.exit_button.draw_function(self.screen)
-
         title = self.font_title.render("Welcome to Dino-Mite!", True, (255, 255, 255))
         self.screen.blit(title, (100, 100))
+        while  True:
+            for event in pygame.event.get():
+                if self.start_button.is_clicked(event):
+                    return "LEVEL_ONE"
+                if self.exit_button.is_clicked(event):
+                    return "EXIT"
+            pygame.display.update()
+            fps.tick(60)
 
-    def handle_event(self, event):
-        if self.start_button.is_clicked(event):
-            return "START"
-        if self.exit_button.is_clicked(event):
-            return "EXIT"
-        return None
+
 
