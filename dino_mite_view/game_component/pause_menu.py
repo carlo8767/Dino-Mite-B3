@@ -10,19 +10,10 @@ class PauseMenu:
         font_path = os.path.join("./fonts", "Jersey10-Regular.ttf")
         self.font = pygame.font.Font(font_path, 42)
 
-        # Central Panel 
+        #Central Panel 
         self.panel_w, self.panel_h = 280, 240
         self.panel_x = self.screen_w // 2 - self.panel_w // 2
         self.panel_y = self.screen_h // 2 - self.panel_h // 2
-
-        # Load background
-        try:
-            self.image_path = os.path.join("./image", "story_background.png")
-            self.background = pygame.image.load(self.image_path).convert_alpha()
-            self.background = pygame.transform.scale(self.background, (self.screen_w, self.screen_h))
-        except:
-            self.background = pygame.Surface((self.screen_w, self.screen_h))
-            self.background.fill((50, 50, 50))
 
         button_w = 220
         button_x = self.panel_x + (self.panel_w - button_w) // 2
@@ -33,7 +24,6 @@ class PauseMenu:
     def draw(self):
         logging.info("Doing pause menu")
      
-        self.screen.blit(self.background, (0,0))
         overlay = pygame.Surface((self.screen_w, self.screen_h), pygame.SRCALPHA)
         overlay.fill((0,0,0,150))
         self.screen.blit(overlay,(0,0))

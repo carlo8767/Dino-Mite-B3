@@ -3,6 +3,7 @@ import logging
 from dino_mite_view.game_component.pause_menu import PauseMenu
 from dino_mite_utility import utilities_names
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
+from dino_mite_view.game_component.view_game_over import ViewGameOverMenu
 
 """ Main game loop for Level One"""
 """ :param window: The main pygame display surface."""
@@ -31,6 +32,7 @@ class ViewLevelOne:
             sprite_image_background, (WIDTH, HEIGHT)
         )
         pause_menu = PauseMenu(window)
+        game_over_menu = ViewGameOverMenu(window)
         game_over = False
         running = True
         while running:
@@ -61,6 +63,12 @@ class ViewLevelOne:
                              ctr_level_one.toggle_pause_menu()
                              ctr_level_one.stop_music()
                              return "MAIN_MENU"
+                    elif game_over:
+                        result = game_over_menu.handle_click(event)
+                        if result == "RESTART":
+                            return "DRAW_LEVEL_ONE"
+                        if result == "MAIN_MENU":
+                            return "MAIN_MENU"
             # ==================== UPDATE (skip when paused) ====================
             # added "and not game_over" so game freezes on game over screen
             if not ctr_level_one.is_paused and not game_over:
@@ -92,7 +100,7 @@ class ViewLevelOne:
             if game_over:
                 logging.info(f'game over')
                 # pygame.time.delay(2500)
-                return "GAME OVER"
+                game_over_menu.draw()
             pygame.display.update()
             clock.tick(60)
 
