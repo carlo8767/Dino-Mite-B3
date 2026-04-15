@@ -21,7 +21,7 @@ class View_MainMenu:
             self.background.fill((50, 50, 50))
 
         # Create Buttons
-        self.start_button = Button("Start", 200, 60, (self.screen_width // 2) - 100, 350, (0, 150, 0), (255, 255, 255), 30, "green")
+        self.start_button = Button("Single-Player", 200, 60, (self.screen_width // 2) - 100, 350, (0, 150, 0), (255, 255, 255), 30, "green")
         self.exit_button = Button("Exit", 200, 60, (self.screen_width // 2) - 100, 450, (200, 0, 0), (255, 255, 255), 30, "red")
 
     def draw_start_menu(self):
