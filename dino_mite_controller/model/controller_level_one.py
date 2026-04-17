@@ -26,11 +26,15 @@ class ControllerLevelOne:
         self.powerup_spawn_timer = 0       # counts up in milliseconds
         self.powerup_spawn_interval = 15000 # spawn every 15s → ~8 powerups in 2 min
         self.time_penalty_ms = 0           # accumulated ms penalty applied to the timer
+
+        # Slowdown powerup state, these variables track whether hazards are slowed and for how long
         self.slow_hazards_active = False
         self.slow_hazards_timer = 0
         self.slow_factor = 0.5
+
+        # Store all hazards affected by the slowdown and their original speeds for reseting
         self.slowed_hazards = []
-        self.original_hazards_speeds = {}
+        self.original_hazard_speeds = {}
         self.register_slowable_hazards()
 
 
@@ -55,15 +59,23 @@ class ControllerLevelOne:
 
         self.level_one.hazard_rollingRock.update_position()
         # Update list-based rolling rocks, remove when off-screen
-        # for rock in self.rolling_rocks:
-          #  rock.update_position()
+        for rock in self.rolling_rocks:
+            rock.update_position()
         # self.rolling_rocks = [r for r in self.rolling_rocks if r.is_active]
 
+    # Add newly spawned meteor to slowdown system and collision tracking
     def spawn_meteor(self):
-        self.meteors.append(Meteor())
+        new_meteor = Meteor()
+        self.meteors.append(new_meteor)
+        self.slowed_hazards.append(new_meteor)
+        self.models_collision[new_meteor] = new_meteor.name
 
+    # Add newly spawned rolling rock to slowdown system and collision tracking
     def spawn_rolling_rock(self):
-        self.rolling_rocks.append(RollingRock())
+        new_rock = RollingRock()
+        self.rolling_rocks.append(new_rock)
+        self.slowed_hazards.append(new_rock)
+        self.models_collision[new_rock] = new_rock.name
         return self.level_one
 
     def detection_collision_character(self, sprite) -> tuple[bool, str]:
@@ -158,6 +170,56 @@ class ControllerLevelOne:
         self.level_one.hazard_meteorTwo.update_position_collision()
         self.level_one.hazard_rollingRock.update_position_collision()
 
+        # reset slowdown state so hazards return to normal speed after level reset
+        self.slow_hazards_active = False
+        self.slow_hazards_timer = 0
+        self.restore_hazard_speeds()
+
+    # Collect all hazards in this level so the slowdown effect can be applied uniformly
+    # Include dynamically created meteors in the slowdown system
+    def register_slowable_hazards(self):
+        self.slowed_hazards = [
+            self.level_one.hazard_meteor,
+            self.level_one.hazard_meteorOne,
+            self.level_one.hazard_meteorTwo,
+            self.level_one.hazard_rollingRock,
+        ]
+
+        # include extra meteors too, if they are active in this level
+        for meteor in self.meteors:
+            self.slowed_hazards.append(meteor)
+
+    # this is a helper to detect which speed attribute a hazard uses
+    # because current hazard classes use "speed" and "move_x"
+    def get_hazard_speed_attribute(self, hazard):
+        if hasattr(hazard, "speed"):
+            return "speed"
+        elif hasattr(hazard, "move_x"):
+            return "move_x"
+        return None
+    
+    # this function applies the slowdown on the hazards
+    # reduces speed of all hazards while storing their original values for later reseting
+    def apply_slow_hazards(self):
+        for hazard in self.slowed_hazards:
+            attr = self.get_hazard_speed_attribute(hazard)
+            if attr is None:
+                continue
+
+            if hazard not in self.original_hazard_speeds:
+                self.original_hazard_speeds[hazard] = getattr(hazard, attr)
+
+            original_speed = self.original_hazard_speeds[hazard]
+            slowed_speed = max(1, int(original_speed * self.slow_factor))
+            setattr(hazard, attr, slowed_speed)
+
+    # this function resets the speed of the hazards to their original before slowdown
+    def restore_hazard_speeds(self):
+        for hazard, original_speed in self.original_hazard_speeds.items():
+            attr = self.get_hazard_speed_attribute(hazard)
+            if attr is not None:
+                setattr(hazard, attr, original_speed)
+
 
     # spawns a random powerup: 60% shield, 20% time reduction and 20% SlowerHazards
     def spawn_powerup(self):
@@ -179,6 +241,14 @@ class ControllerLevelOne:
                 character.shield_active = False
                 character.shield_timer = 0
 
+        # Tick down the slowdown timer if active
+        if self.slow_hazards_active:
+            self.slow_hazards_timer -= delta_time
+            if self.slow_hazards_timer <= 0:
+                self.slow_hazards_active = False
+                self.slow_hazards_timer = 0
+                self.restore_hazard_speeds()
+
         # If no powerup is active, count up spawn timer
         if self.current_powerup is None or not self.current_powerup.is_active:
             self.powerup_spawn_timer += delta_time
@@ -199,6 +269,13 @@ class ControllerLevelOne:
         if pygame.sprite.spritecollide(
             self.level_one.character, group, False, pygame.sprite.collide_mask):
             self.current_powerup.apply_effect(self.level_one.character)
+
+            # activate the slowdown effect
+            if isinstance(self.current_powerup, SlowerHazards):
+                self.slow_hazards_active = True
+                self.slow_hazards_timer = 5000
+                self.apply_slow_hazards()
+
             self.time_penalty_ms += self.current_powerup.time_penalty
             self.current_powerup.is_active = False
             self.current_powerup = None
