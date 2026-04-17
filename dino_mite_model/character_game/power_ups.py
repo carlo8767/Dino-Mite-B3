@@ -88,3 +88,17 @@ class TimeReduction(PowerUp):
 
     def apply_effect(self, _character):
         print("Time reduced by 5 seconds!")
+
+
+class SlowerHazards(PowerUp):
+    """
+    SlowerHazards powerup - makes incoming hazards speed decrease for 5 seconds
+    """
+    def __init__(self):
+        # TODO: replace placeholder with real power up image
+        # super().init("/image/SlowerHazards.png", speed = 1)
+        super().__init__(None, speed = 3, placeholder_color = (0, 255, 0))  # Green placeholder for now
+        self.name = "SlowerHazards"
+
+    def apply_effect(self, character):
+        print("Hazards slowed down for 5 seconds!")
