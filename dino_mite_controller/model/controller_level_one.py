@@ -79,9 +79,8 @@ class ControllerLevelOne:
         return self.level_one
 
     def detection_collision_character(self, sprite) -> tuple[bool, str]:
-        # If shield is active, hazard collisions are blocked
-        if getattr(sprite, 'shield_active', False):
-            return False, ""
+        # If shield is active, hazard collisions are blocked and hazards disappear
+        shield_active = getattr(sprite, 'shield_active', False)
         for g, v in self.models_collision.items():
             # Skip the sprite we are testing (the character itself)
             if g == sprite:
@@ -91,7 +90,14 @@ class ControllerLevelOne:
             # spritecollide returns a list of colliding sprites and remove from the group
             if pygame.sprite.spritecollide(sprite, sprites_group, False, pygame.sprite.collide_mask):
                 print("collude")
+
+                if shield_active:
+                    # Remove/reset hazards instead of damaging the player
+                    g.update_position_collision()
+                    return False, ""
+                
                 return True, v
+            
         return False, ""
 
     # ==================== PLAYER INPUT (forwarded to model) ====================
