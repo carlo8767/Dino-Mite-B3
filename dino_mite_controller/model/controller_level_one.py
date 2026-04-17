@@ -1,7 +1,7 @@
 from dino_mite_model.character_game.Hazard import Meteor
 from dino_mite_model.character_game.Hazard import RollingRock
 from dino_mite_model.level_model.levelone import LevelOne
-from dino_mite_model.character_game.power_ups import ShieldBubble, TimeReduction
+from dino_mite_model.character_game.power_ups import ShieldBubble, TimeReduction, SlowerHazards
 import random
 
 
@@ -26,6 +26,13 @@ class ControllerLevelOne:
         self.powerup_spawn_timer = 0       # counts up in milliseconds
         self.powerup_spawn_interval = 15000 # spawn every 15s → ~8 powerups in 2 min
         self.time_penalty_ms = 0           # accumulated ms penalty applied to the timer
+        self.slow_hazards_active = False
+        self.slow_hazards_timer = 0
+        self.slow_factor = 0.5
+        self.slowed_hazards = []
+        self.original_hazards_speeds = {}
+        self.register_slowable_hazards()
+
 
     def init_music(self):
         pygame.mixer.music.load(self.level_one.sound)
@@ -152,26 +159,29 @@ class ControllerLevelOne:
         self.level_one.hazard_rollingRock.update_position_collision()
 
 
-    # spawns a random powerup: 75% shield, 25% time reduction
+    # spawns a random powerup: 60% shield, 20% time reduction and 20% SlowerHazards
     def spawn_powerup(self):
-        if random.random() < 0.25:
-            self.current_powerup = TimeReduction()
-        else:
+        temp = random.random()
+        if temp < 0.60:
             self.current_powerup = ShieldBubble()
+        elif temp < 0.80:
+            self.current_powerup = TimeReduction()
+        else: 
+            self.current_powerup = SlowerHazards()
 
     # update powerup each frame, handles spawn timer
-    def update_powerup(self, dt):
+    def update_powerup(self, delta_time):
         # Tick down the shield timer if active
         character = self.level_one.character
         if getattr(character, 'shield_active', False):
-            character.shield_timer -= dt
+            character.shield_timer -= delta_time
             if character.shield_timer <= 0:
                 character.shield_active = False
                 character.shield_timer = 0
 
         # If no powerup is active, count up spawn timer
         if self.current_powerup is None or not self.current_powerup.is_active:
-            self.powerup_spawn_timer += dt
+            self.powerup_spawn_timer += delta_time
             if self.powerup_spawn_timer >= self.powerup_spawn_interval:
                 self.spawn_powerup()
                 self.powerup_spawn_timer = 0  # reset timer
