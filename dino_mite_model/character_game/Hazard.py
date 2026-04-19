@@ -16,13 +16,15 @@ class Meteor(pygame.sprite.Sprite):
         self.position_y = -60
         self.speed = 6
         self.is_active = True
-        self.image_path = os.path.join("./image", "meteor.png")
+        self.image_path = os.path.join("./image/hazard", "meteor.png")
         self.image_loaded = pygame.image.load(self.image_path).convert_alpha()
         self.image_loaded = pygame.transform.scale(self.image_loaded, (120, 120))
         self.rect = self.image_loaded.get_rect()
         self.rect.center = (self.position_x, self.position_y)
         self.mask = pygame.mask.from_surface(self.image_loaded)
         self.name = "Meteor"
+        self.sound_meteor = os.path.join('./music', 'MeteorSound.mp3')
+
 
     """ Moves the meteor from top os the screen to the bottom"""
     def update_position(self):
@@ -82,7 +84,7 @@ class RollingRock(pygame.sprite.Sprite):
         self.screen_width = WIDTH
         self.is_active = True  # ADD THIS
         self.name = "RollingRock"  # ADD THIS
-        self.image_rock_path = os.path.join("./image", "rolling_rock.png")
+        self.image_rock_path = os.path.join("./image/hazard", "rolling_rock.png")
         self.image_loaded = pygame.image.load(self.image_rock_path).convert_alpha()
         self.image_loaded = pygame.transform.scale(self.image_loaded, (60, 60))
         self.rect = self.image_loaded.get_rect()
@@ -96,12 +98,14 @@ class RollingRock(pygame.sprite.Sprite):
         self.rect.x += self.move_x
         # VERIFY THAT IS NOT OVERCOME THE LIMIT
         if self.rect.left > self.screen_width:
+            pygame.mixer.music.stop()
             self.rect.x = self.position_x
             # REMOVE CARLO
            # self.is_active = False  # CHANGED from kill() to match Meteor pattern
 
     # VERIFY HOW TO COLLUDE PROPERLY
     def update_position_collision(self):
+        pygame.mixer.music.stop()
         self.rect.x = self.position_x
 
 

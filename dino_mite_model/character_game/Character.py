@@ -1,5 +1,6 @@
+import logging
+
 import pygame
-import os
 import random
 
 from dino_mite_utility.utilities_names import HEIGHT, WIDTH
@@ -10,11 +11,12 @@ class CharacterDino(pygame.sprite.Sprite):
         super().__init__()
         # Load all images for dino PNG
         self.images = {
-            "idle":       pygame.transform.scale(pygame.image.load("./image/idle.png").convert_alpha(), (120, 120)),
-            "walk_right": pygame.transform.scale(pygame.image.load("./image/running.png").convert_alpha(), (120, 120)),
-            "walk_left":  pygame.transform.flip(pygame.transform.scale(pygame.image.load("./image/running.png").convert_alpha(), (120, 120)), True, False),
-            "duck":       pygame.transform.scale(pygame.image.load("./image/crouch.png").convert_alpha(), (120, 60)),
-            "jump":       pygame.transform.scale(pygame.image.load("./image/jump.png").convert_alpha(), (120, 120)),
+            "idle":       pygame.transform.scale(pygame.image.load("./image/character/idle.png").convert_alpha(), (120, 120)),
+            "walk_right": pygame.transform.scale(pygame.image.load("./image/character/running.png").convert_alpha(), (120, 120)),
+            "walk_left":  pygame.transform.flip(pygame.transform.scale(pygame.image.load("./image/character/running.png").convert_alpha(), (120, 120)), True, False),
+            "duck":       pygame.transform.scale(pygame.image.load("./image/character/crouch.png").convert_alpha(), (120, 60)),
+            "jump":       pygame.transform.scale(pygame.image.load("./image/character/jump.png").convert_alpha(), (120, 120)),
+            "dead":       pygame.transform.scale(pygame.image.load("./image/character/dead.png").convert_alpha(), (120, 120)),
         }
         self.position_x = 370
         self.constant_ground = 510
@@ -124,3 +126,8 @@ class CharacterDino(pygame.sprite.Sprite):
     def update_position_collision(self):
         self.rect.y = self.constant_ground
         self.rect.x = random.randint(50, self.screen_width - 50)
+
+    def draw_status(self, screen, state):
+        # DRAW BASE ON THE STATE
+        self.game_state = state
+        screen.blit(self.images[self.game_state], self.rect)
