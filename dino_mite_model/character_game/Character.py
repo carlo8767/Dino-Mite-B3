@@ -16,6 +16,7 @@ class CharacterDino(pygame.sprite.Sprite):
             "walk_left":  pygame.transform.flip(pygame.transform.scale(pygame.image.load("./image/running.png").convert_alpha(), (120, 120)), True, False),
             "duck":       pygame.transform.scale(pygame.image.load("./image/crouch.png").convert_alpha(), (120, 60)),
             "jump":       pygame.transform.scale(pygame.image.load("./image/jump.png").convert_alpha(), (120, 120)),
+            "dead":       pygame.transform.scale(pygame.image.load("./image/dead.png").convert_alpha(), (120, 120)),
         }
         self.position_x = 370
         self.constant_ground = 510
@@ -125,3 +126,8 @@ class CharacterDino(pygame.sprite.Sprite):
     def update_position_collision(self):
         self.rect.y = self.constant_ground
         self.rect.x = random.randint(50, self.screen_width - 50)
+
+    def draw_status(self, screen, state):
+        # DRAW BASE ON THE STATE
+        self.game_state = state
+        screen.blit(self.images[self.game_state], self.rect)
