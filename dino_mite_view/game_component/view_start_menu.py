@@ -1,7 +1,6 @@
 import logging
 
 import pygame
-import sys
 from dino_mite_view.game_component.button import Button
 import os
 

@@ -18,6 +18,11 @@ class ControllerLevelOne:
         pygame.mixer.music.load(self.level_one.sound)
         pygame.mixer.music.play(-1, 0.0) # Forever Loop
 
+    def init_music_end_level_one(self):
+        pygame.mixer.music.load(self.level_one.sound_end_game)
+        pygame.mixer.music.play(-1, 0.0)  # Forever Loop
+
+
     def stop_music(self):
         pygame.mixer.music.stop()
 
