@@ -16,7 +16,7 @@ class Meteor(pygame.sprite.Sprite):
         self.position_y = -60
         self.speed = 6
         self.is_active = True
-        self.image_path = os.path.join("./image", "meteor.png")
+        self.image_path = os.path.join("./image/hazard", "meteor.png")
         self.image_loaded = pygame.image.load(self.image_path).convert_alpha()
         self.image_loaded = pygame.transform.scale(self.image_loaded, (120, 120))
         self.rect = self.image_loaded.get_rect()
@@ -82,7 +82,7 @@ class RollingRock(pygame.sprite.Sprite):
         self.screen_width = WIDTH
         self.is_active = True  # ADD THIS
         self.name = "RollingRock"  # ADD THIS
-        self.image_rock_path = os.path.join("./image", "rolling_rock.png")
+        self.image_rock_path = os.path.join("./image/hazard", "rolling_rock.png")
         self.image_loaded = pygame.image.load(self.image_rock_path).convert_alpha()
         self.image_loaded = pygame.transform.scale(self.image_loaded, (60, 60))
         self.rect = self.image_loaded.get_rect()
