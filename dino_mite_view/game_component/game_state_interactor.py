@@ -60,6 +60,6 @@ class GameStateInteractor:
             elif self.GAME_STATE == "GAME OVER":
                 view_level_game_over = ViewGameOverMenu(window)
                 logging.info(f'current game state {self.GAME_STATE}')
-                result = view_level_game_over.draw_game_over()
+                result = view_level_game_over.init_game_over()
                 self.GAME_STATE = result
         pygame.quit()

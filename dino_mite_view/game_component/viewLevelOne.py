@@ -109,29 +109,29 @@ class ViewLevelOne:
                 screen_copy = window.copy()
                 countdown = 5000
                 while countdown >0:
-                    for alpha in range(0, 255, 20):
+                    for alpha in range(0, 255, 30):
                         fade.set_alpha(alpha)
                         window.blit(screen_copy, (0, 0))
                         window.blit(fade, (0, 0))
                         ctr_level_one.level_one.character.draw_status(window, "dead")
                         pygame.display.update()
-                        clock.tick(60)
-                    for alpha in range(255, 0, 20):
+                        clock.tick(70)
+                    for alpha in range(255, 0, -30):
                         fade.set_alpha(alpha)
                         window.blit(screen_copy, (0, 0))
                         window.blit(fade, (0, 0))
                         ctr_level_one.level_one.character.draw_status(window, "dead")
                         pygame.display.update()
-                        clock.tick(60)
+                        clock.tick(70)
                     countdown -= 300
-                for alpha in range(0, 255, 1):
+                for alpha in range(0, 255, 10):
                     fade.set_alpha(alpha)
                     window.blit(screen_copy, (0, 0))
                     window.blit(fade, (0, 0))
                     ctr_level_one.level_one.character.draw_status(window, "dead")
                     pygame.display.update()
                     pygame.time.delay(10)
-                    clock.tick(60)
+                    clock.tick(70)
                 logging.info(f'game over')
                 # HERE TRANSITION
                 # pygame.time.delay(2500)
