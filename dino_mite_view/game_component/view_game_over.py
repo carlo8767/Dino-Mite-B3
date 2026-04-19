@@ -30,7 +30,7 @@ class ViewGameOverMenu:
             (0, 0, 0), (255, 255, 255), 35, "red"
         )
 
-    def draw(self):
+    def draw_game_over(self):
         logging.info("Doing game over menu")
         overlay = pygame.Surface((self.screen_w, self.screen_h), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 150))
