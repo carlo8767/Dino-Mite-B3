@@ -6,8 +6,8 @@ from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 class PowerUp(pygame.sprite.Sprite):
     """
     Base class for all powerups
-    Mirrors the Hazard class structure-falls from the sky,
-    disappears when it hits the ground or is collected
+    Mirrors the Hazard class structure-falls from the sky
+    Disappears when it hits the ground or is collected
     Subclasses override apply_effect to define what happens on collection
     """
     def __init__(self, image_path, speed=3, placeholder_color=(255, 0, 0)):

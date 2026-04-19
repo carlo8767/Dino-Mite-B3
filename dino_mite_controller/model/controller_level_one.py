@@ -227,7 +227,7 @@ class ControllerLevelOne:
                 setattr(hazard, attr, original_speed)
 
 
-    # spawns a random powerup: 60% shield, 20% time reduction and 20% SlowerHazards
+    # spawns a random powerup: 60% shield, 20% time reduction and 20% slower hazards
     def spawn_powerup(self):
         temp = random.random()
         if temp < 0.60:
