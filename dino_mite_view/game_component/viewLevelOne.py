@@ -39,7 +39,6 @@ class ViewLevelOne:
         pause_menu = PauseMenu(window)
         game_over = False
         running = True
-        delta_time = 0
         while running:
             # ==================== EVENT HANDLING ====================
             events = pygame.event.get()
@@ -59,7 +58,7 @@ class ViewLevelOne:
                 # Handle clicks on the pause menu buttons (only when paused)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if ctr_level_one.is_paused:
-                        result = pause_menu.handle_click(event) #pass event instead of coordinates 
+                        result = pause_menu.handle_click(event) #pass event instead of coordinates
                         if result == "CONTINUE":
                             ctr_level_one.toggle_pause_menu()
                             pause_duration = pygame.time.get_ticks() - self.pause_start
@@ -84,10 +83,6 @@ class ViewLevelOne:
                 ctr_level_one.apply_player_gravity()
                 ctr_level_one.update_movement_level_one()
 
-                # update powerup position and spawn timer
-                ctr_level_one.update_powerup(delta_time)
-                ctr_level_one.detection_collision_powerup()
-
                 # Check if the character collides with any hazard
                 # collision only checks models_collision
                 collided, name = ctr_level_one.detection_collision_character(
@@ -102,7 +97,7 @@ class ViewLevelOne:
                     ctr_level_one.stop_music()
                     game_over = True
 
-            self.calculate_timer(self.time_duration_level, ctr_level_one.is_paused, ctr_level_one)
+            self.calculate_timer(self.time_duration_level, ctr_level_one.is_paused)
             # DRAVE ALL THE ELEMENT
             self.draw_elements(window, ctr_level_one, sprite_image_background, )
 
@@ -147,14 +142,12 @@ class ViewLevelOne:
                 # pygame.time.delay(2500)
                 return "GAME OVER"
             pygame.display.update()
-            delta_time = clock.tick(60)
+            clock.tick(60)
 
     # ==================== TIMER ====================
-    def calculate_timer(self, total_seconds, is_paused, ctr_level_one):
+    def calculate_timer(self, total_seconds, is_paused):
         if not is_paused:
-            elapsed_ms = (pygame.time.get_ticks() - self.start_ticks
-                          - self.pause_time_total
-                          + ctr_level_one.time_penalty_ms)
+            elapsed_ms = pygame.time.get_ticks() - self.start_ticks - self.pause_time_total
             remaining_seconds = max(0, total_seconds - elapsed_ms // 1000)
             mins, secs = divmod(remaining_seconds, 60)
             timer_text = f"Time to jump: {mins:02d}:{secs:02d}"
@@ -184,10 +177,6 @@ class ViewLevelOne:
                 ctr_level_one.level_one.hazard_rollingRock.image_loaded,
                 ctr_level_one.level_one.hazard_rollingRock.rect,
             )
-
-            if ctr_level_one.current_powerup and ctr_level_one.current_powerup.is_active:
-                ctr_level_one.current_powerup.draw(window)
-
             # ==================== DRAW  TIMER ====================
             font_type = pygame.font.SysFont("Comic Sans MS", 40)
             color_timer = (0, 0, 0)

@@ -10,7 +10,7 @@ class PauseMenu:
         font_path = os.path.join("./fonts", "Jersey10-Regular.ttf")
         self.font = pygame.font.Font(font_path, 42)
 
-        #Central Panel 
+        #Central Panel
         self.panel_w, self.panel_h = 280, 240
         self.panel_x = self.screen_w // 2 - self.panel_w // 2
         self.panel_y = self.screen_h // 2 - self.panel_h // 2
@@ -23,7 +23,7 @@ class PauseMenu:
                                       35, "red")
     def draw(self):
         logging.info("Doing pause menu")
-     
+
         overlay = pygame.Surface((self.screen_w, self.screen_h), pygame.SRCALPHA)
         overlay.fill((0,0,0,150))
         self.screen.blit(overlay,(0,0))
