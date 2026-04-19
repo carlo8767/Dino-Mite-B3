@@ -2,9 +2,12 @@ from curses.ascii import ctrl
 import os
 import pygame
 import logging
+import os
 from dino_mite_view.game_component.pause_menu import PauseMenu
 from dino_mite_utility import utilities_names
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
+
+from dino_mite_view.game_component.view_game_over import ViewGameOverMenu
 
 """ Main game loop for Level One"""
 """ :param window: The main pygame display surface."""
@@ -55,7 +58,7 @@ class ViewLevelOne:
                 # Handle clicks on the pause menu buttons (only when paused)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if ctr_level_one.is_paused:
-                        result = pause_menu.handle_click(pygame.mouse.get_pos())
+                        result = pause_menu.handle_click(event) #pass event instead of coordinates 
                         if result == "CONTINUE":
                             ctr_level_one.toggle_pause_menu()
                             pause_duration = pygame.time.get_ticks() - self.pause_start
@@ -64,6 +67,12 @@ class ViewLevelOne:
                              ctr_level_one.toggle_pause_menu()
                              ctr_level_one.stop_music()
                              return "MAIN_MENU"
+                   # elif game_over:
+                    #    result = game_over_menu.handle_click(event)
+                     #   if result == "RESTART":
+                     #       return "DRAW_LEVEL_ONE"
+                     #   if result == "MAIN_MENU":
+                      #      return "MAIN_MENU"
             # ==================== UPDATE (skip when paused) ====================
             # added "and not game_over" so game freezes on game over screen
             if not ctr_level_one.is_paused and not game_over:
@@ -105,29 +114,29 @@ class ViewLevelOne:
                 screen_copy = window.copy()
                 countdown = 5000
                 while countdown >0:
-                    for alpha in range(0, 255, 20):
+                    for alpha in range(0, 255, 30):
                         fade.set_alpha(alpha)
                         window.blit(screen_copy, (0, 0))
                         window.blit(fade, (0, 0))
                         ctr_level_one.level_one.character.draw_status(window, "dead")
                         pygame.display.update()
-                        clock.tick(60)
-                    for alpha in range(255, 0, 20):
+                        clock.tick(70)
+                    for alpha in range(255, 0, -30):
                         fade.set_alpha(alpha)
                         window.blit(screen_copy, (0, 0))
                         window.blit(fade, (0, 0))
                         ctr_level_one.level_one.character.draw_status(window, "dead")
                         pygame.display.update()
-                        clock.tick(60)
+                        clock.tick(70)
                     countdown -= 300
-                for alpha in range(0, 255, 1):
+                for alpha in range(0, 255, 10):
                     fade.set_alpha(alpha)
                     window.blit(screen_copy, (0, 0))
                     window.blit(fade, (0, 0))
                     ctr_level_one.level_one.character.draw_status(window, "dead")
                     pygame.display.update()
                     pygame.time.delay(10)
-                    clock.tick(60)
+                    clock.tick(70)
                 logging.info(f'game over')
                 # HERE TRANSITION
                 # pygame.time.delay(2500)
