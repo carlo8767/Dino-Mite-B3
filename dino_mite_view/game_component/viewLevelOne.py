@@ -39,6 +39,7 @@ class ViewLevelOne:
         pause_menu = PauseMenu(window)
         game_over = False
         running = True
+        delta_time = 0
         while running:
             # ==================== EVENT HANDLING ====================
             events = pygame.event.get()
@@ -82,6 +83,10 @@ class ViewLevelOne:
                 # Controller handles gravity
                 ctr_level_one.apply_player_gravity()
                 ctr_level_one.update_movement_level_one()
+
+                # update powerup position and spawn timer
+                ctr_level_one.update_powerup(delta_time)
+                ctr_level_one.detection_collision_powerup()
 
                 # Check if the character collides with any hazard
                 # collision only checks models_collision
@@ -142,7 +147,7 @@ class ViewLevelOne:
                 # pygame.time.delay(2500)
                 return "GAME OVER"
             pygame.display.update()
-            clock.tick(60)
+            delta_time = clock.tick(60)
 
     # ==================== TIMER ====================
     def calculate_timer(self, total_seconds, is_paused):
@@ -177,6 +182,10 @@ class ViewLevelOne:
                 ctr_level_one.level_one.hazard_rollingRock.image_loaded,
                 ctr_level_one.level_one.hazard_rollingRock.rect,
             )
+
+            if ctr_level_one.current_powerup and ctr_level_one.current_powerup.is_active:
+                ctr_level_one.current_powerup.draw(window)
+
             # ==================== DRAW  TIMER ====================
             font_type = pygame.font.SysFont("Comic Sans MS", 40)
             color_timer = (0, 0, 0)
