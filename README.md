@@ -64,6 +64,8 @@ MENU → RULES → STORYLINE → LEVEL ONE
 AI Usage log:
 
 backgroundLevelOne.jpeg - Gimini
+backgroundLevelTwo.jpeg - Gimini
+backgroundLevelThree.jpeg - Gimini
 meteor.png - Gimini
 rolling_rock.png - Gimini
 
