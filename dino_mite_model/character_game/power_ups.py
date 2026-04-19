@@ -15,8 +15,9 @@ class PowerUp(pygame.sprite.Sprite):
 
         # Load and scale image, or draw a colored placeholder if no path given
         if image_path is not None:
-            self.image_loaded = pygame.image.load(image_path).convert_alpha()
-            self.image_loaded = pygame.transform.scale(self.image_loaded, (60, 60))
+            self.image_loaded = pygame.transform.scale(
+                pygame.image.load(image_path).convert_alpha(), (60, 60)
+            )
         else:
             self.image_loaded = pygame.Surface((60, 60), pygame.SRCALPHA)
             self.image_loaded.fill(placeholder_color)
@@ -64,9 +65,7 @@ class ShieldBubble(PowerUp):
     ShieldBubble powerup - gives the player a shield for 5 seconds
     """
     def __init__(self):
-        # TODO: replace placeholder with real shield image
-        # super().__init__("./image/shield.png", speed=3)
-        super().__init__(None, speed=3, placeholder_color=(255, 0, 0))  # red placeholder
+        super().__init__("./image/bubble/Shield Bubble Icon.png", speed=3)
         self.name = "ShieldBubble"
 
     def apply_effect(self, character):
@@ -80,11 +79,9 @@ class TimeReduction(PowerUp):
     TimeReduction powerup - removes 5 seconds from the remaining timer
     """
     def __init__(self):
-        # TODO: replace placeholder with real time reduction image
-        # super().__init__("./image/time_reduction.png", speed=4)
-        super().__init__(None, speed=4, placeholder_color=(255, 215, 0))  # yellow placeholder
+        super().__init__("./image/bubble/Extra Time Icon.png", speed=4)
         self.name = "TimeReduction"
-        self.time_penalty = 5000  # 5 seconds in milliseconds added to elapsed time
+        self.time_penalty = -5000  # negative: subtracts from elapsed time, which adds 5s to remaining
 
     def apply_effect(self, _character):
         print("Time reduced by 5 seconds!")
@@ -95,9 +92,7 @@ class SlowerHazards(PowerUp):
     SlowerHazards powerup - makes incoming hazards speed decrease for 5 seconds
     """
     def __init__(self):
-        # TODO: replace placeholder with real power up image
-        # super().init("/image/SlowerHazards.png", speed = 1)
-        super().__init__(None, speed = 3, placeholder_color = (0, 255, 0))  # Green placeholder for now
+        super().__init__("./image/bubble/Reduced Velocity Icon.png", speed=3)
         self.name = "SlowerHazards"
 
     def apply_effect(self, character):

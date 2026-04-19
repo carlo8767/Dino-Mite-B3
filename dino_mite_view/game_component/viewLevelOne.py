@@ -23,6 +23,9 @@ class ViewLevelOne:
         self.eventually_time = ""
         self.time_duration_level = 120
         self.store_text_end = self.upload_file()
+        self.shield_bubble_image = pygame.transform.scale(
+            pygame.image.load("./image/bubble/Shield Bubble for Char.png").convert_alpha(), (150, 150)
+        )
 
 
     def draw_screen_level_one(self, window, ctr_level_one):
@@ -163,6 +166,11 @@ class ViewLevelOne:
 
             # Background
             window.blit(sprite_image_background, (0, 0))
+            # Draw shield bubble behind the character so the dino appears inside it
+            if getattr(ctr_level_one.level_one.character, 'shield_active', False):
+                shield_rect = self.shield_bubble_image.get_rect()
+                shield_rect.center = ctr_level_one.level_one.character.rect.center
+                window.blit(self.shield_bubble_image, shield_rect)
             # Character draw various images  CARLO
             ctr_level_one.level_one.character.draw(window)
             # Draw the original single hazard instances from the LevelOne model
