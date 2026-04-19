@@ -1,3 +1,5 @@
+from curses.ascii import ctrl
+import os
 import pygame
 import logging
 import os
@@ -88,12 +90,15 @@ class ViewLevelOne:
                 )
                 if collided:
                     # set game_over to True to trigger game over screen
+
                     logging.info(f"Collision detected with {name} — game over")
                     ctr_level_one.update_collision_position(name)
+
                     ctr_level_one.stop_music()
                     game_over = True
 
             self.calculate_timer(self.time_duration_level, ctr_level_one.is_paused)
+            # DRAVE ALL THE ELEMENT
             self.draw_elements(window, ctr_level_one, sprite_image_background, )
 
             if ctr_level_one.is_paused:
