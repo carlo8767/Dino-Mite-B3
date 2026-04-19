@@ -1,7 +1,6 @@
 import logging
 
 import pygame
-import os
 import random
 
 from dino_mite_utility.utilities_names import HEIGHT, WIDTH
