@@ -89,7 +89,9 @@ class ViewLevelOne:
 
                 # update powerup position and spawn timer
                 ctr_level_one.update_powerup(delta_time)
-                ctr_level_one.detection_collision_powerup()
+                collected_powerup = ctr_level_one.detection_collision_powerup()
+                if collected_powerup == "TimeReduction":
+                    self.start_ticks -= 5000  # shift timer reference back --> removes 5s remaining
 
                 # Check if the character collides with any hazard
                 # collision only checks models_collision

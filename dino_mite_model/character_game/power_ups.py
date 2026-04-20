@@ -34,7 +34,6 @@ class PowerUp(pygame.sprite.Sprite):
         self.speed = speed
         self.is_active = True
         self.name = "PowerUp"
-        self.time_penalty = 0  # ms to add to elapsed time on collection (0 = no effect)
 
     def update_position(self):
         # Falls downward every frame 
@@ -81,7 +80,6 @@ class TimeReduction(PowerUp):
     def __init__(self):
         super().__init__("./image/bubble/Extra Time Icon.png", speed=4)
         self.name = "TimeReduction"
-        self.time_penalty = -5000  # negative: subtracts from elapsed time, which adds 5s to remaining
 
     def apply_effect(self, _character):
         print("Time reduced by 5 seconds!")

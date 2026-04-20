@@ -23,8 +23,7 @@ class ControllerLevelOne:
         # Powerup Setup
         self.current_powerup = None         # one powerup at a time
         self.powerup_spawn_timer = 0        # counts up in milliseconds
-        self.powerup_spawn_interval = 15000 # spawn every 15s 
-        self.time_penalty_ms = 0            # accumulated ms penalty applied to the timer
+        self.powerup_spawn_interval = 15000 # spawn every 15s
 
         # Slowdown powerup state
         self.slow_hazards_active = False
@@ -210,19 +209,22 @@ class ControllerLevelOne:
         else:
             self.current_powerup.update_position()
 
-    def detection_collision_powerup(self):
+    def detection_collision_powerup(self) -> str:
+        """Returns the name of the collected powerup, or '' if none collected."""
         if self.current_powerup is None or not self.current_powerup.is_active:
-            return
+            return ""
         group = pygame.sprite.Group()
         group.add(self.current_powerup)
         if pygame.sprite.spritecollide(
                 self.level_one.character, group, False, pygame.sprite.collide_mask):
+            powerup_name = self.current_powerup.name
             self.current_powerup.apply_effect(self.level_one.character)
             if isinstance(self.current_powerup, SlowerHazards):
                 self.slow_hazards_active = True
                 self.slow_hazards_timer = 5000
                 self.apply_slow_hazards()
-            self.time_penalty_ms += self.current_powerup.time_penalty
             self.current_powerup.is_active = False
             self.current_powerup = None
-            logging.info("Powerup collected")
+            logging.info(f"Powerup collected: {powerup_name}")
+            return powerup_name
+        return ""
