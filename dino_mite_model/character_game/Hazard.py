@@ -96,16 +96,10 @@ class RollingRock(pygame.sprite.Sprite):
 
     def update_position(self):
         self.rect.x += self.move_x
-        # VERIFY THAT IS NOT OVERCOME THE LIMIT
         if self.rect.left > self.screen_width:
-            pygame.mixer.music.stop()
             self.rect.x = self.position_x
-            # REMOVE CARLO
-           # self.is_active = False  # CHANGED from kill() to match Meteor pattern
 
-    # VERIFY HOW TO COLLUDE PROPERLY
     def update_position_collision(self):
-        pygame.mixer.music.stop()
         self.rect.x = self.position_x
 
 
