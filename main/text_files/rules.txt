@@ -1,0 +1,12 @@
+﻿Rules for the Time-Rangers
+
+
+Keys:
+A – move left
+D – move right
+W – jump
+S – dodge 
+
+Escape – Pause game
+
+If Dino gets hit by a hazard – Dino’s Game is Over!
