@@ -185,7 +185,7 @@ class ViewLevelOne:
                 ctr_level_one.init_music_end_level_one()
                 self.faded_screen(window, ctr_level_one, clock)
                 logging.info(f'game over')
-                ctr_level_one.stop_music_channel()
+                ctr_level_one.stop_music()
 
                 # HERE TRANSITION
                 # pygame.time.delay(2500)
