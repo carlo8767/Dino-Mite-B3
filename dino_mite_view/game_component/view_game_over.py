@@ -21,17 +21,36 @@ class ViewGameOverMenu:
         button_x = self.panel_x + (self.panel_w - button_w) // 2
 
         self.play_again_button = Button(
-            "Play Again", button_w, 50, button_x, self.panel_y + 80, 
+            "Play Again", button_w, 50, button_x, self.panel_y + 80,
             (0, 0, 0), (255, 255, 255), 35, "green"
         )
-        
+
         self.exit_button = Button(
-            "Return", button_w, 50, button_x, self.panel_y + 150, 
+            "Return", button_w, 50, button_x, self.panel_y + 150,
             (0, 0, 0), (255, 255, 255), 35, "red"
         )
+        self.running = True
 
-    def draw(self):
-        logging.info("Doing game over menu")
+
+    def init_game_over(self):
+        logging.info(f'init game over ')
+        clock = pygame.time.Clock()
+        while self.running:
+            events = pygame.event.get()
+            for event in events:
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if self.play_again_button.is_clicked(event):
+                            pygame.mixer.music.stop()
+                            return "DRAW_LEVEL_ONE"
+                        if self.exit_button.is_clicked(event):
+                            pygame.mixer.music.stop()
+                            return "MAIN_MENU"
+            self.draw_game_over()
+            pygame.display.update()
+            clock.tick(60)
+
+    def draw_game_over(self):
+        logging.info("Draw game over")
         overlay = pygame.Surface((self.screen_w, self.screen_h), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 150))
         self.screen.blit(overlay, (0, 0))
@@ -41,13 +60,7 @@ class ViewGameOverMenu:
         title = self.font.render("GAME OVER", True, (220, 40, 40))
         title_x = self.panel_x + (self.panel_w - title.get_width()) // 2
         self.screen.blit(title, (title_x, self.panel_y + 20))
-
         self.play_again_button.draw_function(self.screen)
         self.exit_button.draw_function(self.screen)
 
-    def handle_click(self, event):
-        if self.play_again_button.is_clicked(event):
-            return "RESTART"
-        if self.exit_button.is_clicked(event):
-            return "MAIN_MENU"
-        return None
+
