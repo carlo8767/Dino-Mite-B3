@@ -162,7 +162,7 @@ class ViewLevelOne:
             if ctr_level_one.is_paused:
                 pause_menu.draw()
                 # ========= END CONDITION =========#
-            if "01:55" == self.remaining_time:
+            if "00:00" == self.remaining_time:
                 pygame.time.delay(500)
                 ctr_level_one.stop_music()
                 pygame.mixer.music.load(ctr_level_one.level_one.sound_complete_level)
