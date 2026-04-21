@@ -25,7 +25,7 @@ class Button:
             font_size=40,
             red_green = "green",
             font_path = os.path.join("./fonts", "Jersey10-Regular.ttf")
-            
+
     ):
         if red_green == "green":
             self.button_fone = os.path.join("./image/menu", "button_green.png")

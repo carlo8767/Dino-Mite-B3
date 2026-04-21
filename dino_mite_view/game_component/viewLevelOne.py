@@ -23,6 +23,9 @@ class ViewLevelOne:
         self.eventually_time = ""
         self.time_duration_level = 120
         self.store_text_end = self.upload_file()
+        self.shield_bubble_image = pygame.transform.scale(
+            pygame.image.load("./image/bubble/Shield Bubble for Char.png").convert_alpha(), (150, 150)
+        )
 
 
     def draw_screen_level_one(self, window, ctr_level_one):
@@ -39,6 +42,7 @@ class ViewLevelOne:
         pause_menu = PauseMenu(window)
         game_over = False
         running = True
+        delta_time = 0
         while running:
             # ==================== EVENT HANDLING ====================
             events = pygame.event.get()
@@ -58,7 +62,7 @@ class ViewLevelOne:
                 # Handle clicks on the pause menu buttons (only when paused)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if ctr_level_one.is_paused:
-                        result = pause_menu.handle_click(event) #pass event instead of coordinates 
+                        result = pause_menu.handle_click(event) #pass event instead of coordinates
                         if result == "CONTINUE":
                             ctr_level_one.toggle_pause_menu()
                             pause_duration = pygame.time.get_ticks() - self.pause_start
@@ -82,6 +86,12 @@ class ViewLevelOne:
                 # Controller handles gravity
                 ctr_level_one.apply_player_gravity()
                 ctr_level_one.update_movement_level_one()
+
+                # update powerup position and spawn timer
+                ctr_level_one.update_powerup(delta_time)
+                collected_powerup = ctr_level_one.detection_collision_powerup()
+                if collected_powerup == "TimeReduction":
+                    self.start_ticks -= 5000  # shift timer reference back --> removes 5s remaining
 
                 # Check if the character collides with any hazard
                 # collision only checks models_collision
@@ -142,7 +152,7 @@ class ViewLevelOne:
                 # pygame.time.delay(2500)
                 return "GAME OVER"
             pygame.display.update()
-            clock.tick(60)
+            delta_time = clock.tick(60)
 
     # ==================== TIMER ====================
     def calculate_timer(self, total_seconds, is_paused):
@@ -158,6 +168,11 @@ class ViewLevelOne:
 
             # Background
             window.blit(sprite_image_background, (0, 0))
+            # Draw shield bubble behind the character so the dino appears inside it
+            if getattr(ctr_level_one.level_one.character, 'shield_active', False):
+                shield_rect = self.shield_bubble_image.get_rect()
+                shield_rect.center = ctr_level_one.level_one.character.rect.center
+                window.blit(self.shield_bubble_image, shield_rect)
             # Character draw various images  CARLO
             ctr_level_one.level_one.character.draw(window)
             # Draw the original single hazard instances from the LevelOne model
@@ -177,6 +192,10 @@ class ViewLevelOne:
                 ctr_level_one.level_one.hazard_rollingRock.image_loaded,
                 ctr_level_one.level_one.hazard_rollingRock.rect,
             )
+
+            if ctr_level_one.current_powerup and ctr_level_one.current_powerup.is_active:
+                ctr_level_one.current_powerup.draw(window)
+
             # ==================== DRAW  TIMER ====================
             font_type = pygame.font.SysFont("Comic Sans MS", 40)
             color_timer = (0, 0, 0)
