@@ -15,7 +15,7 @@ class ViewStartStoryScreen:
         self.story_text  = self.store_text
         # Load background
         try:
-            self.image_path = os.path.join("./image", "story_background.png")
+            self.image_path = os.path.join("./image/menu", "story_background.png")
             self.background = pygame.image.load(self.image_path).convert_alpha()
             self.background = pygame.transform.scale(self.background, (WIDTH, HEIGHT))
         except:

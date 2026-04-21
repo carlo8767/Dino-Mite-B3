@@ -28,9 +28,9 @@ class Button:
             
     ):
         if red_green == "green":
-            self.button_fone = os.path.join("./image", "button_green.png")
+            self.button_fone = os.path.join("./image/menu", "button_green.png")
         else:
-            self.button_fone = os.path.join("./image", "button_red.png")
+            self.button_fone = os.path.join("./image/menu", "button_red.png")
 
         self.text = text
         self.color = color
