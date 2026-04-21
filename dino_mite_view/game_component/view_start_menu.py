@@ -12,7 +12,7 @@ class View_MainMenu:
         self.font_title = pygame.font.Font(font_path, 60)
         # Load background
         try:
-            self.image_path = os.path.join("./image", "story_background.png")
+            self.image_path = os.path.join("./image", "menu", "story_background.png")
             self.background = pygame.image.load(self.image_path).convert_alpha()
             self.background = pygame.transform.scale(self.background, (self.screen_width, self.screen_height))
         except:
