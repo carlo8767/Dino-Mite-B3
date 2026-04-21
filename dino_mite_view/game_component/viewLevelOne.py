@@ -1,4 +1,6 @@
-
+import random
+from curses.ascii import ctrl
+import os
 import pygame
 import logging
 import os
@@ -20,8 +22,10 @@ class ViewLevelOne:
         self.pause_time_total = 0
         self.pause_start = 0
         self.eventually_time = ""
+        self.remaining_time = ""
         self.time_duration_level = 120
-        self.store_text_end = self.upload_file()
+        self.font_path_level_one = os.path.join("./fonts", "Jersey10-Regular.ttf")
+        # self.store_text_end = self.upload_file()
         self.shield_bubble_image = pygame.transform.scale(
             pygame.image.load("./image/bubble/ShieldBubbleforChar.png").convert_alpha(), (150, 150)
         )
@@ -157,41 +161,35 @@ class ViewLevelOne:
 
             if ctr_level_one.is_paused:
                 pause_menu.draw()
+                # ========= END CONDITION =========#
+            if "01:55" == self.remaining_time:
+                pygame.time.delay(500)
+                ctr_level_one.stop_music()
+                pygame.mixer.music.load(ctr_level_one.level_one.sound_complete_level)
+                pygame.mixer.music.play(-1, 25.0)  # Forever Loop
+                # VERIFY
+                ctr_level_one.level_one.character.draw_status(window, "happy")
+                self.draw_elements(window, ctr_level_one, sprite_image_background)
+                self.draw_text_end_level(window)
+                pygame.time.delay(500)
+                pygame.display.update()
+                clock.tick(60)
+                self.draw_elements_pass_level(window, ctr_level_one, sprite_image_background, clock)
+                ctr_level_one.stop_music()
+                pygame.mixer.stop()
+                # CHANGE WHEN  INTRODUCING LEVEL TWO
+                return "GAME OVER"
             # GAME OVER
-            if game_over:
+            elif game_over:
                 # ADD HERE CHANGE IMAGE CHARACTER
                 ctr_level_one.init_music_end_level_one()
                 fade = pygame.Surface((WIDTH, HEIGHT))
                 fade.fill((0, 0, 0))
                 self.draw_text_end(window)
-                pygame.time.delay(500)
-                screen_copy = window.copy()
-                countdown = 5000
-                while countdown >0:
-                    for alpha in range(0, 255, 30):
-                        fade.set_alpha(alpha)
-                        window.blit(screen_copy, (0, 0))
-                        window.blit(fade, (0, 0))
-                        ctr_level_one.level_one.character.draw_status(window, "dead")
-                        pygame.display.update()
-                        clock.tick(70)
-                    for alpha in range(255, 0, -30):
-                        fade.set_alpha(alpha)
-                        window.blit(screen_copy, (0, 0))
-                        window.blit(fade, (0, 0))
-                        ctr_level_one.level_one.character.draw_status(window, "dead")
-                        pygame.display.update()
-                        clock.tick(70)
-                    countdown -= 300
-                for alpha in range(0, 255, 10):
-                    fade.set_alpha(alpha)
-                    window.blit(screen_copy, (0, 0))
-                    window.blit(fade, (0, 0))
-                    ctr_level_one.level_one.character.draw_status(window, "dead")
-                    pygame.display.update()
-                    pygame.time.delay(10)
-                    clock.tick(70)
+                self.faded_screen(window, ctr_level_one, clock)
                 logging.info(f'game over')
+                ctr_level_one.stop_music_channel()
+
                 # HERE TRANSITION
                 # pygame.time.delay(2500)
                 return "GAME OVER"
@@ -209,9 +207,8 @@ class ViewLevelOne:
                 # secs -= self.time_reduction
                 self.power_up_time_countdown = secs
                 timer_text = f"Time to jump: {mins:02d}:{secs:02d}"
+                self.remaining_time = f'{mins:02d}:{secs:02d}'
                 self.eventually_time = timer_text
-                # self.time_reduction_applied = True
-
 
     # ==================== DRAW ELEMENTS ====================
     def draw_elements(self, window, ctr_level_one,sprite_image_background ):
@@ -271,25 +268,63 @@ class ViewLevelOne:
 
 
             # ==================== DRAW  TIMER ====================
-            font_type = pygame.font.SysFont("Comic Sans MS", 40)
-            color_timer = (0, 0, 0)
+            font_type = pygame.font.Font(self.font_path_level_one, 60)
+            color_timer = (255, 255, 0)
             img = font_type.render(self.eventually_time, True, color_timer)
             rect = img.get_rect()
             rect.center = (400, 20)
-            pygame.draw.rect(window, (0, 0, 0), rect, 2)
+            # pygame.draw.rect(window, (0, 250, 0), rect, 2)
             window.blit(img, rect)
 
-    def draw_text_end(self, window):
-        split_text = self.store_text_end.split("\n")
+
+
+    # ==================== DRAW ELEMENTS PASS LEVEL====================
+    def draw_elements_pass_level(self, window, ctr_level_one, sprite_image_background, clock):
+        img_loop = ctr_level_one.level_one.image_loaded
+        y = 510
+        x = 370
+        ctr_level_one.level_one.character.set_current_position(x, y)
+        while y > 200:
+            y -= 5
+            ctr_level_one.level_one.character.set_current_position(x, y)
+            # ON
+            window.blit(sprite_image_background, (0, 0))
+            self.draw_text_end_level(window)
+            img_loop.set_alpha(255)
+            window.blit(img_loop, ctr_level_one.level_one.rect)
+            ctr_level_one.level_one.character.draw(window)
+            pygame.display.update()
+            clock.tick(40)
+            # OFF
+            window.blit(sprite_image_background, (0, 0))
+            self.draw_text_end_level(window)
+            img_loop.set_alpha(0)
+            window.blit(img_loop, ctr_level_one.level_one.rect)
+            ctr_level_one.level_one.character.draw(window)
+            pygame.display.update()
+            clock.tick(40)
+        screen_copy = window
+        fade = pygame.Surface((WIDTH, HEIGHT))
+        fade.fill((0, 0, 0))
+        for alpha in range(0, 255, 1):
+            fade.set_alpha(alpha)
+            window.blit(screen_copy, (0, 0))
+            window.blit(fade, (0, 0))
+            pygame.display.update()
+            clock.tick(50)
+
+
+    def draw_text_end_level(self, window):
+        split_text = ["LEVEL PASSED!", "READY TO JUMP?"]
         pos_x = 400
-        pos_y = 50
-        font_type = pygame.font.SysFont("Comic Sans MS", 70)
-        color_text = (255, 255, 255)
+        pos_y = 500
+        font_type  =  pygame.font.Font(self.font_path_level_one, 60)
+        color_text = (255, 255, 0)
         img = font_type.render(split_text[0], True, color_text)
         rect = img.get_rect()
         rect.center = (pos_x, pos_y)
         window.blit(img, rect)
-        pos_y += 150
+        pos_y = 60
         img = font_type.render(split_text[1], True, color_text)
         rect = img.get_rect()
         rect.center = (pos_x, pos_y)
@@ -297,12 +332,51 @@ class ViewLevelOne:
 
 
 
-    def upload_file(self):
-        try:
-            content  = ""
-            os_path  = os.path.join("./text_files", "end_story.txt")
-            with open(os_path, 'r', encoding='utf-8') as f:
-                content+= f.read()
-        except FileNotFoundError:
-            content = "file is missing"
-        return content
+    def draw_text_end(self, window, ctr_level_one):
+
+        split_text = ctr_level_one.level_one.store_text_end.split("\n")
+        pos_x = 400
+        pos_y = 100
+        font_type = pygame.font.Font(self.font_path_level_one, 60)
+        color_text = (255, 255, 0)
+        img = font_type.render(split_text[0], True, color_text)
+        rect = img.get_rect()
+        rect.center = (pos_x, pos_y)
+        window.blit(img, rect)
+        pos_y += 60
+        img = font_type.render(split_text[1], True, color_text)
+        rect = img.get_rect()
+        rect.center = (pos_x, pos_y)
+        window.blit(img, rect)
+
+    def faded_screen(self, window,ctr_level_one,clock ):
+        fade = pygame.Surface((WIDTH, HEIGHT))
+        fade.fill((0, 0, 0))
+        self.draw_text_end(window ,ctr_level_one)
+        pygame.time.delay(500)
+        screen_copy = window.copy()
+        countdown = 500
+        while countdown > 0:
+            for alpha in range(0, 255, 20):
+                fade.set_alpha(alpha)
+                window.blit(screen_copy, (0, 0))
+                window.blit(fade, (0, 0))
+                ctr_level_one.apply_change_player_status(window, "dead")
+                pygame.display.update()
+                clock.tick(60)
+            for alpha in range(255, 0, 20):
+                fade.set_alpha(alpha)
+                window.blit(screen_copy, (0, 0))
+                window.blit(fade, (0, 0))
+                ctr_level_one.apply_change_player_status(window, "dead")
+                pygame.display.update()
+                clock.tick(60)
+            countdown -= 300
+        for alpha in range(0, 255, 1):
+            fade.set_alpha(alpha)
+            window.blit(screen_copy, (0, 0))
+            window.blit(fade, (0, 0))
+            ctr_level_one.apply_change_player_status(window, "dead")
+            pygame.display.update()
+            pygame.time.delay(10)
+            clock.tick(60)
