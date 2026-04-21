@@ -41,6 +41,8 @@ class ControllerLevelOne:
     def stop_music(self):
         pygame.mixer.music.stop()
 
+
+
     # ==================== PAUSE ====================
 
     def toggle_pause_menu(self):
@@ -71,6 +73,8 @@ class ControllerLevelOne:
         for rock in self.rolling_rocks:
             rock.update_position()
 
+    def apply_change_player_status(self, window, status):
+        self.level_one.character.draw_status(window, status)
 
     def add_models_collision(self):
         """Register all level one sprites for collision checking"""

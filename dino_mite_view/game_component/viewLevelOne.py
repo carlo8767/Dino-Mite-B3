@@ -183,9 +183,6 @@ class ViewLevelOne:
             elif game_over:
                 # ADD HERE CHANGE IMAGE CHARACTER
                 ctr_level_one.init_music_end_level_one()
-                fade = pygame.Surface((WIDTH, HEIGHT))
-                fade.fill((0, 0, 0))
-                self.draw_text_end(window)
                 self.faded_screen(window, ctr_level_one, clock)
                 logging.info(f'game over')
                 ctr_level_one.stop_music_channel()
