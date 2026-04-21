@@ -39,23 +39,26 @@ class ViewDisplayStory:
             text_font = pygame.font.SysFont("Comic Sans MS", 30)
         color_timer = (0, 0, 0)
         screen.blit(self.background, (0, 0))
+        self.skip_story_button.draw_function(screen)
+        pygame.display.update()
+        index = 0
         while True:
             for event in pygame.event.get():
-                    if self.skip_story_button.is_clicked(event):
-                        return "MAIN_MENU"
-            for ns in split_text:
-                # SEE HOW TO WAIT TO RENDER THE TEXT
+                if self.skip_story_button.is_clicked(event):
+                    return "MAIN_MENU"
+            if index < len(split_text):
+                ns = split_text[index]
                 img = text_font.render(ns, True, color_timer)
                 rect = img.get_rect()
                 rect.center = (pos_x, pos_y)
                 screen.blit(img, rect)
                 pos_y += 40
-                split_text.pop(0)
-                pygame.time.delay(2500)
-                break
-            self.skip_story_button.draw_function(screen)
+                index += 1
+                pygame.time.delay(500)
             pygame.display.update()
             fps.tick(60)
+
+
 
     def upload_file(self):
         try:
