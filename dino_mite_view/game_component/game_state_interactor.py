@@ -6,8 +6,9 @@ from dino_mite_view.game_component.viewLevelOne import ViewLevelOne
 from dino_mite_utility import utilities_names
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT, STORY
 from dino_mite_view.game_component.view_start_menu import View_MainMenu
-from dino_mite_view.game_component.view_start_story_screen import ViewStartStoryScreen
+from dino_mite_view.game_component.display_story import ViewDisplayStory
 from dino_mite_view.game_component.view_game_over import ViewGameOverMenu
+from dino_mite_view.game_component.view_rules import ViewRules
 
 
 class GameStateInteractor:
@@ -19,6 +20,7 @@ class GameStateInteractor:
         MAIN_MENU    - Shows the start/exit menu
         LEVEL_ONE    - Initialises level one controller
         DrawLevelOne - Runs the level one game loop
+        RULES        - displayes rules
     """
     RUN_GAME = True
     GAME_STATE = ""
@@ -32,7 +34,8 @@ class GameStateInteractor:
         init_event = EventsController()
 
         view_main_menu = View_MainMenu(window)
-        view_story_screen = ViewStartStoryScreen()
+        view_story_screen = ViewDisplayStory()
+        view_rules = ViewRules()
 
         self.GAME_STATE = STORY
         controller_level_one = None
@@ -44,6 +47,12 @@ class GameStateInteractor:
             elif self.GAME_STATE == "MAIN_MENU":
                  logging.info(f'current game state {self.GAME_STATE}')
                  self.GAME_STATE = view_main_menu.draw_start_menu()
+            elif self.GAME_STATE == "RULES":
+                logging.info(f'current game state {self.GAME_STATE}')
+                view_rules.draw_rules_screen(window)
+                pygame.display.update()
+                for event in pygame.event.get():
+                    self.GAME_STATE = view_rules.handle_click(event)
             # ==================== STATE: LEVEL ONE INIT ====================
             elif self.GAME_STATE == utilities_names.LEVEL_ONE:
                 controller_level_one = init_event.event_level_one_notification()

@@ -23,7 +23,9 @@ class View_MainMenu:
         self.one_player_button = Button("One Player", 200, 60, (self.screen_width // 2) - 100, 250, (0, 150, 0), (255, 255, 255), 30, "green")
         self.two_players_button = Button("Two Players", 200, 60, (self.screen_width // 2) - 100, 350, (0, 150, 0),
                                    (255, 255, 255), 30, "green")
-        self.exit_button = Button("Exit", 200, 60, (self.screen_width // 2) - 100, 450, (200, 0, 0), (255, 255, 255), 30, "red")
+        self.rules_button = Button("Game Rules", 200, 60, (self.screen_width // 2) - 100, 450, (0, 150, 0),
+                                        (255, 255, 255), 30, "green")
+        self.exit_button = Button("Exit", 200, 60, (self.screen_width // 2) - 100, 550, (200, 0, 0), (255, 255, 255), 30, "red")
 
     def draw_start_menu(self):
         logging.info("Enter in view start menu")
@@ -32,6 +34,7 @@ class View_MainMenu:
         self.one_player_button.draw_function(self.screen)
         self.two_players_button.draw_function(self.screen)
         self.exit_button.draw_function(self.screen)
+        self.rules_button.draw_function(self.screen)
         title = self.font_title.render("Welcome to Dino-Mite!", True, (0, 0, 0))
         self.screen.blit(title, (150, 100))
         while  True:
@@ -40,6 +43,8 @@ class View_MainMenu:
                     return "LEVEL_ONE"
                 if self.exit_button.is_clicked(event):
                     return "EXIT"
+                if self.rules_button.is_clicked(event):
+                    return "RULES"
             pygame.display.update()
             fps.tick(60)
 
