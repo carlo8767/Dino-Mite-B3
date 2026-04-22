@@ -24,10 +24,25 @@ class ViewRules:
             self.background = pygame.Surface((WIDTH, HEIGHT))
             self.background.fill((50, 50, 50))
 
+        self.powerup_size = (50,50)
+
+        powerup_time_image_path = os.path.join("./image/bubble", "Extra Time Icon.png")
+        self.powerup_time_image = pygame.image.load(powerup_time_image_path).convert_alpha()
+        self.powerup_time_image = pygame.transform.scale( self.powerup_time_image, self.powerup_size)
+
+        powerup_velocity_path = os.path.join("./image/bubble", "Reduced Velocity Icon.png")
+        self.powerup_velocity_image = pygame.image.load(powerup_velocity_path).convert_alpha()
+        self.powerup_velocity_image = pygame.transform.scale(self.powerup_velocity_imag, self.powerup_size)
+
+        powerup_shield_path = os.path.join("./image/bubble", "Shield Bubble Icon.png")
+        self.powerup_shield_image = pygame.image.load(powerup_shield_path).convert_alpha()
+        self.powerup_shield_image = pygame.transform.scale(self.powerup_shield_image, self.powerup_size)
+
         # Create Buttons
         self.go_back_button = Button("Back", 200, 60, (self.width_int // 2) - 100, self.height_int - 130, (0, 150, 0),
                                         (255, 255, 255), 30, "green")
 
+        self.powerups = [self.powerup_time_image, self.powerup_velocity_image, self.powerup_shield_image]
     def draw_rules_screen(self, screen):
         logging.info("Enter in rules screen")
 
@@ -50,6 +65,7 @@ class ViewRules:
                 heading = False
             else:
                 pos_y += 40
+
 
         self.go_back_button.draw_function(screen)
 
