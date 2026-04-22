@@ -10,6 +10,6 @@ If Dino gets hit by a hazard – Dino’s Game is Over!
 
 Catch Power-Ups! 
 
-PU - Reduce Time Dino needs to survive
-PU - Reduce hazards speed
-PU - Gives Dino a shield agains hazards
+PU - Reduce Time Dino needs to survive by 5 seconds.
+PU - Reduce hazards speed by half.
+PU - Gives Dino a shield against hazards for 5 seconds.
