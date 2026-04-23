@@ -25,15 +25,15 @@ class ViewRules:
             self.background.fill((50, 50, 50))
 
 
-        powerup_time_image_path = os.path.join("./image/bubble", "Extra Time Icon.png")
+        powerup_time_image_path = os.path.join("./image/bubble", "ExtraTimeIcon.png")
         self.powerup_time_image = pygame.image.load(powerup_time_image_path).convert_alpha()
         self.powerup_time_image = pygame.transform.scale( self.powerup_time_image, (70, 70))
 
-        powerup_velocity_path = os.path.join("./image/bubble", "Reduced Velocity Icon.png")
+        powerup_velocity_path = os.path.join("./image/bubble", "ReducedVelocityIcon.png")
         self.powerup_velocity_image = pygame.image.load(powerup_velocity_path).convert_alpha()
         self.powerup_velocity_image = pygame.transform.scale(self.powerup_velocity_image, (70, 70))
 
-        powerup_shield_path = os.path.join("./image/bubble", "Shield Bubble Icon.png")
+        powerup_shield_path = os.path.join("./image/bubble", "ShieldBubbleIcon.png")
         self.powerup_shield_image = pygame.image.load(powerup_shield_path).convert_alpha()
         self.powerup_shield_image = pygame.transform.scale(self.powerup_shield_image, (70,70))
 
