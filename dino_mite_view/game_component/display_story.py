@@ -5,15 +5,14 @@ from dino_mite_view.game_component.button import Button
 import os
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
-
 class ViewDisplayStory:
 
     def __init__(self):
         self.store_text = self.upload_file()
-        self.width_int = WIDTH
+        self.width_int =  WIDTH
         self.height_int = HEIGHT
         self.font_title = pygame.font.SysFont("Arial", 20, bold=True)
-        self.story_text = self.store_text
+        self.story_text  = self.store_text
         # Load background
         try:
             self.image_path = os.path.join("./image/menu", "story_background.png")
@@ -25,7 +24,7 @@ class ViewDisplayStory:
 
         # Create Buttons
         self.skip_story_button = Button("Go", 200, 60, (self.width_int // 2) - 100, self.height_int - 130, (0, 150, 0),
-                                        (255, 255, 255), 30, "green")
+                                        (255, 255, 255), 30)
 
     def draw_story_screen(self, screen):
         logging.info("Enter in view story screen")
@@ -40,30 +39,38 @@ class ViewDisplayStory:
             text_font = pygame.font.SysFont("Comic Sans MS", 30)
         color_timer = (0, 0, 0)
         screen.blit(self.background, (0, 0))
+        self.skip_story_button.draw_function(screen)
+        pygame.display.update()
+        index = 0
         while True:
             for event in pygame.event.get():
                 if self.skip_story_button.is_clicked(event):
                     return "MAIN_MENU"
-            for ns in split_text:
-                # SEE HOW TO WAIT TO RENDER THE TEXT
+            if index < len(split_text):
+                ns = split_text[index]
                 img = text_font.render(ns, True, color_timer)
                 rect = img.get_rect()
                 rect.center = (pos_x, pos_y)
                 screen.blit(img, rect)
                 pos_y += 40
-                split_text.pop(0)
-                pygame.time.delay(2500)
-                break
-            self.skip_story_button.draw_function(screen)
+                index += 1
+                pygame.time.delay(500)
             pygame.display.update()
             fps.tick(60)
 
+
+
     def upload_file(self):
         try:
-            content = ""
-            os_path = os.path.join("./text_files", "start_story.txt")
+            content  = ""
+            os_path  = os.path.join("./text_files", "start_story.txt")
             with open(os_path, 'r', encoding='utf-8') as f:
-                content += f.read()
+                content+= f.read()
         except FileNotFoundError:
             content = "file is missing"
         return content
+
+
+
+
+
