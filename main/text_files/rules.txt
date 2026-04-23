@@ -1,12 +1,15 @@
-﻿Rules for the Time-Rangers
-
-
+﻿Rules for the Time-Rangers:
 Keys:
 A – move left
 D – move right
 W – jump
 S – dodge 
-
 Escape – Pause game
 
 If Dino gets hit by a hazard – Dino’s Game is Over!
+
+Catch Power-Ups! 
+
+PU - Reduce Time Dino needs to survive by 5 seconds.
+PU - Reduce hazards speed by half.
+PU - Gives Dino a shield against hazards for 5 seconds.
