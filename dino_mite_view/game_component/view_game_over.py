@@ -41,7 +41,7 @@ class ViewGameOverMenu:
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if self.play_again_button.is_clicked(event):
                             pygame.mixer.music.stop()
-                            return "DRAW_LEVEL_ONE"
+                            return "LEVEL_ONE"
                         if self.exit_button.is_clicked(event):
                             pygame.mixer.music.stop()
                             return "MAIN_MENU"
