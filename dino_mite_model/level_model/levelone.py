@@ -3,7 +3,8 @@ import os
 import pygame.sprite
 
 from dino_mite_model.character_game.Character import CharacterDino
-from dino_mite_model.character_game.Hazard import Meteor, RollingRock
+from dino_mite_model.character_game.vertical_hazard import Meteor
+from dino_mite_model.character_game.horizontal_hazard import RollingRock
 from dino_mite_model.character_game.power_ups import ShieldBubble, TimeReduction, SlowerHazards
 
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT

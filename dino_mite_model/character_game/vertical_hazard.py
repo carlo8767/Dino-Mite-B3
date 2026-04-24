@@ -8,8 +8,8 @@ from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
 # Base class of vertical hazards
 class VerticalHazard(pygame.sprite.Sprite):
-    def __int__(self, image_path, speed = 6, size = (120,120)):
-        super().__int__()
+    def __init__(self, image_path, speed = 6, size = (120,120)):
+        super().__init__()
 
         if image_path is not None:
             self.image = pygame.image.load(image_path).convert_alpha()
@@ -18,13 +18,13 @@ class VerticalHazard(pygame.sprite.Sprite):
             self.image = pygame.Surface(size, pygame.SRCALPHA)
             self.image.fill((255, 255, 255))
 
-            self.position_x = random.randint(550, WIDTH - 50)
-            self.position_y = -60
-            self.rect = self.image.get_rect()
-            self.rect.center = (self.position_x, self.position_y)
-            self.speed = speed
-            self.is_active = True
-            self.name = "VerticalHazard"
+        self.position_x = random.randint(550, WIDTH - 50)
+        self.position_y = -60
+        self.rect = self.image.get_rect()
+        self.rect.center = (self.position_x, self.position_y)
+        self.speed = speed
+        self.is_active = True
+        self.name = "VerticalHazard"
 
     def update_position(self):
         self.rect.y += self.speed
@@ -43,7 +43,7 @@ class VerticalHazard(pygame.sprite.Sprite):
         self.rect.center = (self.position_x, self.position_y)
         self.is_active = True
 
-    def draw_bubble(self, screen):
+    def draw_vertical_hazard(self, screen):
         screen.blit(self.image, self.rect)
 
 
@@ -51,8 +51,8 @@ class Meteor(VerticalHazard):
     """Level1 hazard. The meteor spawns with the random X position at the very top of the screen and falls down\n"
        "vertically with the set speed"""
 
-    def __int__(self):
-        super().__int__(image_path = os.path.join("./image/hazards", "meteor.png"), speed= 6, size = (120, 120))
+    def __init__(self):
+        super().__init__(image_path = os.path.join("./image/hazard", "meteor.png"), speed= 6, size = (120, 120))
         self.name = "Meteor"
         self.sound_meteor = os.path.join("./music", "MeteorSound.mp3")
 
@@ -65,8 +65,8 @@ class Meteor(VerticalHazard):
 class Fireball(VerticalHazard):
 
     # Adjust: image, sound
-    def __int__(self):
-        super().__int__(image_path=os.path.join("./image/hazards", "meteor.png"), speed=8, size=(120, 120))
+    def __init__(self):
+        super().__init__(image_path=os.path.join("./image/hazards", "meteor.png"), speed=8, size=(120, 120))
         self.name = "Fireball"
         # !Adjust! self.sound_meteor = os.path.join("./music", "Fireball.mp3")
 
