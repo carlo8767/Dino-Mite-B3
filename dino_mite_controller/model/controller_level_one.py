@@ -19,13 +19,13 @@ class ControllerLevelOne:
 
         self.add_models_collision()
 
-        # Shuffled deck: 3 shields, 1 time reduction, 1 slow per 5 spawns.
-        # Guarantees exact 60/20/20 split — deck refills automatically when empty.
-        # Uses the same 3 instances every time, no new objects created mid-game.
+        # Shuffled deck: 3 shields, 1 time reduction, 1 slow per 5 spawns
+        # Guarantees exact 60/20/20 split - deck refills automatically when empty
+        # Uses the same 3 instances every time, no new objects created mid-game
         self._deck = self._build_deck()
         self.current_powerup = None
         self.powerup_spawn_timer = 0
-        self.powerup_spawn_interval = 8000   # spawn every 8s — ensures 2 full decks fit in 2 min
+        self.powerup_spawn_interval = 8000   # spawn every 8s - ensures 2 full decks fit in 2 min
 
         # Slowdown powerup state
         self.slow_hazards_active = False
