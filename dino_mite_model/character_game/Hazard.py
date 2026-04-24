@@ -4,6 +4,8 @@ import pygame
 import random
 
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
+
+
 class Meteor(pygame.sprite.Sprite):
     """The meteor spawns with the random X position at the very top of the screen and falls down\n"
     "vertically with the set speed"""
@@ -16,7 +18,7 @@ class Meteor(pygame.sprite.Sprite):
         self.position_y = -60
         self.speed = 6
         self.is_active = True
-        self.image_path = os.path.join("./image", "meteor.png")
+        self.image_path = os.path.join("./image/hazard", "meteor.png")
         self.image_loaded = pygame.image.load(self.image_path).convert_alpha()
         self.image_loaded = pygame.transform.scale(self.image_loaded, (120, 120))
         self.rect = self.image_loaded.get_rect()
@@ -25,15 +27,16 @@ class Meteor(pygame.sprite.Sprite):
         self.name = "Meteor"
         self.sound_meteor = os.path.join('./music', 'MeteorSound.mp3')
 
-
     """ Moves the meteor from top os the screen to the bottom"""
-    def update_position(self):
-            self.rect.y += self.speed
-            self.rect.x -=  random.randint(-2, 2)
 
-            # When meteor hits the floor, reset to top with new random x
-            if self.rect.top > self.screen_height:
-                self.rect.center = (random.randint(50, self.screen_width - 50), -60)
+    def update_position(self):
+        self.rect.y += self.speed
+        self.rect.x -= random.randint(-2, 2)
+
+        # When meteor hits the floor, reset to top with new random x CARLO
+        if self.rect.top > self.screen_height:
+            self.rect.center = (random.randint(50, self.screen_width - 50), -60)
+            self.is_active = True
 
     def get_current_position(self):
         return self.rect.x, self.rect.y
@@ -56,7 +59,8 @@ class Meteor(pygame.sprite.Sprite):
         def move(self):
             self.rect.y += self.speed
     """
- 
+
+
 class RollingRock(pygame.sprite.Sprite):
     """
     HOW A ROLLING ROCK MOVES:
@@ -75,6 +79,7 @@ class RollingRock(pygame.sprite.Sprite):
     window.blit(rock.image_loaded, rock.rectangle)  # draws it
     # Collision dev uses: rock.rectangle
     """
+
     def __init__(self):
         super().__init__()
         self.move_x = 2
@@ -84,7 +89,7 @@ class RollingRock(pygame.sprite.Sprite):
         self.screen_width = WIDTH
         self.is_active = True  # ADD THIS
         self.name = "RollingRock"  # ADD THIS
-        self.image_rock_path = os.path.join("./image", "rolling_rock.png")
+        self.image_rock_path = os.path.join("./image/hazard", "rolling_rock.png")
         self.image_loaded = pygame.image.load(self.image_rock_path).convert_alpha()
         self.image_loaded = pygame.transform.scale(self.image_loaded, (60, 60))
         self.rect = self.image_loaded.get_rect()
@@ -96,16 +101,10 @@ class RollingRock(pygame.sprite.Sprite):
 
     def update_position(self):
         self.rect.x += self.move_x
-        # VERIFY THAT IS NOT OVERCOME THE LIMIT
         if self.rect.left > self.screen_width:
-            pygame.mixer.music.stop()
             self.rect.x = self.position_x
-            # REMOVE CARLO
-           # self.is_active = False  # CHANGED from kill() to match Meteor pattern
 
-    # VERIFY HOW TO COLLUDE PROPERLY
     def update_position_collision(self):
-        pygame.mixer.music.stop()
         self.rect.x = self.position_x
 
 

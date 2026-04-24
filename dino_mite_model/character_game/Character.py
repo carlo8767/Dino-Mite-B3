@@ -11,12 +11,14 @@ class CharacterDino(pygame.sprite.Sprite):
         super().__init__()
         # Load all images for dino PNG
         self.images = {
-            "idle":       pygame.transform.scale(pygame.image.load("./image/idle.png").convert_alpha(), (120, 120)),
-            "walk_right": pygame.transform.scale(pygame.image.load("./image/running.png").convert_alpha(), (120, 120)),
-            "walk_left":  pygame.transform.flip(pygame.transform.scale(pygame.image.load("./image/running.png").convert_alpha(), (120, 120)), True, False),
-            "duck":       pygame.transform.scale(pygame.image.load("./image/crouch.png").convert_alpha(), (120, 60)),
-            "jump":       pygame.transform.scale(pygame.image.load("./image/jump.png").convert_alpha(), (120, 120)),
-            "dead":       pygame.transform.scale(pygame.image.load("./image/dead.png").convert_alpha(), (120, 120)),
+            "idle":       pygame.transform.scale(pygame.image.load("./image/character/idle.png").convert_alpha(), (120, 120)),
+            "walk_right": pygame.transform.scale(pygame.image.load("./image/character/running.png").convert_alpha(), (120, 120)),
+            "walk_left":  pygame.transform.flip(pygame.transform.scale(pygame.image.load("./image/character/running.png").convert_alpha(), (120, 120)), True, False),
+            "duck":       pygame.transform.scale(pygame.image.load("./image/character/crouch.png").convert_alpha(), (120, 60)),
+            "jump":       pygame.transform.scale(pygame.image.load("./image/character/jump.png").convert_alpha(), (120, 120)),
+            "dead":       pygame.transform.scale(pygame.image.load("./image/character/dead.png").convert_alpha(), (120, 120)),
+            "happy": pygame.transform.scale(pygame.image.load("./image/character/levelpass.png").convert_alpha(),
+                                            (150, 150)),
         }
         self.position_x = 370
         self.constant_ground = 510
@@ -35,6 +37,10 @@ class CharacterDino(pygame.sprite.Sprite):
         self.screen_height = HEIGHT
         self.move_x = 2
         self.move_y = 2
+
+        # Shield powerup state
+        self.shield_active = False
+        self.shield_timer = 0
 
     def handle_key_input(self, keys, events):
         # Check key press for JUMP and DUCK - one time press actions
