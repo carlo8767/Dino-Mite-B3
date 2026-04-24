@@ -38,6 +38,10 @@ class CharacterDino(pygame.sprite.Sprite):
         self.move_x = 2
         self.move_y = 2
 
+        # Shield powerup state
+        self.shield_active = False
+        self.shield_timer = 0
+
     def handle_key_input(self, keys, events):
         # Check key press for JUMP and DUCK - one time press actions
         for event in events:
