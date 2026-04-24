@@ -1,5 +1,5 @@
 import pygame
-import random
+import random  # used for spawn position in activate / update_position_collision
 
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
@@ -40,7 +40,6 @@ class PowerUp(pygame.sprite.Sprite):
     def update_position(self):
         """Move downward each frame; deactivate if it exits the bottom."""
         self.rect.y += self.speed
-        self.rect.x -= random.randint(-2, 2)
         if self.rect.top >= HEIGHT:
             self.is_active = False
             self.rect.center = (random.randint(50, WIDTH - 50), -60)
