@@ -29,17 +29,7 @@ class ViewLevelThree(BaseLevelView):
         window.blit(background, (0, 0))
         self._draw_hud(window, controller)
         controller.level_model.character.draw(window)
-
-        # TODO: add Level 3 hazard drawing here when Person A delivers LevelThree model
-        if controller.level_model.hazard_meteor.is_active:
-            window.blit(
-                controller.level_model.hazard_meteor.image_loaded,
-                controller.level_model.hazard_meteor.rect,
-            )
-        window.blit(
-            controller.level_model.hazard_rollingRock.image_loaded,
-            controller.level_model.hazard_rollingRock.rect,
-        )
+        # TODO: add Level 3 hazard drawing here once hazards are defined in LevelThree model
 
     def _win_sequence(self, window, controller, background, clock):
         controller.stop_music()

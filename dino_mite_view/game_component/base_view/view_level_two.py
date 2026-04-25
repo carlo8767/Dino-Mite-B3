@@ -29,27 +29,7 @@ class ViewLevelTwo(BaseLevelView):
         window.blit(background, (0, 0))
         self._draw_hud(window, controller)
         controller.level_model.character.draw(window)
-
-        # TODO: add Level 2 hazard drawing here when Person A delivers LevelTwo model
-        if controller.level_model.hazard_meteor.is_active:
-            window.blit(
-                controller.level_model.hazard_meteor.image_loaded,
-                controller.level_model.hazard_meteor.rect,
-            )
-        if controller.level_model.hazard_meteorOne.is_active:
-            window.blit(
-                controller.level_model.hazard_meteorOne.image_loaded,
-                controller.level_model.hazard_meteorOne.rect,
-            )
-        if controller.level_model.hazard_meteorTwo.is_active:
-            window.blit(
-                controller.level_model.hazard_meteorTwo.image_loaded,
-                controller.level_model.hazard_meteorTwo.rect,
-            )
-        window.blit(
-            controller.level_model.hazard_rollingRock.image_loaded,
-            controller.level_model.hazard_rollingRock.rect,
-        )
+        # TODO: add Level 2 hazard drawing here once hazards are defined in LevelTwo model
 
     def _win_sequence(self, window, controller, background, clock):
         controller.stop_music()
