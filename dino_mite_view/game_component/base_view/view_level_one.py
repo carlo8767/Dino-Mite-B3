@@ -8,7 +8,7 @@ from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 class ViewLevelOne(BaseLevelView):
     """Level One view — extends BaseLevelView, only level-specific logic lives here."""
 
-    time_duration_level = 120  # 2 minutes
+    time_duration_level = 10  # 2 minutes
 
     def __init__(self):
         super().__init__()
@@ -124,3 +124,6 @@ class ViewLevelOne(BaseLevelView):
         rect = img.get_rect()
         rect.center = (pos_x, 60)
         window.blit(img, rect)
+
+    def _next_level(self):
+        return "LEVEL_TWO"

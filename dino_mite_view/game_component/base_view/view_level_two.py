@@ -12,7 +12,7 @@ class ViewLevelTwo(BaseLevelView):
     Waiting on Person A to deliver ControllerLevelTwo and LevelTwo model.
     """
 
-    time_duration_level = 90  # Level 2 is 90 seconds, adjust when confirmed
+    time_duration_level = 10  # Level 2 is 90 seconds, adjust when confirmed
 
     def __init__(self):
         super().__init__()
@@ -43,3 +43,6 @@ class ViewLevelTwo(BaseLevelView):
         logging.info("game over level two")
         controller.stop_music()
         return "GAME OVER"
+    
+    def _next_level(self):
+        return "LEVEL_THREE"
