@@ -42,11 +42,14 @@ class ViewDisplayStory:
         self.skip_story_button.draw_function(screen)
         pygame.display.update()
         index = 0
+        prev_line_time = pygame.time.get_ticks()
         while True:
             for event in pygame.event.get():
                 if self.skip_story_button.is_clicked(event):
                     return "MAIN_MENU"
-            if index < len(split_text):
+
+            current_time = pygame.time.get_ticks()
+            if index < len(split_text) and (current_time - prev_line_time) >= 1500:
                 ns = split_text[index]
                 img = text_font.render(ns, True, color_timer)
                 rect = img.get_rect()
@@ -54,10 +57,9 @@ class ViewDisplayStory:
                 screen.blit(img, rect)
                 pos_y += 40
                 index += 1
-                pygame.time.delay(500)
+                prev_line_time = current_time
             pygame.display.update()
             fps.tick(60)
-
 
 
     def upload_file(self):
