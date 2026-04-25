@@ -68,8 +68,7 @@ class ViewLevelOne(BaseLevelView):
         self.draw_elements_pass_level(window, controller, background, clock)
         controller.stop_music()
         pygame.mixer.stop()
-        # CHANGE TO "LEVEL_TWO" WHEN LEVEL TWO IS READY
-        return "GAME OVER"
+        return "LEVEL_TWO"
 
     def _lose_sequence(self, window, controller, clock):
         controller.init_music_end_level()
