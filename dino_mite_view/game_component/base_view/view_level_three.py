@@ -22,23 +22,23 @@ class ViewLevelThree(BaseLevelView):
         return self.draw_screen(window, controller)
 
     def _load_background(self, controller):
-        img = pygame.image.load(controller.level_one.image).convert()
+        img = pygame.image.load(controller.level_model.image).convert()
         return pygame.transform.scale(img, (WIDTH, HEIGHT))
 
     def _draw(self, window, controller, background):
         window.blit(background, (0, 0))
         self._draw_hud(window, controller)
-        controller.level_one.character.draw(window)
+        controller.level_model.character.draw(window)
 
         # TODO: add Level 3 hazard drawing here when Person A delivers LevelThree model
-        if controller.level_one.hazard_meteor.is_active:
+        if controller.level_model.hazard_meteor.is_active:
             window.blit(
-                controller.level_one.hazard_meteor.image_loaded,
-                controller.level_one.hazard_meteor.rect,
+                controller.level_model.hazard_meteor.image_loaded,
+                controller.level_model.hazard_meteor.rect,
             )
         window.blit(
-            controller.level_one.hazard_rollingRock.image_loaded,
-            controller.level_one.hazard_rollingRock.rect,
+            controller.level_model.hazard_rollingRock.image_loaded,
+            controller.level_model.hazard_rollingRock.rect,
         )
 
     def _win_sequence(self, window, controller, background, clock):
@@ -48,7 +48,7 @@ class ViewLevelThree(BaseLevelView):
         return "GAME OVER"  # Level 3 is the final level
 
     def _lose_sequence(self, window, controller, clock):
-        controller.init_music_end_level_one()
+        controller.init_music_end_level()
         self.faded_screen(window, controller, clock)
         logging.info("game over level three")
         controller.stop_music()

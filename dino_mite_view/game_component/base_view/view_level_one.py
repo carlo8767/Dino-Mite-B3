@@ -20,7 +20,7 @@ class ViewLevelOne(BaseLevelView):
     # ==================== LEVEL ONE SPECIFIC ====================
 
     def _load_background(self, controller):
-        img = pygame.image.load(controller.level_one.image).convert()
+        img = pygame.image.load(controller.level_model.image).convert()
         return pygame.transform.scale(img, (WIDTH, HEIGHT))
 
     def _draw(self, window, controller, background):
@@ -31,35 +31,35 @@ class ViewLevelOne(BaseLevelView):
         self._draw_hud(window, controller)
 
         # Character
-        controller.level_one.character.draw(window)
+        controller.level_model.character.draw(window)
 
         # Hazards
-        if controller.level_one.hazard_meteor.is_active:
+        if controller.level_model.hazard_meteor.is_active:
             window.blit(
-                controller.level_one.hazard_meteor.image_loaded,
-                controller.level_one.hazard_meteor.rect,
+                controller.level_model.hazard_meteor.image_loaded,
+                controller.level_model.hazard_meteor.rect,
             )
-        if controller.level_one.hazard_meteorOne.is_active:
+        if controller.level_model.hazard_meteorOne.is_active:
             window.blit(
-                controller.level_one.hazard_meteorOne.image_loaded,
-                controller.level_one.hazard_meteorOne.rect,
+                controller.level_model.hazard_meteorOne.image_loaded,
+                controller.level_model.hazard_meteorOne.rect,
             )
-        if controller.level_one.hazard_meteorTwo.is_active:
+        if controller.level_model.hazard_meteorTwo.is_active:
             window.blit(
-                controller.level_one.hazard_meteorTwo.image_loaded,
-                controller.level_one.hazard_meteorTwo.rect,
+                controller.level_model.hazard_meteorTwo.image_loaded,
+                controller.level_model.hazard_meteorTwo.rect,
             )
         window.blit(
-            controller.level_one.hazard_rollingRock.image_loaded,
-            controller.level_one.hazard_rollingRock.rect,
+            controller.level_model.hazard_rollingRock.image_loaded,
+            controller.level_model.hazard_rollingRock.rect,
         )
 
     def _win_sequence(self, window, controller, background, clock):
         pygame.time.delay(500)
         controller.stop_music()
-        pygame.mixer.music.load(controller.level_one.sound_complete_level)
+        pygame.mixer.music.load(controller.level_model.sound_complete_level)
         pygame.mixer.music.play(-1, 25.0)
-        controller.level_one.character.draw_status(window, "happy")
+        controller.level_model.character.draw_status(window, "happy")
         self._draw(window, controller, background)
         self.draw_text_end_level(window)
         pygame.time.delay(500)
@@ -72,7 +72,7 @@ class ViewLevelOne(BaseLevelView):
         return "GAME OVER"
 
     def _lose_sequence(self, window, controller, clock):
-        controller.init_music_end_level_one()
+        controller.init_music_end_level()
         self.faded_screen(window, controller, clock)
         logging.info("game over")
         controller.stop_music()
@@ -81,25 +81,25 @@ class ViewLevelOne(BaseLevelView):
     # ==================== LEVEL ONE ANIMATIONS ====================
 
     def draw_elements_pass_level(self, window, controller, background, clock):
-        img_loop = controller.level_one.image_loaded
+        img_loop = controller.level_model.image_loaded
         y = 510
         x = 370
-        controller.level_one.character.set_current_position(x, y)
+        controller.level_model.character.set_current_position(x, y)
         while y > 200:
             y -= 5
-            controller.level_one.character.set_current_position(x, y)
+            controller.level_model.character.set_current_position(x, y)
             window.blit(background, (0, 0))
             self.draw_text_end_level(window)
             img_loop.set_alpha(255)
-            window.blit(img_loop, controller.level_one.rect)
-            controller.level_one.character.draw(window)
+            window.blit(img_loop, controller.level_model.rect)
+            controller.level_model.character.draw(window)
             pygame.display.update()
             clock.tick(40)
             window.blit(background, (0, 0))
             self.draw_text_end_level(window)
             img_loop.set_alpha(0)
-            window.blit(img_loop, controller.level_one.rect)
-            controller.level_one.character.draw(window)
+            window.blit(img_loop, controller.level_model.rect)
+            controller.level_model.character.draw(window)
             pygame.display.update()
             clock.tick(40)
         screen_copy = window

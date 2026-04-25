@@ -77,7 +77,7 @@ class BaseLevelView:
                 keys = pygame.key.get_pressed()
                 controller.handle_player_input(keys, events)
                 controller.apply_player_gravity()
-                controller.update_movement_level_one()
+                controller.update_movement()
 
                 controller.update_powerup(delta_time)
 
@@ -86,7 +86,7 @@ class BaseLevelView:
                     self.time_reduction_ms += 5000
 
                 collided, name = controller.detection_collision_character(
-                    controller.level_one.character
+                    controller.level_model.character
                 )
                 if collided and name in ("RollingRock", "Meteor"):
                     logging.info(f"Collision detected with {name} — game over")
@@ -132,9 +132,9 @@ class BaseLevelView:
             controller.current_powerup.draw(window)
 
         # Shield bubble around character
-        if controller.level_one.character.shield_active:
+        if controller.level_model.character.shield_active:
             shield_rect = self.shield_bubble_image.get_rect()
-            shield_rect.center = controller.level_one.character.rect.center
+            shield_rect.center = controller.level_model.character.rect.center
             window.blit(self.shield_bubble_image, shield_rect)
 
         # Timer text
@@ -147,7 +147,7 @@ class BaseLevelView:
 
     def draw_text_end(self, window, controller):
         """Death message text — reads from level model."""
-        split_text = controller.level_one.store_text_end.split("\n")
+        split_text = controller.level_model.store_text_end.split("\n")
         pos_x = 400
         font_type = pygame.font.Font(self.font_path, 60)
         color_text = (255, 255, 0)
