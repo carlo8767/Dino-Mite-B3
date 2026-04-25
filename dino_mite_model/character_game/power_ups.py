@@ -73,7 +73,7 @@ class TimeReduction(PowerUp):
 
     image_path = "./image/bubble/ExtraTimeIcon.png"
     name = "TimeReduction"
-    _speed = 4
+    _speed = 3
 
     def apply_effect(self, character):
         # The view adjusts start_ticks by -5000 ms on collection

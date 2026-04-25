@@ -36,5 +36,5 @@ class LevelTwo(BaseLevelModel):
 
         # ── Assets ────────────────────────────────────────────────────────────
         self.image          = os.path.join('./image/level_two/', 'backgroundlevelTwo.jpeg')
-        self.sound          = os.path.join('./music', 'Portal.mp3')
+        self.sound          = os.path.join('./music', 'SoundLevelOne.mp3')
         self.sound_end_game = os.path.join('./music', 'EndGameLevelOne.mp3')
