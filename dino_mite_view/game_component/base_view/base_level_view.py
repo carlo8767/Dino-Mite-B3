@@ -1,6 +1,7 @@
 import os
 import pygame
 import logging
+import random
 
 from dino_mite_view.game_component.pause_menu import PauseMenu
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
@@ -29,6 +30,9 @@ class BaseLevelView:
             pygame.image.load("./image/bubble/ShieldBubbleforChar.png").convert_alpha(),
             (150, 150)
         )
+
+        self.portal_active = False
+        self.portal_rect = None
 
     def draw_screen(self, window, controller):
         """
@@ -94,15 +98,23 @@ class BaseLevelView:
                     controller.stop_music()
                     game_over = True
 
+                if self.portal_active and self.portal_rect is not None:
+                    if controller.level_model.character.rect.colliderect(self.portal_rect):
+                        return self._loading_transition(window, clock, self._next_level())
+
             self.calculate_timer(self.time_duration_level, controller.is_paused)
             self._draw(window, controller, background)
+
+            if self.portal_active and self.portal_rect is not None:
+                pygame.draw.rect(window, (0, 255, 0), self.portal_rect)
 
             if controller.is_paused:
                 pause_menu.draw()
 
             # ==================== END CONDITIONS ====================
-            if self.remaining_time == "00:00":
-                return self._win_sequence(window, controller, background, clock)
+            if self.remaining_time == "00:00" and not self.portal_active:
+                self.portal_active = True
+                self._spawn_portal(controller)
 
             if game_over:
                 return self._lose_sequence(window, controller, clock)
@@ -190,6 +202,49 @@ class BaseLevelView:
             pygame.time.delay(10)   
             clock.tick(60)
 
+    def _spawn_portal(self, controller):
+        portal_width = 60
+        portal_height = 80
+        character = controller.level_model.character
+        ground_y = character.constant_ground
+        player_x = character.rect.x
+
+        possible_x_positions = [
+            x for x in range(80, WIDTH - portal_width - 80)
+            if abs(x - player_x) > 180
+        ]
+
+        if not possible_x_positions:
+            portal_x = WIDTH - portal_width - 80
+        else:
+            portal_x = random.choice(possible_x_positions)
+
+        self.portal_rect = pygame.Rect(
+            portal_x,
+            ground_y + character.standing_height - portal_height,
+            portal_width,
+            portal_height
+        )
+
+    def _loading_transition(self, window, clock, next_state):
+        font = pygame.font.Font(self.font_path, 70)
+
+        for alpha in range(0, 255, 5):
+            overlay = pygame.Surface((WIDTH, HEIGHT))
+            overlay.fill((0, 0, 0))
+            overlay.set_alpha(alpha)
+            window.blit(overlay, (0, 0))
+
+            text = font.render("ENTERING PORTAL...", True, (255, 255, 0))
+            rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+            window.blit(text, rect)
+
+            pygame.display.update()
+            clock.tick(60)
+
+        pygame.time.delay(700)
+        return next_state
+
     # ==================== ABSTRACT METHODS ====================
     # Subclasses MUST implement these   
 
@@ -204,3 +259,6 @@ class BaseLevelView:
 
     def _lose_sequence(self, window, controller, clock):
         raise NotImplementedError(f"{self.__class__.__name__} must implement _lose_sequence")
+    
+    def _next_level(self):
+        raise NotImplementedError(f"{self.__class__.__name__} must implement _next_level")
