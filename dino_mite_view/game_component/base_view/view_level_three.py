@@ -12,7 +12,7 @@ class ViewLevelThree(BaseLevelView):
     Waiting on Person A to deliver ControllerLevelThree and LevelThree model.
     """
 
-    time_duration_level = 10  # Level 3 is 60 seconds, adjust when confirmed
+    time_duration_level = 60  # Level 3 is 60 seconds, adjust when confirmed
 
     def __init__(self):
         super().__init__()
