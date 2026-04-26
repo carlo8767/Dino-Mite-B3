@@ -33,6 +33,8 @@ class BaseLevelView:
 
         self.portal_active = False
         self.portal_rect = None
+        self.portal_image = pygame.image.load("./image/portal.jpeg").convert_alpha()
+        self.portal_image = pygame.transform.scale(self.portal_image, (90, 130))
 
     def draw_screen(self, window, controller):
         """
@@ -106,7 +108,7 @@ class BaseLevelView:
             self._draw(window, controller, background)
 
             if self.portal_active and self.portal_rect is not None:
-                pygame.draw.rect(window, (0, 255, 0), self.portal_rect)
+                self._draw_portal(window)
 
             if controller.is_paused:
                 pause_menu.draw()
@@ -201,10 +203,19 @@ class BaseLevelView:
             pygame.display.update()
             pygame.time.delay(10)   
             clock.tick(60)
+            
+    def _draw_portal(self, window):
+        time = pygame.time.get_ticks()
+
+        angle = (time * 0.08) % 360
+        rotated_portal = pygame.transform.rotate(self.portal_image, angle)
+
+        portal_draw_rect = rotated_portal.get_rect(center=self.portal_rect.center)
+        window.blit(rotated_portal, portal_draw_rect)
 
     def _spawn_portal(self, controller):
-        portal_width = 60
-        portal_height = 80
+        portal_width = 90
+        portal_height = 130
         character = controller.level_model.character
         ground_y = character.constant_ground
         player_x = character.rect.x
