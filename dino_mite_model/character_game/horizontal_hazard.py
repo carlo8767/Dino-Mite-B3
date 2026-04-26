@@ -253,4 +253,4 @@ class Drone(BidirectionalHazard):
     _move_x    = 5
     size       = (80, 50)
     _start_x   = -300
-    _start_y   = 490    
+    _start_y   = 520    
