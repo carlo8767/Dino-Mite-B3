@@ -6,12 +6,9 @@ class ControllerLevelTwo(BaseLevelController):
     """
     Controller for Level 2.
 
-    Once Level 2 hazards are added to LevelTwo, list them in
-    register_slowable_hazards() below. That single list drives:
-      - collision detection
-      - frame-by-frame movement
-      - the slowdown powerup effect
-      - level reset positions
+    Hazards: 3 fireballs (vertical) + 1 mammoth (horizontal).
+    All four are registered so collision detection, movement,
+    the slowdown powerup, and level reset all work automatically.
     """
 
     def __init__(self):
@@ -20,6 +17,8 @@ class ControllerLevelTwo(BaseLevelController):
 
     def register_slowable_hazards(self):
         self.slowed_hazards = [
-            # TODO: add Level 2 hazard instances once defined in LevelTwo
-            # self.level_model.hazard_???,
+            self.level_model.hazard_fireball,
+            self.level_model.hazard_fireballOne,
+            self.level_model.hazard_fireballTwo,
+            self.level_model.hazard_mammoth,
         ]

@@ -29,7 +29,21 @@ class ViewLevelTwo(BaseLevelView):
         window.blit(background, (0, 0))
         self._draw_hud(window, controller)
         controller.level_model.character.draw(window)
-        # TODO: add Level 2 hazard drawing here once hazards are defined in LevelTwo model
+
+        # Fireballs (vertical — only draw when active)
+        if controller.level_model.hazard_fireball.is_active:
+            window.blit(controller.level_model.hazard_fireball.image_loaded,
+                        controller.level_model.hazard_fireball.rect)
+        if controller.level_model.hazard_fireballOne.is_active:
+            window.blit(controller.level_model.hazard_fireballOne.image_loaded,
+                        controller.level_model.hazard_fireballOne.rect)
+        if controller.level_model.hazard_fireballTwo.is_active:
+            window.blit(controller.level_model.hazard_fireballTwo.image_loaded,
+                        controller.level_model.hazard_fireballTwo.rect)
+
+        # Mammoth (horizontal — always on screen)
+        window.blit(controller.level_model.hazard_mammoth.image_loaded,
+                    controller.level_model.hazard_mammoth.rect)
 
     def _win_sequence(self, window, controller, background, clock):
         controller.stop_music()

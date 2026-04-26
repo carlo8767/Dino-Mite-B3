@@ -3,7 +3,8 @@ import os
 import pygame
 
 from dino_mite_model.level_model.base_level_model import BaseLevelModel
-from dino_mite_model.character_game.Hazard import Meteor, RollingRock
+from dino_mite_model.character_game.vertical_hazard import Meteor
+from dino_mite_model.character_game.horizontal_hazard import RollingRock
 
 
 class LevelOne(BaseLevelModel):

@@ -94,7 +94,7 @@ class BaseLevelView:
                 collided, name = controller.detection_collision_character(
                     controller.level_model.character
                 )
-                if collided and name in ("RollingRock", "Meteor"):
+                if collided:
                     logging.info(f"Collision detected with {name} — game over")
                     controller.update_collision_position(name)
                     controller.stop_music()
