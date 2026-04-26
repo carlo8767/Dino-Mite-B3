@@ -159,14 +159,16 @@ class Helicopter(HorizontalHazard):
     image_path     = os.path.join("./image/hazard", "HelicopterT.png")
     name           = "Helicopter"
     _move_x        = 3
-    size           = (120, 60)
+    size           = (160, 80)
     _start_x       = -200
     _start_y       = 80
     _drop_interval = 120
 
     def __init__(self):
         super().__init__()
-        self._drop_timer = 0
+        self._drop_timer  = 0
+        self.image_loaded = pygame.transform.flip(self.image_loaded, True, False)  # face right (LTR)
+        self.mask         = pygame.mask.from_surface(self.image_loaded)
 
     def update_position(self):
         self.rect.x += self.move_x
@@ -199,16 +201,14 @@ class HelicopterTwo(HorizontalHazard):
     image_path     = os.path.join("./image/hazard", "HelicopterT.png")
     name           = "HelicopterTwo"
     _move_x        = 4
-    size           = (120, 60)
+    size           = (160, 80)
     _start_x       = WIDTH + 200   # starts off right edge, flies left
     _start_y       = 155           # lower than Helicopter (80) - visual depth
     _drop_interval = 150
 
     def __init__(self):
         super().__init__()
-        self._drop_timer  = 0
-        self.image_loaded = pygame.transform.flip(self.image_loaded, True, False)
-        self.mask         = pygame.mask.from_surface(self.image_loaded)
+        self._drop_timer = 0        # original image faces left — correct for RTL, no flip needed
 
     def update_position(self):
         self.rect.x -= self.move_x                   # RTL
