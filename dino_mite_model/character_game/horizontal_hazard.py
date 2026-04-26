@@ -89,3 +89,29 @@ class Mammoth(HorizontalHazard):
     name = "Mammoth"
     _move_x = 3
     size = (80, 80)
+
+
+class Drone(HorizontalHazard):
+    """
+    Level 3 hazard. Flies left-to-right at mid-screen height — NOT at ground level.
+    The player must duck under it rather than jump over it, introducing a new
+    required input in Level 3.
+
+    _start_y is set to mid-screen (~300 px). Adjust this to match the height
+    that forces a duck without being unfair given the character's crouch hitbox.
+
+    !Adjust! image_path once a drone asset is available.
+    !Adjust! _start_y to the exact height that requires ducking (depends on character hitbox).
+    !Adjust! _move_x to tune speed — drones should feel fast and mechanical.
+    !Adjust! size to match the final asset dimensions.
+    !Adjust! sound once a drone/buzzing sound is available.
+    !Adjust! consider whether drones should also come from the right (negative move_x)
+             for variety — if so, _start_x should be WIDTH + 300 and reset logic inverted.
+    """
+
+    image_path = os.path.join("./image/hazard", "rolling_rock.png")  # placeholder
+    name = "Drone"
+    _move_x = 5
+    size = (80, 50)      # wide and flat — drone shape
+    _start_x = -300
+    _start_y = 300       # mid-screen — player must duck, not jump

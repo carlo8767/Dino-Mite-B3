@@ -85,3 +85,25 @@ class Fireball(VerticalHazard):
         self.rect.x += random.randint(-3, 3)
         if self.rect.top > HEIGHT:
             self._reset()
+
+
+class Bomb(VerticalHazard):
+    """
+    Level 3 hazard. Dropped by a helicopter, falls straight down with no drift.
+    Heavier and faster than a fireball — no horizontal movement so the player
+    must move out of the drop zone rather than relying on the hazard drifting away.
+
+    !Adjust! image_path once a bomb asset is available.
+    !Adjust! _speed to tune difficulty (currently placeholder value).
+    !Adjust! size to match the final asset dimensions.
+    !Adjust! sound once a bomb/explosion sound is available.
+    !Adjust! consider adding a shadow/warning indicator on the ground
+             below the bomb so the player can see where it will land.
+    """
+
+    image_path = os.path.join("./image/hazard", "meteor.png")  # placeholder
+    name = "Bomb"
+    _speed = 10
+    size = (60, 60)
+
+    # No update_position override — base class falls straight down, which is correct for a bomb.
