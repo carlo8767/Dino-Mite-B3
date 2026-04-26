@@ -89,21 +89,46 @@ class Fireball(VerticalHazard):
 
 class Bomb(VerticalHazard):
     """
-    Level 3 hazard. Dropped by a helicopter, falls straight down with no drift.
-    Heavier and faster than a fireball — no horizontal movement so the player
-    must move out of the drop zone rather than relying on the hazard drifting away.
+    Level 3 hazard. Dropped by the Helicopter — spawns at the helicopter's
+    x position and falls straight down with no drift.
+
+    Bombs are inactive by default. The controller calls activate_at(x) each
+    time the helicopter fires, positioning the bomb directly below it.
+    When a bomb exits the bottom of the screen or collides, it goes back to
+    inactive and waits for the next drop — it does NOT respawn randomly.
 
     !Adjust! image_path once a bomb asset is available.
     !Adjust! _speed to tune difficulty (currently placeholder value).
     !Adjust! size to match the final asset dimensions.
     !Adjust! sound once a bomb/explosion sound is available.
-    !Adjust! consider adding a shadow/warning indicator on the ground
-             below the bomb so the player can see where it will land.
+    !Adjust! consider drawing a shadow/warning indicator on the ground
+             at self.rect.centerx while the bomb is falling so the player
+             can see the incoming drop zone.
     """
 
     image_path = os.path.join("./image/hazard", "meteor.png")  # placeholder
     name = "Bomb"
     _speed = 10
-    size = (60, 60)
+    size = (40, 60)
 
-    # No update_position override — base class falls straight down, which is correct for a bomb.
+    def __init__(self):
+        super().__init__()
+        self.is_active = False          # inactive until the helicopter drops it
+        self.rect.center = (-500, -500) # parked off-screen
+
+    def activate_at(self, x: int):
+        """Drop this bomb from the given x position (the helicopter's centre x)."""
+        self.rect.center = (x, -60)
+        self.is_active = True
+
+    def update_position(self):
+        if not self.is_active:
+            return
+        self.rect.y += self.speed
+        if self.rect.top > HEIGHT:
+            self._reset()
+
+    def _reset(self):
+        """Park off-screen and go inactive — helicopter will re-drop later."""
+        self.is_active = False
+        self.rect.center = (-500, -500)

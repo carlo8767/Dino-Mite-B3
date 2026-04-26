@@ -6,12 +6,17 @@ class ControllerLevelThree(BaseLevelController):
     """
     Controller for Level 3.
 
-    Once Level 3 hazards are added to LevelThree, list them in
-    register_slowable_hazards() below. That single list drives:
-      - collision detection
-      - frame-by-frame movement
-      - the slowdown powerup effect
-      - level reset positions
+    Hazards: 1 helicopter (horizontal, sky level) + 2 bombs (vertical, dropped
+    by the helicopter) + 1 drone (horizontal, mid-height).
+
+    The helicopter flies across the top of the screen. Every _drop_interval
+    frames it signals should_drop(), and this controller activates the next
+    idle bomb at the helicopter's current x position. This creates the visual
+    of bombs falling directly from beneath the helicopter.
+
+    All four hazards are in slowed_hazards so the slowdown powerup affects
+    the helicopter speed (changing where bombs land) and the drone speed.
+    Bomb fall speed is also slowed while active.
     """
 
     def __init__(self):
@@ -20,6 +25,19 @@ class ControllerLevelThree(BaseLevelController):
 
     def register_slowable_hazards(self):
         self.slowed_hazards = [
-            # TODO: add Level 3 hazard instances once defined in LevelThree
-            # self.level_model.hazard_???,
+            self.level_model.hazard_helicopter,
+            self.level_model.hazard_bomb,
+            self.level_model.hazard_bombOne,
+            self.level_model.hazard_drone,
         ]
+
+    def update_movement(self):
+        """Move all hazards, then drop a bomb from the helicopter if the timer fires."""
+        super().update_movement()
+
+        if self.level_model.hazard_helicopter.should_drop():
+            drop_x = self.level_model.hazard_helicopter.rect.centerx
+            for bomb in (self.level_model.hazard_bomb, self.level_model.hazard_bombOne):
+                if not bomb.is_active:
+                    bomb.activate_at(drop_x)
+                    break

@@ -9,10 +9,9 @@ class ViewLevelThree(BaseLevelView):
     """
     Level Three view.
     Extends BaseLevelView — only Level 3 specific rendering lives here.
-    Waiting on Person A to deliver ControllerLevelThree and LevelThree model.
     """
 
-    time_duration_level = 60  # Level 3 is 60 seconds, adjust when confirmed
+    time_duration_level = 60  # 60 seconds
 
     def __init__(self):
         super().__init__()
@@ -29,7 +28,30 @@ class ViewLevelThree(BaseLevelView):
         window.blit(background, (0, 0))
         self._draw_hud(window, controller)
         controller.level_model.character.draw(window)
-        # TODO: add Level 3 hazard drawing here once hazards are defined in LevelThree model
+
+        # Helicopter (always on screen — flies continuously)
+        window.blit(
+            controller.level_model.hazard_helicopter.image_loaded,
+            controller.level_model.hazard_helicopter.rect,
+        )
+
+        # Bombs (only draw when active — inactive bombs are parked off-screen)
+        if controller.level_model.hazard_bomb.is_active:
+            window.blit(
+                controller.level_model.hazard_bomb.image_loaded,
+                controller.level_model.hazard_bomb.rect,
+            )
+        if controller.level_model.hazard_bombOne.is_active:
+            window.blit(
+                controller.level_model.hazard_bombOne.image_loaded,
+                controller.level_model.hazard_bombOne.rect,
+            )
+
+        # Drone (always on screen — flies continuously at mid-height)
+        window.blit(
+            controller.level_model.hazard_drone.image_loaded,
+            controller.level_model.hazard_drone.rect,
+        )
 
     def _win_sequence(self, window, controller, background, clock):
         controller.stop_music()
@@ -43,6 +65,6 @@ class ViewLevelThree(BaseLevelView):
         logging.info("game over level three")
         controller.stop_music()
         return "GAME OVER"
-    
+
     def _next_level(self):
         return "GAME OVER"

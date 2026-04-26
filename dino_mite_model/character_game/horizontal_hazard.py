@@ -91,6 +91,58 @@ class Mammoth(HorizontalHazard):
     size = (80, 80)
 
 
+class Helicopter(HorizontalHazard):
+    """
+    Level 3 hazard. Flies left-to-right across the top of the screen and
+    periodically drops Bomb instances.
+
+    The drop timer increments every frame inside update_position(). The
+    controller calls should_drop() once per frame — when it returns True
+    the controller activates one of the level's Bomb instances at this
+    helicopter's current centre x.
+
+    The helicopter itself is a collision hazard, but since it flies near
+    the top of the screen the player can only be hit by it with unusual
+    movement — its main role is as a bomb dropper.
+
+    !Adjust! image_path once a helicopter asset is available.
+    !Adjust! _move_x to tune flight speed.
+    !Adjust! _drop_interval to tune how often bombs are dropped
+             (currently 120 frames = 2 seconds at 60 fps).
+    !Adjust! size to match the final asset dimensions.
+    !Adjust! sound once a helicopter/rotor sound is available.
+    """
+
+    image_path = os.path.join("./image/hazard", "rolling_rock.png")  # placeholder
+    name = "Helicopter"
+    _move_x = 3
+    size = (120, 60)    # wide and flat — helicopter silhouette
+    _start_x = -200
+    _start_y = 80       # near the top of the screen
+
+    _drop_interval = 120  # frames between bomb drops (~2 s at 60 fps)
+
+    def __init__(self):
+        super().__init__()
+        self._drop_timer = 0
+
+    def update_position(self):
+        self.rect.x += self.move_x
+        if self.rect.left > WIDTH:
+            self.rect.x = self.position_x
+        self._drop_timer += 1
+
+    def should_drop(self) -> bool:
+        """
+        Returns True once every _drop_interval frames and resets the timer.
+        Call this from the controller's update_movement() to trigger a bomb drop.
+        """
+        if self._drop_timer >= self._drop_interval:
+            self._drop_timer = 0
+            return True
+        return False
+
+
 class Drone(HorizontalHazard):
     """
     Level 3 hazard. Flies left-to-right at mid-screen height — NOT at ground level.
