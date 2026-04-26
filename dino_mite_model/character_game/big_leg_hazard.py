@@ -32,14 +32,14 @@ class BigLegHazard (pygame.sprite.Sprite):
         time_passed = pygame.time.get_ticks() - self.start_time
 
         if time_passed < 2500:
-            self.rect.x += random.randint(-3,3)
+            self.rect.x += random.randint(-3,3) # if hold time - keep a leg on top and shake a little for movement effect
 
-        elif 2500 < time_passed < 1580:
+        elif 2500 < time_passed < 1580: # step time - move leg down until the ground level
             self.rect.bottom += 40
             if self.rect.bottom > self.constant_ground:
                 self.rect.bottom = self.constant_ground
 
-        elif time_passed < 2830:
+        elif time_passed < 2830: # retrive the leg
             self.rect.bottom -=30
 
         else:
