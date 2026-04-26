@@ -15,22 +15,20 @@ class HorizontalHazard(pygame.sprite.Sprite):
         name       (str): identifier used by the collision system
         _move_x    (int): horizontal speed magnitude in pixels per frame
         size       (tuple): (width, height) to scale the image to
-        _start_x   (int): x position to reset to (off-screen left or right)
-        _start_y   (int): y position (center y)
+        _start_x   (int): starting x (off-screen left or right)
+        _start_y   (int): center y (vertical position on screen)
 
-    move_x is an instance copy of _move_x so the slowdown powerup can modify
-    it per-instance without corrupting the class default.  For right-to-left
-    hazards (HelicopterTwo, Drone in RTL pass) move_x stays positive and the
-    subclass applies the sign internally — this keeps the base controller's
-    slowdown arithmetic correct.
+    move_x is an instance copy of _move_x so the slowdown powerup can halve
+    it per-instance without corrupting the class default.  
+    Subclasses that travel right-to-left keep move_x positive and negate it internally.
     """
 
-    image_path: str   = None
-    name:        str  = "HorizontalHazard"
-    _move_x:     int  = 2
-    size:        tuple = (60, 60)
-    _start_x:    int  = -300
-    _start_y:    int  = 600
+    image_path: str    = None
+    name:       str    = "HorizontalHazard"
+    _move_x:    int    = 2
+    size:       tuple  = (60, 60)
+    _start_x:   int    = -300
+    _start_y:   int    = 600
 
     def __init__(self):
         super().__init__()
@@ -40,10 +38,10 @@ class HorizontalHazard(pygame.sprite.Sprite):
         self.image_loaded = pygame.transform.scale(
             pygame.image.load(self.image_path).convert_alpha(), self.size
         )
-        self.rect         = self.image_loaded.get_rect()
-        self.rect.center  = (self.position_x, self.position_y)
-        self.mask         = pygame.mask.from_surface(self.image_loaded)
-        self.is_active    = True
+        self.rect        = self.image_loaded.get_rect()
+        self.rect.center = (self.position_x, self.position_y)
+        self.mask        = pygame.mask.from_surface(self.image_loaded)
+        self.is_active   = True
 
     def update_position(self):
         self.rect.x += self.move_x
@@ -58,11 +56,69 @@ class HorizontalHazard(pygame.sprite.Sprite):
 
 
 # ──────────────────────────────────────────────────────────────────────────────
+# Bidirectional extension
+# ──────────────────────────────────────────────────────────────────────────────
+
+class BidirectionalHazard(HorizontalHazard):
+    """
+    Extension of HorizontalHazard for hazards that randomly alternate between
+    left-to-right and right-to-left after each full screen pass.
+
+    Subclasses get movement, direction-switching, and image-flipping for free
+    — they only need to declare class attributes (image_path, name, _move_x,
+    size, _start_x, _start_y).  No update_position or reset override needed
+    unless the subclass adds extra per-frame logic (e.g. rotation).
+    """
+
+    def __init__(self):
+        super().__init__()
+        self._direction = 1                               # start LTR
+        self._img_ltr   = self.image_loaded               # original orientation
+        self._img_rtl   = pygame.transform.flip(self.image_loaded, True, False)
+
+    def update_position(self):
+        self.rect.x += self.move_x * self._direction
+
+        exited = (
+            (self._direction ==  1 and self.rect.left  > WIDTH) or
+            (self._direction == -1 and self.rect.right < 0)
+        )
+        if exited:
+            self._random_reset()
+
+    def _random_reset(self):
+        """Pick a random new direction and enter from the matching edge.
+
+        Entry offsets are fixed constants, not self.rect.width, so subclasses
+        that rebuild self.rect on every frame (e.g. RollingRock with rotation)
+        get a consistent, rotation-proof spawn point every time.
+        """
+        self._direction = random.choice([1, -1])
+        if self._direction == 1:                          # LTR: enter from left
+            self.rect.x       = -200
+            self.image_loaded = self._img_ltr
+        else:                                             # RTL: enter from right
+            self.rect.x       = WIDTH + 100
+            self.image_loaded = self._img_rtl
+        self.rect.centery = self.position_y
+        self.mask         = pygame.mask.from_surface(self.image_loaded)
+
+    def update_position_collision(self):
+        """Shield deflect — immediately re-enter from a random edge."""
+        self._random_reset()
+
+
+# ──────────────────────────────────────────────────────────────────────────────
 # Level 1
 # ──────────────────────────────────────────────────────────────────────────────
 
-class RollingRock(HorizontalHazard):
-    """Level 1 hazard. Rolls left-to-right across the ground with clockwise rotation."""
+class RollingRock(BidirectionalHazard):
+    """
+    Rolls across the ground in a random direction after each pass. 
+    Rotation tracks direction of travel 
+    - clockwise for LTR,
+    - counter-clockwise for RTL 
+    """
 
     image_path = os.path.join("./image/hazard", "rolling_rock.png")
     name       = "RollingRock"
@@ -75,26 +131,26 @@ class RollingRock(HorizontalHazard):
         self._angle = 0
 
     def update_position(self):
-        self.rect.x += self.move_x
-        if self.rect.left > WIDTH:
-            self.rect.x = self.position_x
+        # Let BidirectionalHazard handle movement and direction switching
+        super().update_position()
 
-        # Clockwise rotation to match rightward movement
-        self._angle      = (self._angle - 4) % 360
-        center           = self.rect.center
+        # Rotate clockwise for LTR (+direction=1 → angle decreases),
+        # counter-clockwise for RTL (+direction=-1 → angle increases)
+        self._angle   = (self._angle - 4 * self._direction) % 360
+        center        = self.rect.center
         self.image_loaded = pygame.transform.rotate(self._original_image, self._angle)
-        self.rect         = self.image_loaded.get_rect(center=center)
-        self.mask         = pygame.mask.from_surface(self.image_loaded)
+        self.rect     = self.image_loaded.get_rect(center=center)
+        self.mask     = pygame.mask.from_surface(self.image_loaded)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Level 3 — Helicopter (left-to-right)
+# Level 3 — Helicopter (LTR)
 # ──────────────────────────────────────────────────────────────────────────────
 
 class Helicopter(HorizontalHazard):
     """
-    Level 3 hazard. Flies left-to-right near the top of the screen and
-    periodically drops Bomb instances.
+    Flies left-to-right near the top of the screen and
+    drops Bomb instances.
 
     Every _drop_interval frames should_drop() returns True and the controller
     activates the next idle Bomb at this helicopter's current centre x.
@@ -110,8 +166,8 @@ class Helicopter(HorizontalHazard):
     _move_x        = 3
     size           = (120, 60)
     _start_x       = -200
-    _start_y       = 80           # near the top of the screen
-    _drop_interval = 120          # frames between bomb drops
+    _start_y       = 80
+    _drop_interval = 120
 
     def __init__(self):
         super().__init__()
@@ -131,22 +187,17 @@ class Helicopter(HorizontalHazard):
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Level 3 — Helicopter (right-to-left, lower altitude)
+# Level 3 — Helicopter (RTL, lower altitude)
 # ──────────────────────────────────────────────────────────────────────────────
 
 class HelicopterTwo(HorizontalHazard):
     """
-    Level 3 hazard. A second helicopter flying right-to-left at a slightly
-    lower altitude than Helicopter, creating a crossing pattern.
+    A second helicopter flying right-to-left at a slightly
+    lower altitude than Helicopter.
 
-    move_x is stored as a positive value; update_position subtracts it so the
-    helicopter travels right-to-left.  This keeps the base controller's slow-
-    down arithmetic (which uses max(1, ...)) correct — it always operates on a
-    positive magnitude and direction is handled here.
+    Image is flipped horizontally on load so it faces left (direction of travel).
 
-    The image is flipped horizontally on load so it faces left (direction of travel).
-
-    !Adjust! _move_x, _drop_interval, and _start_y as needed.
+    !Adjust! _move_x, _drop_interval, _start_y as needed.
     !Adjust! sound once a rotor sound is available.
     """
 
@@ -155,24 +206,23 @@ class HelicopterTwo(HorizontalHazard):
     _move_x        = 4
     size           = (120, 60)
     _start_x       = WIDTH + 200   # starts off right edge, flies left
-    _start_y       = 155           # slightly lower than Helicopter (80) — visual depth
-    _drop_interval = 150           # slightly different rhythm from Helicopter
+    _start_y       = 155           # lower than Helicopter (80) — visual depth
+    _drop_interval = 150
 
     def __init__(self):
         super().__init__()
-        self._drop_timer = 0
-        # Flip image so the helicopter faces left (direction of travel)
+        self._drop_timer  = 0
         self.image_loaded = pygame.transform.flip(self.image_loaded, True, False)
         self.mask         = pygame.mask.from_surface(self.image_loaded)
 
     def update_position(self):
-        self.rect.x -= self.move_x                  # right-to-left
-        if self.rect.right < 0:                      # exited left edge
+        self.rect.x -= self.move_x                   # RTL
+        if self.rect.right < 0:
             self.rect.x = self.position_x            # reset to right side
         self._drop_timer += 1
 
     def update_position_collision(self):
-        self.rect.x = self.position_x               # reset to right side
+        self.rect.x = self.position_x
 
     def should_drop(self) -> bool:
         if self._drop_timer >= self._drop_interval:
@@ -185,19 +235,12 @@ class HelicopterTwo(HorizontalHazard):
 # Level 3 — Drone (bidirectional, unpredictable)
 # ──────────────────────────────────────────────────────────────────────────────
 
-class Drone(HorizontalHazard):
+class Drone(BidirectionalHazard):
     """
-    Level 3 hazard. Flies at mid-height — the player must duck under it.
+    Flies at mid-height - the player must duck under it.
 
-    After each full pass the drone randomly picks left-to-right or right-to-
-    left for its next pass, keeping the player guessing which side to watch.
-    The image is flipped to face the direction of travel on each pass.
-
-    move_x is always a positive magnitude; _direction (±1) is applied inside
-    update_position so the slowdown powerup works without sign errors.
-
-    _start_y is tuned so the drone's bottom edge sits just above the standing
-    character's head top (~y 510), requiring a duck to pass safely.
+    After each full pass the drone randomly picks LTR or RTL for the next
+    entry.
 
     !Adjust! _start_y if the character hitbox changes.
     !Adjust! _move_x to tune speed.
@@ -210,36 +253,4 @@ class Drone(HorizontalHazard):
     _move_x    = 5
     size       = (80, 50)
     _start_x   = -300
-    _start_y   = 490    # center y; bottom = 515, just above char standing top (510)
-
-    def __init__(self):
-        super().__init__()
-        self._direction  = 1                         # 1 = LTR, -1 = RTL
-        # Cache both orientations — swap on direction change, no per-frame cost
-        self._img_ltr    = self.image_loaded
-        self._img_rtl    = pygame.transform.flip(self.image_loaded, True, False)
-
-    def update_position(self):
-        self.rect.x += self.move_x * self._direction
-
-        exited = (
-            (self._direction ==  1 and self.rect.left  > WIDTH) or
-            (self._direction == -1 and self.rect.right < 0)
-        )
-        if exited:
-            self._random_reset()
-
-    def _random_reset(self):
-        """Pick a random new direction and enter from the matching edge."""
-        self._direction = random.choice([1, -1])
-        if self._direction == 1:                     # LTR: enter from left
-            self.rect.x       = -self.rect.width - 10
-            self.image_loaded = self._img_ltr
-        else:                                        # RTL: enter from right
-            self.rect.x       = WIDTH + 10
-            self.image_loaded = self._img_rtl
-        self.rect.centery = self.position_y
-        self.mask         = pygame.mask.from_surface(self.image_loaded)
-
-    def update_position_collision(self):
-        self._random_reset()
+    _start_y   = 490    
