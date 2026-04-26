@@ -1,107 +1,223 @@
-# Power-Ups - Implementation Notes
+# Power-Ups — Implementation Notes
 
-Technical notes on the power-up system in Dino-Mite-B3. Covers what exists, how it's wired through MVC, and implementation decisions worth knowing before extending it.
+Technical notes on the power-up system in Dino-Mite-B3. Covers what exists, how it is wired through MVC, and how to add a new powerup.
 
-## Overview
+---
 
-Power-ups are collectible entities that spawn on a timer, fall down the screen (mirroring hazard movement), and apply an effect to the player on collision. 
+## Current powerups
 
-Currently implemented:
+| Power-up | Class | Effect | Fall speed | Image |
+|---|---|---|---|---|
+| Shield Bubble | `ShieldBubble` | Protects from hazards for 5 s | 3 | `ShieldBubbleIcon.png` |
+| Time Reduction | `TimeReduction` | Removes 5 s from the remaining timer | 3 | `ExtraTimeIcon.png` |
+| Slower Hazards | `SlowerHazards` | Halves all hazard speeds for 5 s | 3 | `ReducedVelocityIcon.png` |
 
-| Power-up | Color | Effect | Speed |
-|---|---|---|---|
-| Shield Bubble | Red `(255, 0, 0)` | Protects from hazards for 5s | 3 |
-| Time Reduction | Yellow `(255, 215, 0)` | Removes 5s from remaining timer | 4 |
+All three fall at the same speed (3 px/frame) so the player cannot identify a powerup by how fast it falls.
+
+---
 
 ## Architecture
 
-The power-up system is split across the three MVC layers as follows.
+### Model — `power_ups.py`
 
-### Model - `power_ups.py`
-
-Lives in `dino_mite_model/character_game/power_ups.py`. Defines the base class and all subclasses.
+Lives in `dino_mite_model/character_game/power_ups.py`.
 
 **`PowerUp` (base class)**
-- `__init__` accepts a `placeholder_color` parameter so each subclass picks its own color without overriding rendering logic until replaced with images
-- `self.time_penalty = 0` on the base class — any power-up that doesn't penalize time simply inherits the default
-- Movement logic mirrors `Hazard` (same update pattern, same rect-based positioning)
 
-**`ShieldBubble(PowerUp)`**
-- Passes red `(255, 0, 0)` to base constructor
-- No behavior change from initial Abdallah implementation — this subclass exists for identification and future visual differentiation
+Subclasses define three class attributes and implement one method:
 
-**`TimeReduction(PowerUp)`**
-- Passes yellow `(255, 215, 0)` to base constructor
-- `speed = 4` - falls slightly faster than Shield Bubble for visual distinction
-- `time_penalty = 5000` (milliseconds) - consumed by the controller on collection
+```python
+class PowerUp(pygame.sprite.Sprite):
+    image_path: str = None   # path to the icon image
+    name:       str = "PowerUp"
+    _speed:     int = 3      # fall speed in px/frame
 
-### Controller - `controller_level_one.py`
-
-Lives in `dino_mite_controller/model/controller_level_one.py`. Owns spawning, collision, and effect application.
-
-**Spawning**
-- `powerup_spawn_interval = 15000` ms — one power-up every 15 seconds (≈8 spawns across a 2-minute level)
-- `spawn_powerup()` uses weighted random selection:
-  - `random.random() < 0.25` → `TimeReduction`
-  - otherwise → `ShieldBubble`
-  - Expected per game: ~2 TimeReduction, ~6 ShieldBubble
-
-**Collision**
-- `detection_collision_powerup()` is a **separate collision method**, not merged into the hazard collision function 
-- On collection, reads `powerup.time_penalty` and adds it to `self.time_penalty_ms` if non-zero
-- Removes the collected power-up from its sprite group
-
-**Shield integration with hazards**
-- Shield protection is implemented inside `detection_collision_hazard()` via an `if` check against the player's shield counter
-- On hazard hit while shield is active: shield counter decrements, hazard hit is ignored, player survives
-
-
-**Time penalty accumulation**
-- `self.time_penalty_ms` is an accumulator - every TimeReduction collected adds to it
-- Read by the View during timer rendering (see below)
-
-### View — `viewLevelOne.py`
-
-Lives in `dino_mite_view/game_component/viewLevelOne.py`. Renders power-ups and the adjusted timer.
-
-**Power-up rendering**
-- Draws each active power-up as a colored placeholder at its rect position
-- No logic — purely reads state from the controller and blits
-
-**Timer display — `calculate_timer(ctr_level_one)`**
-- Now takes the controller reference as a parameter
-- Adds `ctr_level_one.time_penalty_ms` to `elapsed_ms` before computing remaining time
-
-## Timer math - why adding is subtracting
-
-A common point of confusion: the TimeReduction power-up should *reduce* remaining time, but the code *adds* `time_penalty_ms` to `elapsed_ms`. This is correct. The formula is:
-
-```
-remaining = total_seconds - (elapsed_ms / 1000)
+    def apply_effect(self, character):
+        raise NotImplementedError(...)
 ```
 
-Adding to `elapsed_ms` makes elapsed appear larger, which makes `remaining` smaller. Concrete example with a 120-second level:
+The base `__init__` handles everything else:
+- Loads and scales the image to 60×60
+- Creates `self.rect`, `self.mask`
+- Spawns off-screen at a random x position
+- Sets `self.is_active = False`
+- Copies `_speed` → `self.speed` so it is an instance attribute
 
-| Event | elapsed_ms | time_penalty_ms | remaining |
+Key methods on the base class:
+
+| Method | Description |
+|---|---|
+| `activate()` | Moves to a random top x position and sets `is_active = True` |
+| `update_position()` | Moves down each frame; deactivates when it exits the bottom |
+| `update_position_collision()` | Deactivates and resets off-screen when collected |
+| `draw(screen)` | Blits `self.image` at `self.rect` |
+| `apply_effect(character)` | Abstract — subclasses must implement |
+
+**`ShieldBubble`**
+
+```python
+def apply_effect(self, character):
+    character.shield_active = True
+    character.shield_timer  = 5000
+```
+
+Sets the shield flag and a 5 s countdown on the character. The controller ticks `shield_timer` down each frame and clears the flag when it reaches 0.
+
+**`TimeReduction`**
+
+```python
+def apply_effect(self, character):
+    pass   # effect is handled in the view's timer calculation
+```
+
+`apply_effect` does nothing. The effect is applied in `BaseLevelView`: when the controller returns `"TimeReduction"` from `detection_collision_powerup()`, the view adds 5000 to `self.time_reduction_ms`, which shifts the timer forward.
+
+**`SlowerHazards`**
+
+```python
+def apply_effect(self, character):
+    pass   # effect is handled in BaseLevelController
+```
+
+`apply_effect` does nothing. The controller detects that a `SlowerHazards` instance was collected and activates the slowdown itself (see below).
+
+---
+
+### Controller — `BaseLevelController`
+
+Lives in `dino_mite_controller/model/base_level_controller.py`. All levels share this logic.
+
+**Deck system**
+
+Powerups spawn from a shuffled deck rather than pure random selection. One deck = 5 cards:
+
+```
+3 × ShieldBubble
+1 × TimeReduction
+1 × SlowerHazards
+```
+
+The deck is shuffled at the start and after every 5 collections, giving an exact 60 / 20 / 20 ratio with unpredictable order. A new powerup spawns every 8000 ms.
+
+Relevant attributes:
+
+| Attribute | Default | Description |
+|---|---|---|
+| `powerup_spawn_interval` | 8000 ms | Time between powerup spawns |
+| `current_powerup` | `None` | The currently falling powerup |
+| `_deck` | shuffled list | The deck of upcoming powerups |
+
+**Slowdown powerup flow**
+
+When `detection_collision_powerup()` finds that the collected powerup is a `SlowerHazards` instance, it calls `apply_slow_hazards()`, which:
+
+1. Reads the speed attribute (`speed` or `move_x`) of every hazard in `self.slowed_hazards`
+2. Stores the original values in `self.original_hazard_speeds`
+3. Sets each hazard's speed to `max(1, int(original * 0.5))`
+
+After 5000 ms, `update_powerup()` calls `restore_hazard_speeds()` to put them back.
+
+The slowdown works automatically on any hazard registered in `slowed_hazards` — no hazard-specific code is needed.
+
+---
+
+### View — `BaseLevelView`
+
+**Rendering**
+
+The falling powerup is drawn in `_draw_hud()`:
+
+```python
+if controller.current_powerup and controller.current_powerup.is_active:
+    controller.current_powerup.draw(window)
+```
+
+The shield bubble rendered around the character is also in `_draw_hud()` — a separate 150×150 image centered on the character rect.
+
+**TimeReduction timer math**
+
+The view tracks `self.time_reduction_ms`. Each `TimeReduction` collected adds 5000 to it. The timer formula is:
+
+```
+remaining = total_seconds - (elapsed_ms + time_reduction_ms) / 1000
+```
+
+Adding to elapsed makes the elapsed value appear larger, so remaining time shrinks. Example with a 90-second level:
+
+| Event | elapsed_ms | time_reduction_ms | remaining |
 |---|---|---|---|
-| 30s into level, no powerup | 30000 | 0 | 90s |
-| Collect TimeReduction | 30000 | 5000 | 85s |
-| Collect another TimeReduction | 30000 | 10000 | 80s |
+| 20 s in, no powerup | 20 000 | 0 | 70 s |
+| Collect TimeReduction | 20 000 | 5 000 | 65 s |
+| Collect another | 20 000 | 10 000 | 60 s |
 
+---
+
+## How to add a new powerup
+
+### Step 1 — Add the subclass to `power_ups.py`
+
+```python
+class YourPowerUp(PowerUp):
+    image_path = "./image/bubble/YourIcon.png"
+    name       = "YourPowerUp"   # unique name used by the controller
+    _speed     = 3               # keep at 3 to match all other powerups
+
+    def apply_effect(self, character):
+        # Place simple character-state effects here.
+        # For anything that requires controller or view state, leave this empty
+        # and handle it in BaseLevelController.detection_collision_powerup().
+        pass
+```
+
+### Step 2 — Instantiate it in `BaseLevelModel`
+
+```python
+# base_level_model.py
+self.pw_up_your_powerup = YourPowerUp()
+```
+
+One instance is created per level and reused for the entire session.
+
+### Step 3 — Add it to the deck in `BaseLevelController`
+
+```python
+# base_level_controller.py  _build_deck()
+deck = (
+    [self.level_model.pw_up_shield_bubble]   * 3 +
+    [self.level_model.pw_up_time_reduction]  * 1 +
+    [self.level_model.pw_up_slower_hazard]   * 1 +
+    [self.level_model.pw_up_your_powerup]    * 1  # add here
+)
+```
+
+Adjust the multipliers to set how often it appears relative to the other powerups.
+
+### Step 4 — Handle the effect (if needed)
+
+If the effect changes controller or view state (not just character state), add a branch in `BaseLevelController.detection_collision_powerup()`:
+
+```python
+if name == "YourPowerUp":
+    # apply whatever state change is needed
+    ...
+```
+
+For a view-side effect (like TimeReduction), add a branch in `BaseLevelView.draw_screen()`:
+
+```python
+if collected == "YourPowerUp":
+    # adjust view state
+    ...
+```
+
+---
 
 ## MVC compliance checklist
 
-For anyone adding new power-ups, verify:
-
-- Model file (`power_ups.py`) does not import from `dino_mite_view` or `dino_mite_controller`
-- View file only reads power-up state, never mutates it
-- New effect logic lives in the Controller's collision handler, not in the power-up class itself
-- New power-up subclass follows the `__init__(placeholder_color, ...)` pattern
-- Collision detection stays in its own method, separate from hazard collision
-
-## Known follow-ups
-
-- Speed Break power-up (Abdallah, Sprint 2) - slows hazards temporarily
-- HUD icons for active power-up state - pending Ada's asset pass
-- Sprite replacement for placeholder colored rectangles - pending Ada's power-up sprites
-- Visual indicator when shield is active on player - pending Sprint 1 
+- [ ] `power_ups.py` does not import from `dino_mite_view` or `dino_mite_controller`
+- [ ] `apply_effect` only touches `character` attributes — controller/view state is handled elsewhere
+- [ ] The view only reads powerup state, never mutates it directly
+- [ ] `name` is unique across all powerup classes
+- [ ] `_speed = 3` so all powerups fall at the same speed
+- [ ] New instance added to `BaseLevelModel` (not per-level model)
+- [ ] Deck multipliers updated in `BaseLevelController._build_deck()`
