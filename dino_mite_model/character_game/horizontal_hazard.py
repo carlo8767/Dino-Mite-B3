@@ -63,11 +63,6 @@ class BidirectionalHazard(HorizontalHazard):
     """
     Extension of HorizontalHazard for hazards that randomly alternate between
     left-to-right and right-to-left after each full screen pass.
-
-    Subclasses get movement, direction-switching, and image-flipping for free
-    — they only need to declare class attributes (image_path, name, _move_x,
-    size, _start_x, _start_y).  No update_position or reset override needed
-    unless the subclass adds extra per-frame logic (e.g. rotation).
     """
 
     def __init__(self):
@@ -206,7 +201,7 @@ class HelicopterTwo(HorizontalHazard):
     _move_x        = 4
     size           = (120, 60)
     _start_x       = WIDTH + 200   # starts off right edge, flies left
-    _start_y       = 155           # lower than Helicopter (80) — visual depth
+    _start_y       = 155           # lower than Helicopter (80) - visual depth
     _drop_interval = 150
 
     def __init__(self):

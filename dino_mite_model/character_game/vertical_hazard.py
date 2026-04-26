@@ -53,9 +53,11 @@ class VerticalHazard(pygame.sprite.Sprite):
     def get_current_position(self):
         return self.rect.x, self.rect.y
 
-
+# ──────────────────────────────────────────────────────────────────────────────
+# Level 1
+# ──────────────────────────────────────────────────────────────────────────────
 class Meteor(VerticalHazard):
-    """Level 1 hazard. Falls with slight random horizontal drift."""
+    """Falls with slight random horizontal drift."""
 
     image_path = os.path.join("./image/hazard", "meteor.png")
     name = "Meteor"
@@ -68,9 +70,13 @@ class Meteor(VerticalHazard):
             self._reset()
 
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Level 2
+# ──────────────────────────────────────────────────────────────────────────────
+
 class Fireball(VerticalHazard):
     """
-    Level 2 hazard. Faster than a meteor with more horizontal drift.
+    Faster than a meteor with more horizontal drift.
 
     !Adjust! image_path once a fireball asset is available.
     !Adjust! sound once a fireball sound is available.
@@ -86,66 +92,16 @@ class Fireball(VerticalHazard):
         if self.rect.top > HEIGHT:
             self._reset()
 
-
-class Bomb(VerticalHazard):
-    """
-    Level 3 hazard. Dropped by the Helicopter — spawns at the helicopter's
-    x position and falls straight down with no drift.
-
-    Bombs are inactive by default. The controller calls activate_at(x) each
-    time the helicopter fires, positioning the bomb directly below it.
-    When a bomb exits the bottom of the screen or collides, it goes back to
-    inactive and waits for the next drop — it does NOT respawn randomly.
-
-    !Adjust! _speed to tune difficulty.
-    !Adjust! size to match the final asset dimensions.
-    !Adjust! sound once a bomb/explosion sound is available.
-    """
-
-    image_path = os.path.join("./image/hazard", "BombT.png")
-    name = "Bomb"
-    _speed = 10
-    size = (40, 60)
-
-    def __init__(self):
-        super().__init__()
-        self.is_active = False          # inactive until the helicopter drops it
-        self.rect.center = (-500, -500) # parked off-screen
-
-    def activate_at(self, x: int, y: int = -60):
-        """
-        Drop this bomb from the given position.
-        Pass the helicopter's rect.bottom as y so the bomb appears to
-        fall from the helicopter rather than from the top of the screen.
-        """
-        self.rect.center = (x, y)
-        self.is_active = True
-
-    def update_position(self):
-        if not self.is_active:
-            return
-        self.rect.y += self.speed
-        if self.rect.top > HEIGHT:
-            self._reset()
-
-    def _reset(self):
-        """Park off-screen and go inactive — helicopter will re-drop later."""
-        self.is_active = False
-        self.rect.center = (-500, -500)
-
-
 class MammothLeg(VerticalHazard):
     """
-    Level 2 hazard. A giant mammoth leg that descends from the top of the screen
+    A giant mammoth leg that descends from the top of the screen
     in three phases, giving the player time to dodge by running left or right.
 
     Phases
     ------
     WARN  – the bottom of the leg hangs just inside the top edge, shaking
             slightly so the player knows exactly where it will stomp.
-            Duration: _WARN_FRAMES (~1.5 s). Dodge window.
-    SLAM  – leg drops at self.speed px/frame (slowed by the slow powerup,
-            giving an extended dodge window as a reward).
+    SLAM  – leg drops at self.speed px/frame.
     HOLD  – leg rests at ground level for _HOLD_FRAMES; collision active.
     RISE  – leg retracts off-screen, then resets to a new random x.
 
@@ -161,7 +117,7 @@ class MammothLeg(VerticalHazard):
 
     _WARN_FRAMES  = 90          # frames to hang at top (~1.5 s at 60 fps)
     _HOLD_FRAMES  = 18          # frames to rest at ground after slam
-    _RISE_SPEED   = 14          # retract speed — not affected by slow powerup
+    _RISE_SPEED   = 14          # retract speed - not affected by slow powerup
     _GROUND_BOTTOM = 625        # rect.bottom at full stomp (ground level)
     _HANG_BOTTOM   = 50         # rect.bottom during WARN (50 px visible as warning)
 
@@ -206,7 +162,7 @@ class MammothLeg(VerticalHazard):
                 self._reset()
 
     def update_position_collision(self):
-        """Shield deflect — immediately retract without resetting to a new position."""
+        """Shield deflect - immediately retract without resetting to a new position."""
         self._phase       = self._RISE
         self._phase_timer = 0
 
@@ -217,3 +173,50 @@ class MammothLeg(VerticalHazard):
         self._phase       = self._WARN
         self._phase_timer = 0
         self.is_active    = True
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Level 3
+# ──────────────────────────────────────────────────────────────────────────────
+class Bomb(VerticalHazard):
+    """
+    Dropped by the Helicopter - spawns at the helicopter's
+    x position and falls straight down with no drift.
+
+    Bombs are inactive by default.
+
+    !Adjust! _speed to tune difficulty.
+    !Adjust! size to match the final asset dimensions.
+    !Adjust! sound once a bomb/explosion sound is available.
+    """
+
+    image_path = os.path.join("./image/hazard", "BombT.png")
+    name = "Bomb"
+    _speed = 10
+    size = (40, 60)
+
+    def __init__(self):
+        super().__init__()
+        self.is_active = False          # inactive until the helicopter drops it
+        self.rect.center = (-500, -500) # parked off-screen
+
+    def activate_at(self, x: int, y: int = -60):
+        """
+        Drop this bomb from the given position.
+        """
+        self.rect.center = (x, y)
+        self.is_active = True
+
+    def update_position(self):
+        if not self.is_active:
+            return
+        self.rect.y += self.speed
+        if self.rect.top > HEIGHT:
+            self._reset()
+
+    def _reset(self):
+        """Park off-screen and go inactive - helicopter will re-drop later."""
+        self.is_active = False
+        self.rect.center = (-500, -500)
+
+

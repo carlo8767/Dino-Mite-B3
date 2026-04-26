@@ -11,11 +11,10 @@ class LevelThree(BaseLevelModel):
     """
     Level 3 entity container: 2 helicopters + 3 bombs + 1 drone.
 
-    Helicopter  — flies left-to-right at y≈80, drops bombs every 120 frames.
-    HelicopterTwo — flies right-to-left at y≈155, drops bombs every 150 frames.
-    Bombs are inactive by default; ControllerLevelThree activates the next idle
-    bomb each time either helicopter's should_drop() fires.
-    Drone — flies at mid-height, randomly switching LTR/RTL; player must duck.
+    Helicopter  - flies left-to-right, drops bombs every 120 frames.
+    HelicopterTwo - flies right-to-left, drops bombs every 150 frames.
+    Bombs are inactive by default.
+    Drone - flies at mid-height, randomly switching LTR/RTL; player must duck.
 
     !Adjust! image and sound paths once Level 3 assets are ready.
     """

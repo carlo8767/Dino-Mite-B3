@@ -7,9 +7,7 @@ from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
 class ViewLevelTwo(BaseLevelView):
     """
-    Level Two view.
-    Extends BaseLevelView — only Level 2 specific rendering lives here.
-    Waiting on Person A to deliver ControllerLevelTwo and LevelTwo model.
+    Level Two view, only Level 2 specific rendering lives here.
     """
 
     time_duration_level = 90  # Level 2 is 90 seconds, adjust when confirmed

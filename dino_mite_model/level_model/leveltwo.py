@@ -10,7 +10,7 @@ class LevelTwo(BaseLevelModel):
     """
     Level 2 entity container: 3 fireballs (vertical) + 1 mammoth leg (vertical stomp).
 
-    Fireballs replace meteors — faster with more horizontal drift.
+    Fireballs replace meteors - faster with more horizontal drift.
     MammothLeg hangs from the top, shakes to warn the player, then slams.
 
     !Adjust! image_loaded once a Level 2 win-animation asset is ready.

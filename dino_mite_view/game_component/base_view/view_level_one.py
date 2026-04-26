@@ -6,7 +6,7 @@ from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
 
 class ViewLevelOne(BaseLevelView):
-    """Level One view — extends BaseLevelView, only level-specific logic lives here."""
+    """Level One view, only level-specific logic lives here."""
 
     time_duration_level = 120  # 2 minutes
 

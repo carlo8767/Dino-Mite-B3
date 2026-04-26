@@ -7,7 +7,7 @@ class ControllerLevelOne(BaseLevelController):
     Controller for Level 1.
 
     Level 1 hazards: 3 meteors + 1 rolling rock.
-    All game logic lives in BaseLevelController — only the hazard list is level-specific.
+    All game logic lives in BaseLevelController - only the hazard list is level-specific.
     """
 
     def __init__(self):

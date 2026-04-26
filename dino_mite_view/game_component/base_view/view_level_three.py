@@ -7,8 +7,7 @@ from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
 class ViewLevelThree(BaseLevelView):
     """
-    Level Three view.
-    Extends BaseLevelView — only Level 3 specific rendering lives here.
+    Level Three view, only Level 3 specific rendering lives here.
     """
 
     time_duration_level = 60  # 60 seconds

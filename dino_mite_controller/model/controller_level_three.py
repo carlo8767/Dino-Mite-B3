@@ -8,10 +8,6 @@ class ControllerLevelThree(BaseLevelController):
 
     Hazards: 2 helicopters + 3 bombs + 1 drone.
 
-    Both helicopters independently signal should_drop().  Each time one fires
-    this controller activates the next idle bomb at that helicopter's position,
-    so bombs visually fall from whichever helicopter dropped them.
-
     All hazards are in slowed_hazards so the slow powerup reduces helicopter
     speeds (shifting bomb landing zones) and the drone speed, while also
     slowing active bomb fall speeds.

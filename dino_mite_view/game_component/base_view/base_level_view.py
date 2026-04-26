@@ -10,7 +10,7 @@ from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 class BaseLevelView:
     """
     Base class for all level views.
-    Contains all shared logic — event handling, timer, pause, powerup drawing,
+    Contains all shared logic - event handling, timer, pause, powerup drawing,
     shield drawing, death animation, HUD.
     Subclasses override only what is level-specific.
     """
@@ -38,8 +38,8 @@ class BaseLevelView:
 
     def draw_screen(self, window, controller):
         """
-        Main game loop — identical structure for all levels.
-        Subclasses do not override this — they override the draw/sequence methods.
+        Main game loop - identical structure for all levels.
+        Subclasses do not override this - they override the draw/sequence methods.
         """
         controller.init_music()
         clock = pygame.time.Clock()
