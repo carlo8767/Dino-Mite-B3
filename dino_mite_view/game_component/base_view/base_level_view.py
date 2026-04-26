@@ -33,7 +33,7 @@ class BaseLevelView:
 
         self.portal_active = False
         self.portal_rect = None
-        self.portal_image = pygame.image.load("./image/portal.jpeg").convert_alpha()
+        self.portal_image = pygame.image.load("./image/portal_2.png").convert_alpha()
         self.portal_image = pygame.transform.scale(self.portal_image, (90, 130))
 
     def draw_screen(self, window, controller):
@@ -205,14 +205,9 @@ class BaseLevelView:
             clock.tick(60)
             
     def _draw_portal(self, window):
-        time = pygame.time.get_ticks()
-
-        angle = (time * 0.08) % 360
-        rotated_portal = pygame.transform.rotate(self.portal_image, angle)
-
-        portal_draw_rect = rotated_portal.get_rect(center=self.portal_rect.center)
-        window.blit(rotated_portal, portal_draw_rect)
-
+        portal_draw_rect = self.portal_image.get_rect(center=self.portal_rect.center)
+        window.blit(self.portal_image, portal_draw_rect)
+        
     def _spawn_portal(self, controller):
         portal_width = 90
         portal_height = 130
