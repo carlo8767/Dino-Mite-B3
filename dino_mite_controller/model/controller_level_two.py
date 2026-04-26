@@ -6,9 +6,12 @@ class ControllerLevelTwo(BaseLevelController):
     """
     Controller for Level 2.
 
-    Hazards: 3 fireballs (vertical) + 1 mammoth (horizontal).
-    All four are registered so collision detection, movement,
-    the slowdown powerup, and level reset all work automatically.
+    Hazards: 3 fireballs (vertical) + 1 mammoth leg (vertical stomp).
+    All four are registered so collision detection, movement, the slowdown
+    powerup, and level reset all work automatically.
+
+    The slowdown powerup halves hazard_mammothLeg.speed, visibly slowing the
+    slam and giving the player extra time to run clear.
     """
 
     def __init__(self):
@@ -20,5 +23,5 @@ class ControllerLevelTwo(BaseLevelController):
             self.level_model.hazard_fireball,
             self.level_model.hazard_fireballOne,
             self.level_model.hazard_fireballTwo,
-            self.level_model.hazard_mammoth,
+            self.level_model.hazard_mammothLeg,
         ]

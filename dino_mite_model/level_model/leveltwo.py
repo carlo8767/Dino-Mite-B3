@@ -3,16 +3,15 @@ import os
 import pygame
 
 from dino_mite_model.level_model.base_level_model import BaseLevelModel
-from dino_mite_model.character_game.vertical_hazard import Fireball
-from dino_mite_model.character_game.horizontal_hazard import Mammoth
+from dino_mite_model.character_game.vertical_hazard import Fireball, MammothLeg
 
 
 class LevelTwo(BaseLevelModel):
     """
-    Level 2 entity container: 3 fireballs + 1 mammoth.
+    Level 2 entity container: 3 fireballs (vertical) + 1 mammoth leg (vertical stomp).
 
-    Fireballs replace meteors (faster, more drift).
-    Mammoth replaces the rolling rock (faster horizontal stomp).
+    Fireballs replace meteors — faster with more horizontal drift.
+    MammothLeg hangs from the top, shakes to warn the player, then slams.
 
     !Adjust! image_loaded once a Level 2 win-animation asset is ready.
     !Adjust! sound once a Level 2 music track is ready.
@@ -25,7 +24,7 @@ class LevelTwo(BaseLevelModel):
         self.hazard_fireball    = Fireball()
         self.hazard_fireballOne = Fireball()
         self.hazard_fireballTwo = Fireball()
-        self.hazard_mammoth     = Mammoth()
+        self.hazard_mammothLeg  = MammothLeg()
 
         # ── Win-sequence animation (placeholder — replace when Level 2 asset is ready) ──
         self.image_loaded = pygame.transform.scale(

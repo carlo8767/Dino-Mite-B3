@@ -6,17 +6,15 @@ class ControllerLevelThree(BaseLevelController):
     """
     Controller for Level 3.
 
-    Hazards: 1 helicopter (horizontal, sky level) + 2 bombs (vertical, dropped
-    by the helicopter) + 1 drone (horizontal, mid-height).
+    Hazards: 2 helicopters + 3 bombs + 1 drone.
 
-    The helicopter flies across the top of the screen. Every _drop_interval
-    frames it signals should_drop(), and this controller activates the next
-    idle bomb at the helicopter's current x position. This creates the visual
-    of bombs falling directly from beneath the helicopter.
+    Both helicopters independently signal should_drop().  Each time one fires
+    this controller activates the next idle bomb at that helicopter's position,
+    so bombs visually fall from whichever helicopter dropped them.
 
-    All four hazards are in slowed_hazards so the slowdown powerup affects
-    the helicopter speed (changing where bombs land) and the drone speed.
-    Bomb fall speed is also slowed while active.
+    All hazards are in slowed_hazards so the slow powerup reduces helicopter
+    speeds (shifting bomb landing zones) and the drone speed, while also
+    slowing active bomb fall speeds.
     """
 
     def __init__(self):
@@ -26,19 +24,31 @@ class ControllerLevelThree(BaseLevelController):
     def register_slowable_hazards(self):
         self.slowed_hazards = [
             self.level_model.hazard_helicopter,
+            self.level_model.hazard_helicopterTwo,
             self.level_model.hazard_bomb,
             self.level_model.hazard_bombOne,
+            self.level_model.hazard_bombTwo,
             self.level_model.hazard_drone,
         ]
 
     def update_movement(self):
-        """Move all hazards, then drop a bomb from the helicopter if the timer fires."""
+        """Move all hazards, then check each helicopter's drop timer."""
         super().update_movement()
 
-        if self.level_model.hazard_helicopter.should_drop():
-            drop_x = self.level_model.hazard_helicopter.rect.centerx
-            drop_y = self.level_model.hazard_helicopter.rect.bottom
-            for bomb in (self.level_model.hazard_bomb, self.level_model.hazard_bombOne):
-                if not bomb.is_active:
-                    bomb.activate_at(drop_x, drop_y)
-                    break
+        bombs = (
+            self.level_model.hazard_bomb,
+            self.level_model.hazard_bombOne,
+            self.level_model.hazard_bombTwo,
+        )
+
+        for helicopter in (
+            self.level_model.hazard_helicopter,
+            self.level_model.hazard_helicopterTwo,
+        ):
+            if helicopter.should_drop():
+                drop_x = helicopter.rect.centerx
+                drop_y = helicopter.rect.bottom
+                for bomb in bombs:
+                    if not bomb.is_active:
+                        bomb.activate_at(drop_x, drop_y)
+                        break

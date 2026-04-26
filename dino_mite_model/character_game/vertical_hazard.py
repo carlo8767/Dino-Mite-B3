@@ -97,16 +97,12 @@ class Bomb(VerticalHazard):
     When a bomb exits the bottom of the screen or collides, it goes back to
     inactive and waits for the next drop — it does NOT respawn randomly.
 
-    !Adjust! image_path once a bomb asset is available.
-    !Adjust! _speed to tune difficulty (currently placeholder value).
+    !Adjust! _speed to tune difficulty.
     !Adjust! size to match the final asset dimensions.
     !Adjust! sound once a bomb/explosion sound is available.
-    !Adjust! consider drawing a shadow/warning indicator on the ground
-             at self.rect.centerx while the bomb is falling so the player
-             can see the incoming drop zone.
     """
 
-    image_path = os.path.join("./image/hazard", "meteor.png")  # placeholder
+    image_path = os.path.join("./image/hazard", "BombT.png")
     name = "Bomb"
     _speed = 10
     size = (40, 60)
@@ -136,3 +132,88 @@ class Bomb(VerticalHazard):
         """Park off-screen and go inactive — helicopter will re-drop later."""
         self.is_active = False
         self.rect.center = (-500, -500)
+
+
+class MammothLeg(VerticalHazard):
+    """
+    Level 2 hazard. A giant mammoth leg that descends from the top of the screen
+    in three phases, giving the player time to dodge by running left or right.
+
+    Phases
+    ------
+    WARN  – the bottom of the leg hangs just inside the top edge, shaking
+            slightly so the player knows exactly where it will stomp.
+            Duration: _WARN_FRAMES (~1.5 s). Dodge window.
+    SLAM  – leg drops at self.speed px/frame (slowed by the slow powerup,
+            giving an extended dodge window as a reward).
+    HOLD  – leg rests at ground level for _HOLD_FRAMES; collision active.
+    RISE  – leg retracts off-screen, then resets to a new random x.
+
+    !Adjust! size to match the final MammothLegT asset dimensions.
+    !Adjust! _WARN_FRAMES / _speed / _HOLD_FRAMES to tune difficulty.
+    !Adjust! sound once a stomp sound is available.
+    """
+
+    image_path    = os.path.join("./image/hazard", "MammothLegT.png")
+    name          = "MammothLeg"
+    _speed        = 22          # slam speed (px/frame); slowed by powerup
+    size          = (80, 200)
+
+    _WARN_FRAMES  = 90          # frames to hang at top (~1.5 s at 60 fps)
+    _HOLD_FRAMES  = 18          # frames to rest at ground after slam
+    _RISE_SPEED   = 14          # retract speed — not affected by slow powerup
+    _GROUND_BOTTOM = 625        # rect.bottom at full stomp (ground level)
+    _HANG_BOTTOM   = 50         # rect.bottom during WARN (50 px visible as warning)
+
+    _WARN = "warn"
+    _SLAM = "slam"
+    _HOLD = "hold"
+    _RISE = "rise"
+
+    def __init__(self):
+        super().__init__()
+        self._phase       = self._WARN
+        self._phase_timer = 0
+        # Position leg so only the bottom _HANG_BOTTOM pixels are visible
+        self.position_x   = random.randint(100, WIDTH - 100)
+        self.rect.centerx = self.position_x
+        self.rect.bottom  = self._HANG_BOTTOM
+
+    def update_position(self):
+        if self._phase == self._WARN:
+            self.rect.x  += random.randint(-2, 2)   # slight shake as warning
+            self._phase_timer += 1
+            if self._phase_timer >= self._WARN_FRAMES:
+                self._phase       = self._SLAM
+                self._phase_timer = 0
+
+        elif self._phase == self._SLAM:
+            self.rect.y += self.speed
+            if self.rect.bottom >= self._GROUND_BOTTOM:
+                self.rect.bottom  = self._GROUND_BOTTOM
+                self._phase       = self._HOLD
+                self._phase_timer = 0
+
+        elif self._phase == self._HOLD:
+            self._phase_timer += 1
+            if self._phase_timer >= self._HOLD_FRAMES:
+                self._phase       = self._RISE
+                self._phase_timer = 0
+
+        elif self._phase == self._RISE:
+            self.rect.y -= self._RISE_SPEED
+            if self.rect.bottom <= 0:
+                self._reset()
+
+    def update_position_collision(self):
+        """Shield deflect — immediately retract without resetting to a new position."""
+        self._phase       = self._RISE
+        self._phase_timer = 0
+
+    def _reset(self):
+        self.position_x   = random.randint(100, WIDTH - 100)
+        self.rect.centerx = self.position_x
+        self.rect.bottom  = self._HANG_BOTTOM
+        self._phase       = self._WARN
+        self._phase_timer = 0
+        self.is_active    = True

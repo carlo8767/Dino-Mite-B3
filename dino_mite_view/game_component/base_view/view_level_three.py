@@ -29,29 +29,19 @@ class ViewLevelThree(BaseLevelView):
         self._draw_hud(window, controller)
         controller.level_model.character.draw(window)
 
-        # Helicopter (always on screen — flies continuously)
-        window.blit(
-            controller.level_model.hazard_helicopter.image_loaded,
-            controller.level_model.hazard_helicopter.rect,
-        )
+        m = controller.level_model
+
+        # Helicopters (always on screen — fly continuously in opposite directions)
+        window.blit(m.hazard_helicopter.image_loaded,    m.hazard_helicopter.rect)
+        window.blit(m.hazard_helicopterTwo.image_loaded, m.hazard_helicopterTwo.rect)
 
         # Bombs (only draw when active — inactive bombs are parked off-screen)
-        if controller.level_model.hazard_bomb.is_active:
-            window.blit(
-                controller.level_model.hazard_bomb.image_loaded,
-                controller.level_model.hazard_bomb.rect,
-            )
-        if controller.level_model.hazard_bombOne.is_active:
-            window.blit(
-                controller.level_model.hazard_bombOne.image_loaded,
-                controller.level_model.hazard_bombOne.rect,
-            )
+        for bomb in (m.hazard_bomb, m.hazard_bombOne, m.hazard_bombTwo):
+            if bomb.is_active:
+                window.blit(bomb.image_loaded, bomb.rect)
 
-        # Drone (always on screen — flies continuously at mid-height)
-        window.blit(
-            controller.level_model.hazard_drone.image_loaded,
-            controller.level_model.hazard_drone.rect,
-        )
+        # Drone (always on screen — flies at mid-height, direction randomised)
+        window.blit(m.hazard_drone.image_loaded, m.hazard_drone.rect)
 
     def _win_sequence(self, window, controller, background, clock):
         controller.stop_music()

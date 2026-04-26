@@ -41,9 +41,9 @@ class ViewLevelTwo(BaseLevelView):
             window.blit(controller.level_model.hazard_fireballTwo.image_loaded,
                         controller.level_model.hazard_fireballTwo.rect)
 
-        # Mammoth (horizontal — always on screen)
-        window.blit(controller.level_model.hazard_mammoth.image_loaded,
-                    controller.level_model.hazard_mammoth.rect)
+        # MammothLeg (always on screen — hangs, slams, retracts)
+        window.blit(controller.level_model.hazard_mammothLeg.image_loaded,
+                    controller.level_model.hazard_mammothLeg.rect)
 
     def _win_sequence(self, window, controller, background, clock):
         controller.stop_music()
