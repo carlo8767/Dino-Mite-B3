@@ -1,9 +1,6 @@
 import os.path
-
 import pygame
-import random
-
-from dino_mite_utility.utilities_names import WIDTH, HEIGHT
+from dino_mite_utility.utilities_names import WIDTH
 
 class HorizontalHazard(pygame.sprite.Sprite):
     def __init__(self, image_path, speed = 2, size = (60,60)):
