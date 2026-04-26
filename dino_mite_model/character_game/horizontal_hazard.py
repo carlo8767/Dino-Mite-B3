@@ -51,12 +51,29 @@ class HorizontalHazard(pygame.sprite.Sprite):
 
 
 class RollingRock(HorizontalHazard):
-    """Level 1 hazard. Rolls left-to-right across the ground."""
+    """Level 1 hazard. Rolls left-to-right across the ground with clockwise rotation."""
 
     image_path = os.path.join("./image/hazard", "rolling_rock.png")
     name = "RollingRock"
     _move_x = 2
     size = (60, 60)
+
+    def __init__(self):
+        super().__init__()
+        self._original_image = self.image_loaded.copy()
+        self._angle = 0
+
+    def update_position(self):
+        self.rect.x += self.move_x
+        if self.rect.left > WIDTH:
+            self.rect.x = self.position_x
+
+        # Rotate clockwise to match rightward movement (~4 degrees per frame)
+        self._angle = (self._angle - 4) % 360
+        center = self.rect.center
+        self.image_loaded = pygame.transform.rotate(self._original_image, self._angle)
+        self.rect = self.image_loaded.get_rect(center=center)
+        self.mask = pygame.mask.from_surface(self.image_loaded)
 
 
 class Mammoth(HorizontalHazard):
