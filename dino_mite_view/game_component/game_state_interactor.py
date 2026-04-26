@@ -33,7 +33,12 @@ class GameStateInteractor:
     GAME_STATE = ""
 
     def init_game(self):
-        logging.basicConfig(level=logging.INFO, filename="login.log")
+        logging.basicConfig(
+            level=logging.INFO,
+            filename="game.log",
+            format="%(asctime)s [%(levelname)s] %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
 
         pygame.init()
         window = pygame.display.set_mode((WIDTH, HEIGHT), 0, 32)
