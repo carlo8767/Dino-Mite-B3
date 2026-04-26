@@ -166,4 +166,4 @@ class Drone(HorizontalHazard):
     _move_x = 5
     size = (80, 50)      # wide and flat — drone shape
     _start_x = -300
-    _start_y = 300       # mid-screen — player must duck, not jump
+    _start_y = 520       # just above the character's head (head top = y 450, drone bottom = y 445)

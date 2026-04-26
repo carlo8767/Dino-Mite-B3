@@ -37,7 +37,8 @@ class ControllerLevelThree(BaseLevelController):
 
         if self.level_model.hazard_helicopter.should_drop():
             drop_x = self.level_model.hazard_helicopter.rect.centerx
+            drop_y = self.level_model.hazard_helicopter.rect.bottom
             for bomb in (self.level_model.hazard_bomb, self.level_model.hazard_bombOne):
                 if not bomb.is_active:
-                    bomb.activate_at(drop_x)
+                    bomb.activate_at(drop_x, drop_y)
                     break

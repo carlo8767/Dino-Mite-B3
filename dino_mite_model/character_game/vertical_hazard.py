@@ -116,9 +116,13 @@ class Bomb(VerticalHazard):
         self.is_active = False          # inactive until the helicopter drops it
         self.rect.center = (-500, -500) # parked off-screen
 
-    def activate_at(self, x: int):
-        """Drop this bomb from the given x position (the helicopter's centre x)."""
-        self.rect.center = (x, -60)
+    def activate_at(self, x: int, y: int = -60):
+        """
+        Drop this bomb from the given position.
+        Pass the helicopter's rect.bottom as y so the bomb appears to
+        fall from the helicopter rather than from the top of the screen.
+        """
+        self.rect.center = (x, y)
         self.is_active = True
 
     def update_position(self):
