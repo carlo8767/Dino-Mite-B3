@@ -193,7 +193,7 @@ class Bomb(VerticalHazard):
     image_path = os.path.join("./image/hazard", "BombT.png")
     name = "Bomb"
     _speed = 10
-    size = (55, 80)
+    size = (65, 90)
 
     def __init__(self):
         super().__init__()
