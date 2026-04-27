@@ -11,9 +11,13 @@ class ViewLevelThree(BaseLevelView):
     """
 
     time_duration_level = 60  # 60 seconds
+    level_number        = 3
 
     def __init__(self):
         super().__init__()
+        self._ch_heli  = pygame.mixer.Channel(3)
+        self._ch_drone = pygame.mixer.Channel(4)
+        self._ch_bomb  = pygame.mixer.Channel(5)
 
     def draw_screen_level_three(self, window, controller):
         """Entry point called by GameStateInteractor."""
@@ -33,14 +37,20 @@ class ViewLevelThree(BaseLevelView):
         # Helicopters (always on screen — fly continuously in opposite directions)
         window.blit(m.hazard_helicopter.image_loaded,    m.hazard_helicopter.rect)
         window.blit(m.hazard_helicopterTwo.image_loaded, m.hazard_helicopterTwo.rect)
+        self.sound_manager.play_looping("Helicopter", self.level_number, self._ch_heli)
 
         # Bombs (only draw when active — inactive bombs are parked off-screen)
+        any_bomb = False
         for bomb in (m.hazard_bomb, m.hazard_bombOne, m.hazard_bombTwo):
             if bomb.is_active:
                 window.blit(bomb.image_loaded, bomb.rect)
+                any_bomb = True
+        if any_bomb:
+            self.sound_manager.play_looping("Bomb", self.level_number, self._ch_bomb)
 
         # Drone (always on screen — flies at mid-height, direction randomised)
         window.blit(m.hazard_drone.image_loaded, m.hazard_drone.rect)
+        self.sound_manager.play_looping("Drone", self.level_number, self._ch_drone)
 
     def _win_sequence(self, window, controller, background, clock):
         controller.stop_music()

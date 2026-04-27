@@ -11,9 +11,11 @@ class ViewLevelTwo(BaseLevelView):
     """
 
     time_duration_level = 90  # Level 2 is 90 seconds, adjust when confirmed
+    level_number        = 2
 
     def __init__(self):
         super().__init__()
+        self._ch_arm = pygame.mixer.Channel(2)
 
     def draw_screen_level_two(self, window, controller):
         """Entry point called by GameStateInteractor."""
@@ -28,20 +30,22 @@ class ViewLevelTwo(BaseLevelView):
         self._draw_hud(window, controller)
         controller.level_model.character.draw(window)
 
-        # Fireballs (vertical — only draw when active)
-        if controller.level_model.hazard_fireball.is_active:
-            window.blit(controller.level_model.hazard_fireball.image_loaded,
-                        controller.level_model.hazard_fireball.rect)
-        if controller.level_model.hazard_fireballOne.is_active:
-            window.blit(controller.level_model.hazard_fireballOne.image_loaded,
-                        controller.level_model.hazard_fireballOne.rect)
-        if controller.level_model.hazard_fireballTwo.is_active:
-            window.blit(controller.level_model.hazard_fireballTwo.image_loaded,
-                        controller.level_model.hazard_fireballTwo.rect)
+        m = controller.level_model
 
-        # MammothLeg (always on screen — hangs, slams, retracts)
-        window.blit(controller.level_model.hazard_mammothLeg.image_loaded,
-                    controller.level_model.hazard_mammothLeg.rect)
+        # Fireballs (vertical — only draw when active)
+        if m.hazard_fireball.is_active:
+            window.blit(m.hazard_fireball.image_loaded, m.hazard_fireball.rect)
+        if m.hazard_fireballOne.is_active:
+            window.blit(m.hazard_fireballOne.image_loaded, m.hazard_fireballOne.rect)
+        if m.hazard_fireballTwo.is_active:
+            window.blit(m.hazard_fireballTwo.image_loaded, m.hazard_fireballTwo.rect)
+
+        # BigArm (always on screen — hangs, slams, retracts)
+        arm = m.hazard_mammothLeg
+        window.blit(arm.image_loaded, arm.rect)
+        # Play stomp sound during slam and hold phases
+        if arm._phase in (arm._SLAM, arm._HOLD):
+            self.sound_manager.play_looping("BigArm", self.level_number, self._ch_arm)
 
     def _win_sequence(self, window, controller, background, clock):
         controller.stop_music()
@@ -55,6 +59,6 @@ class ViewLevelTwo(BaseLevelView):
         logging.info("game over level two")
         controller.stop_music()
         return "STORY_FAILURE"
-    
+
     def _next_level(self):
         return "STORY_L2_TO_L3"

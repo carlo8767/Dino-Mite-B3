@@ -26,25 +26,25 @@ class SoundManager:
     _HAZARD_SOUNDS: dict[tuple[int, str], str] = {
         # Level 1
         (1, "Meteor"):      "Level1-MeteorSound.mp3",
-        (1, "RollingRock"):  "Level1-StoneSound.mp3",
+        (1, "RollingRock"): "Level1-StoneSound.mp3",
         # Level 2
         (2, "Fireball"):    "Level1-MeteorSound.mp3",   # reuse meteor sound for fireball
-        (2, "MammothLeg"):  "Level2-MammothSound.mp3",
+        (2, "BigArm"):      "Level2-MammothSound.mp3",
         # Level 3
-        (3, "Helicopter"):     "Level3-HelicopterSound.mp3",
-        (3, "HelicopterTwo"):  "Level3-HelicopterSound.mp3",
-        (3, "Bomb"):           "Level3-BombSound.mp3",
-        (3, "Drone"):          "Level3-DroneSound.mp3",
+        (3, "Helicopter"):    "Level3-HelicopterSound.mp3",
+        (3, "HelicopterTwo"): "Level3-HelicopterSound.mp3",
+        (3, "Bomb"):          "Level3-BombSound.mp3",
+        (3, "Drone"):         "Level3-DroneSound.mp3",
     }
 
     # ── Power-up pickup sounds ──────────────────────────────────────────────
     _POWERUP_SOUNDS: dict[str, str] = {
         "SlowerHazards":  "Slow Motion Sound Effect.mp3",
         "TimeReduction":  "Clock Ticking Sound Effect.mp3",
-        "ShieldBubble":   "Bubble Sound Effect.mp3",
+        "ShieldBubble":   "ShieldPopSoundEffect.mp3",
     }
 
-    _SHIELD_POP_FILE = "ShieldPopSoundEffect.mp3"
+    _SHIELD_POP_FILE = "Bubble Sound Effect.mp3"
 
     def __init__(self):
         self._cache: dict[str, pygame.mixer.Sound] = {}
@@ -105,6 +105,17 @@ class SoundManager:
         sound = self._load(self._SHIELD_POP_FILE)
         if sound is not None:
             sound.play()
+
+    def play_looping(self, hazard_name: str, level: int, channel: pygame.mixer.Channel):
+        """Play sound on a dedicated channel only if the channel is not already busy."""
+        if channel.get_busy():
+            return
+        filename = self._HAZARD_SOUNDS.get((level, hazard_name))
+        if filename is None:
+            return
+        sound = self._load(filename)
+        if sound is not None:
+            channel.play(sound)
 
     def reset_counters(self):
         """Clear all hazard appearance counters (call on level reset)."""

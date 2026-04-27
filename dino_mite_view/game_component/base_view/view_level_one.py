@@ -9,9 +9,12 @@ class ViewLevelOne(BaseLevelView):
     """Level One view, only level-specific logic lives here."""
 
     time_duration_level = 120  # 2 minutes
+    level_number        = 1
 
     def __init__(self):
         super().__init__()
+        self._ch_meteor = pygame.mixer.Channel(0)
+        self._ch_rock   = pygame.mixer.Channel(1)
 
     def draw_screen_level_one(self, window, controller):
         """Entry point kept for backwards compatibility with GameStateInteractor."""
@@ -33,26 +36,24 @@ class ViewLevelOne(BaseLevelView):
         # Character
         controller.level_model.character.draw(window)
 
+        m = controller.level_model
+
         # Hazards
-        if controller.level_model.hazard_meteor.is_active:
-            window.blit(
-                controller.level_model.hazard_meteor.image_loaded,
-                controller.level_model.hazard_meteor.rect,
-            )
-        if controller.level_model.hazard_meteorOne.is_active:
-            window.blit(
-                controller.level_model.hazard_meteorOne.image_loaded,
-                controller.level_model.hazard_meteorOne.rect,
-            )
-        if controller.level_model.hazard_meteorTwo.is_active:
-            window.blit(
-                controller.level_model.hazard_meteorTwo.image_loaded,
-                controller.level_model.hazard_meteorTwo.rect,
-            )
-        window.blit(
-            controller.level_model.hazard_rollingRock.image_loaded,
-            controller.level_model.hazard_rollingRock.rect,
-        )
+        if m.hazard_meteor.is_active:
+            window.blit(m.hazard_meteor.image_loaded, m.hazard_meteor.rect)
+        if m.hazard_meteorOne.is_active:
+            window.blit(m.hazard_meteorOne.image_loaded, m.hazard_meteorOne.rect)
+        if m.hazard_meteorTwo.is_active:
+            window.blit(m.hazard_meteorTwo.image_loaded, m.hazard_meteorTwo.rect)
+        window.blit(m.hazard_rollingRock.image_loaded, m.hazard_rollingRock.rect)
+
+        # Ambient hazard sounds
+        any_meteor = m.hazard_meteor.is_active or m.hazard_meteorOne.is_active or m.hazard_meteorTwo.is_active
+        if any_meteor:
+            self.sound_manager.play_looping("Meteor", self.level_number, self._ch_meteor)
+        else:
+            self._ch_meteor.stop()
+        self.sound_manager.play_looping("RollingRock", self.level_number, self._ch_rock)
 
     def _win_sequence(self, window, controller, background, clock):
         pygame.time.delay(500)

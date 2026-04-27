@@ -5,18 +5,26 @@ import random
 
 from dino_mite_view.game_component.pause_menu import PauseMenu
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
+from dino_mite_utility.sound_manager import SoundManager
 
 
 class BaseLevelView:
     """
     Base class for all level views.
     Contains all shared logic - event handling, timer, pause, powerup drawing,
-    shield drawing, death animation, HUD.
+    shield drawing, death animation, HUD, and all sound effects.
     Subclasses override only what is level-specific.
+
+    Subclass contract
+    -----------------
+    Set level_number as a class attribute so hazard sounds are routed correctly:
+        class ViewLevelTwo(BaseLevelView):
+            level_number = 2
     """
 
-    # Subclasses override this number only
+    # Subclasses override these two values
     time_duration_level = 120
+    level_number        = 0
 
     def __init__(self):
         self.pause_time_total = 0
@@ -35,6 +43,9 @@ class BaseLevelView:
         self.portal_rect = None
         self.portal_image = pygame.image.load("./image/portal_2.png").convert_alpha()
         self.portal_image = pygame.transform.scale(self.portal_image, (90, 130))
+
+        # Sound effects (powerup pickups, shield, hazard resets)
+        self.sound_manager = SoundManager()
 
     def draw_screen(self, window, controller):
         """
@@ -83,21 +94,54 @@ class BaseLevelView:
                 keys = pygame.key.get_pressed()
                 controller.handle_player_input(keys, events)
                 controller.apply_player_gravity()
+
+                # Snapshot hazard positions before movement for reset detection
+                _haz_snap = {
+                    id(h): (h.rect.x, h.rect.y)
+                    for h in controller.slowed_hazards
+                }
                 controller.update_movement()
+                # Detect hazard resets and tick SFX counter
+                for hazard in controller.slowed_hazards:
+                    old = _haz_snap.get(id(hazard))
+                    if old:
+                        ox, oy = old
+                        nx, ny = hazard.rect.x, hazard.rect.y
+                        if (
+                            (oy > 100 and ny < 0) or
+                            (ox > 0   and nx < -100) or
+                            (ox < 700 and nx > 800)
+                        ):
+                            self.sound_manager.tick_hazard(hazard, self.level_number)
 
+                # Tick shield / slowdown timers; snapshot shield state before
+                shield_before_tick = controller.level_model.character.shield_active
                 controller.update_powerup(delta_time)
+                # Shield expired naturally
+                if shield_before_tick and not controller.level_model.character.shield_active:
+                    self.sound_manager.play_shield_pop()
 
+                # Powerup collection
                 collected = controller.detection_collision_powerup()
                 if collected == "TimeReduction":
                     self.time_reduction_ms += 5000
+                if collected:
+                    self.sound_manager.play_powerup_pickup(collected)
 
+                # Hazard collision — snapshot shield before to detect deflect
+                shield_before_hit = controller.level_model.character.shield_active
                 collided, name = controller.detection_collision_character(
                     controller.level_model.character
                 )
+                # Shield deflected the hit
+                if not collided and shield_before_hit and not controller.level_model.character.shield_active:
+                    self.sound_manager.play_shield_pop()
+
                 if collided:
                     logging.info(f"Collision detected with {name} — game over")
                     controller.update_collision_position(name)
                     controller.stop_music()
+                    pygame.mixer.stop()
                     game_over = True
 
                 if self.portal_active and self.portal_rect is not None:
@@ -172,10 +216,9 @@ class BaseLevelView:
             window.blit(img, rect)
 
     def faded_screen(self, window, controller, clock):
-        """Death fade animation — identical for all levels."""
+        """Death fade animation — identical for all levels. No text overlay."""
         fade = pygame.Surface((WIDTH, HEIGHT))
         fade.fill((0, 0, 0))
-        self.draw_text_end(window, controller)
         pygame.time.delay(500)
         screen_copy = window.copy()
         countdown = 500
@@ -201,13 +244,13 @@ class BaseLevelView:
             window.blit(fade, (0, 0))
             controller.apply_change_player_status(window, "dead")
             pygame.display.update()
-            pygame.time.delay(10)   
+            pygame.time.delay(10)
             clock.tick(60)
-            
+
     def _draw_portal(self, window):
         portal_draw_rect = self.portal_image.get_rect(center=self.portal_rect.center)
         window.blit(self.portal_image, portal_draw_rect)
-        
+
     def _spawn_portal(self, controller):
         portal_width = 90
         portal_height = 130
@@ -233,6 +276,8 @@ class BaseLevelView:
         )
 
     def _loading_transition(self, window, clock, next_state):
+        pygame.mixer.music.stop()
+        pygame.mixer.stop()
         font = pygame.font.Font(self.font_path, 70)
 
         for alpha in range(0, 255, 5):
@@ -252,7 +297,7 @@ class BaseLevelView:
         return next_state
 
     # ==================== ABSTRACT METHODS ====================
-    # Subclasses MUST implement these   
+    # Subclasses MUST implement these
 
     def _load_background(self, controller):
         raise NotImplementedError(f"{self.__class__.__name__} must implement _load_background")
@@ -265,6 +310,6 @@ class BaseLevelView:
 
     def _lose_sequence(self, window, controller, clock):
         raise NotImplementedError(f"{self.__class__.__name__} must implement _lose_sequence")
-    
+
     def _next_level(self):
         raise NotImplementedError(f"{self.__class__.__name__} must implement _next_level")
