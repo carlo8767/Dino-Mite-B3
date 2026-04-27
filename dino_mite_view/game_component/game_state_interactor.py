@@ -97,6 +97,27 @@ class GameStateInteractor:
                 logging.info(f'current game state {self.GAME_STATE}')
                 view_level_three = ViewLevelThree()
                 self.GAME_STATE = view_level_three.draw_screen_level_three(window, controller_level_three)
+            # ==================== TRANSITION STORIES ====================
+            elif self.GAME_STATE == "STORY_L1_TO_L2":
+                logging.info(f'current game state {self.GAME_STATE}')
+                transition_story = ViewDisplayStory(story_part=2, next_state="LEVEL_TWO")
+                self.GAME_STATE = transition_story.draw_story_screen(window)
+
+            elif self.GAME_STATE == "STORY_L2_TO_L3":
+                logging.info(f'current game state {self.GAME_STATE}')
+                transition_story = ViewDisplayStory(story_part=3, next_state="LEVEL_THREE")
+                self.GAME_STATE = transition_story.draw_story_screen(window)
+
+            elif self.GAME_STATE == "STORY_SUCCESS":
+                logging.info(f'current game state {self.GAME_STATE}')
+                success_story = ViewDisplayStory(story_part=4, next_state="MAIN_MENU")
+                self.GAME_STATE = success_story.draw_story_screen(window)
+
+            elif self.GAME_STATE == "STORY_FAILURE":
+                logging.info(f'current game state {self.GAME_STATE}')
+                failure_story = ViewDisplayStory(story_part=5, next_state="GAME OVER")
+                self.GAME_STATE = failure_story.draw_story_screen(window)
+
             # ==================== GAME OVER ====================
             elif self.GAME_STATE == "GAME OVER":
                 view_level_game_over = ViewGameOverMenu(window)
