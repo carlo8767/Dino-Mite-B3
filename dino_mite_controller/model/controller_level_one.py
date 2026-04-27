@@ -12,6 +12,7 @@ class ControllerLevelOne(BaseLevelController):
 
     def __init__(self):
         self.level_model = LevelOne()
+        self.level_number = 1
         super().__init__()
 
     def register_slowable_hazards(self):

@@ -4,6 +4,7 @@ import random
 import pygame
 
 from dino_mite_model.character_game.power_ups import SlowerHazards
+from dino_mite_utility.sound_manager import SoundManager
 
 
 class BaseLevelController:
@@ -13,11 +14,12 @@ class BaseLevelController:
 
     Subclass contract
     -----------------
-    1. Set self.level_model BEFORE calling super().__init__():
+    1. Set self.level_model AND self.level_number BEFORE calling super().__init__():
 
         class ControllerLevelTwo(BaseLevelController):
             def __init__(self):
                 self.level_model = LevelTwo()
+                self.level_number = 2
                 super().__init__()
 
     2. Implement register_slowable_hazards() to fill self.slowed_hazards
@@ -37,6 +39,11 @@ class BaseLevelController:
         self.is_paused = False
         self.models_collision = {}
 
+        # Sound effects manager
+        self.sound_manager = SoundManager()
+        # Snapshot the previous-frame y positions so we can detect resets
+        self._prev_hazard_positions: dict[int, tuple] = {}
+
         # Slowdown powerup state
         self.slow_hazards_active = False
         self.slow_hazards_timer  = 0
@@ -47,6 +54,10 @@ class BaseLevelController:
         # Subclass fills self.slowed_hazards — must run before _build_collision_registry
         self.register_slowable_hazards()
         self._build_collision_registry()
+
+        # Snapshot initial positions for reset detection
+        for hazard in self.slowed_hazards:
+            self._prev_hazard_positions[id(hazard)] = (hazard.rect.x, hazard.rect.y)
 
         # Deck: 3 shields, 1 time reduction, 1 slow — shuffled, auto-refills
         self._deck = self._build_deck()
@@ -87,9 +98,35 @@ class BaseLevelController:
     # ==================== MOVEMENT ====================
 
     def update_movement(self):
-        """Move every hazard in the level."""
+        """Move every hazard in the level and track resets for SFX."""
         for hazard in self.slowed_hazards:
+            old_pos = self._prev_hazard_positions.get(id(hazard))
             hazard.update_position()
+            new_pos = (hazard.rect.x, hazard.rect.y)
+
+            # Detect a reset: the hazard jumped back to its spawn area.
+            # Vertical hazards reset y to a negative value (< 0);
+            # Horizontal hazards reset x to a far-off-screen value.
+            if old_pos is not None:
+                old_x, old_y = old_pos
+                new_x, new_y = new_pos
+                reset_detected = False
+
+                # Vertical hazard: was falling (y was large / positive) and
+                # now y is back near the top (negative or near -60)
+                if old_y > 100 and new_y < 0:
+                    reset_detected = True
+                # Horizontal LTR hazard: was well on-screen, now far left
+                if old_x > 0 and new_x < -100:
+                    reset_detected = True
+                # Horizontal RTL hazard: was well on-screen, now far right
+                if old_x < 700 and new_x > 800:
+                    reset_detected = True
+
+                if reset_detected:
+                    self.sound_manager.tick_hazard(hazard, self.level_number)
+
+            self._prev_hazard_positions[id(hazard)] = new_pos
 
     # ==================== COLLISION ====================
 
@@ -105,7 +142,8 @@ class BaseLevelController:
     def detection_collision_character(self, sprite) -> tuple[bool, str]:
         """
         Returns (True, hazard_name) if the character collides with a hazard.
-        If the shield is active, deflects the hazard and returns (False, '').
+        If the shield is active, deflects the hazard, plays shield pop sound,
+        and returns (False, '').
         """
         for hazard, name in self.models_collision.items():
             if hazard is sprite:
@@ -117,6 +155,10 @@ class BaseLevelController:
                 if sprite.shield_active:
                     logging.info(f"Shield blocked collision with {name}")
                     hazard.update_position_collision()
+                    # Shield absorbed the hit — play pop and deactivate shield
+                    sprite.shield_active = False
+                    sprite.shield_timer = 0
+                    self.sound_manager.play_shield_pop()
                     return False, ""
                 return True, name
         return False, ""
@@ -156,6 +198,8 @@ class BaseLevelController:
             if character.shield_timer <= 0:
                 character.shield_active = False
                 character.shield_timer  = 0
+                # Shield expired naturally — play pop sound
+                self.sound_manager.play_shield_pop()
 
         if self.slow_hazards_active:
             self.slow_hazards_timer -= delta_time
@@ -189,6 +233,8 @@ class BaseLevelController:
             self.current_powerup.update_position_collision()
             self.current_powerup = None
             logging.info(f"Powerup collected: {name}")
+            # Play the pickup sound effect for this powerup type
+            self.sound_manager.play_powerup_pickup(name)
             return name
         return ""
 
@@ -236,6 +282,7 @@ class BaseLevelController:
         self.slow_hazards_active = False
         self.slow_hazards_timer  = 0
         self.restore_hazard_speeds()
+        self.sound_manager.reset_counters()
 
     # ==================== ABSTRACT ====================
 
