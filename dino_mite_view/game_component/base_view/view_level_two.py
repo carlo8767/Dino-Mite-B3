@@ -10,7 +10,7 @@ class ViewLevelTwo(BaseLevelView):
     Level Two view, only Level 2 specific rendering lives here.
     """
 
-    time_duration_level = 90  # Level 2 is 90 seconds, adjust when confirmed
+    time_duration_level = 9  # Level 2 is 90 seconds, adjust when confirmed
     level_number        = 2
 
     def __init__(self):
