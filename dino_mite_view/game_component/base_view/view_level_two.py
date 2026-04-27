@@ -47,14 +47,14 @@ class ViewLevelTwo(BaseLevelView):
         controller.stop_music()
         pygame.mixer.stop()
         # TODO: add Level 2 win animation when assets are ready
-        return "LEVEL_THREE"
+        return "STORY_L2_TO_L3"
 
     def _lose_sequence(self, window, controller, clock):
         controller.init_music_end_level()
         self.faded_screen(window, controller, clock)
         logging.info("game over level two")
         controller.stop_music()
-        return "GAME OVER"
+        return "STORY_FAILURE"
     
     def _next_level(self):
-        return "LEVEL_THREE"
+        return "STORY_L2_TO_L3"
