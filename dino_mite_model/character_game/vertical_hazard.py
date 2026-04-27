@@ -82,17 +82,17 @@ class Fireball(VerticalHazard):
     !Adjust! sound once a fireball sound is available.
     """
 
-    image_path = os.path.join("./image/hazard", "meteor.png")  # placeholder
+    image_path = os.path.join("./image/hazard", "fireball.png")  
     name = "Fireball"
-    _speed = 8
+    _speed = 7
+    size = (60, 60)
 
     def update_position(self):
         self.rect.y += self.speed
-        self.rect.x += random.randint(-3, 3)
         if self.rect.top > HEIGHT:
             self._reset()
 
-class MammothLeg(VerticalHazard):
+class BigArm(VerticalHazard):
     """
     A giant mammoth leg that descends from the top of the screen
     in three phases, giving the player time to dodge by running left or right.
@@ -110,16 +110,16 @@ class MammothLeg(VerticalHazard):
     !Adjust! sound once a stomp sound is available.
     """
 
-    image_path    = os.path.join("./image/hazard", "MammothLegT.png")
-    name          = "MammothLeg"
+    image_path    = os.path.join("./image/hazard", "big_arm.png")
+    name          = "BigArm"
     _speed        = 22          # slam speed (px/frame); slowed by powerup
-    size          = (80, 200)
+    size          = (200, 800)
 
     _WARN_FRAMES  = 90          # frames to hang at top (~1.5 s at 60 fps)
-    _HOLD_FRAMES  = 18          # frames to rest at ground after slam
+    _HOLD_FRAMES  = 25          # frames to rest at ground after slam
     _RISE_SPEED   = 14          # retract speed - not affected by slow powerup
     _GROUND_BOTTOM = 625        # rect.bottom at full stomp (ground level)
-    _HANG_BOTTOM   = 50         # rect.bottom during WARN (50 px visible as warning)
+    _HANG_BOTTOM   = 100         # rect.bottom during WARN (50 px visible as warning)
 
     _WARN = "warn"
     _SLAM = "slam"

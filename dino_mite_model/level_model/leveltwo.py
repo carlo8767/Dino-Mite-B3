@@ -3,7 +3,7 @@ import os
 import pygame
 
 from dino_mite_model.level_model.base_level_model import BaseLevelModel
-from dino_mite_model.character_game.vertical_hazard import Fireball, MammothLeg
+from dino_mite_model.character_game.vertical_hazard import Fireball, BigArm
 
 
 class LevelTwo(BaseLevelModel):
@@ -24,7 +24,7 @@ class LevelTwo(BaseLevelModel):
         self.hazard_fireball    = Fireball()
         self.hazard_fireballOne = Fireball()
         self.hazard_fireballTwo = Fireball()
-        self.hazard_mammothLeg  = MammothLeg()
+        self.hazard_mammothLeg  = BigArm()
 
         # ── Win-sequence animation (placeholder — replace when Level 2 asset is ready) ──
         self.image_loaded = pygame.transform.scale(
