@@ -62,6 +62,7 @@ class Meteor(VerticalHazard):
     image_path = os.path.join("./image/hazard", "meteor.png")
     name = "Meteor"
     _speed = 6
+    size   = (55, 55)
 
     def update_position(self):
         self.rect.y += self.speed

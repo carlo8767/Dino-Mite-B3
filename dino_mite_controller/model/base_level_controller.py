@@ -58,6 +58,7 @@ class BaseLevelController:
 
     def init_music(self):
         pygame.mixer.music.load(self.level_model.sound)
+        pygame.mixer.music.set_volume(0.35)
         pygame.mixer.music.play(-1, 0.0)
 
     def init_music_end_level(self):
