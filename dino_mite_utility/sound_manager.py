@@ -46,10 +46,23 @@ class SoundManager:
 
     _SHIELD_POP_FILE = "Bubble Sound Effect.mp3"
 
+    # ── Volume hierarchy ─────────────────────────────────────────────────────
+    # Hazard ambients sit under background music; powerups/shield cut through.
+    _HAZARD_VOLUME  = 0.18
+    _POWERUP_VOLUME = 0.55
+    _SHIELD_VOLUME  = 0.65
+
+    # Per-file overrides (applied after the category default)
+    _VOLUME_OVERRIDES: dict[str, float] = {
+        "Level1-StoneSound.mp3":      0.10,   # rolling rock is very continuous — keep low
+        "Level3-HelicopterSound.mp3": 0.12,
+        "Level3-DroneSound.mp3":      0.12,
+        "Level3-BombSound.mp3":       0.13,
+        "Level2-MammothSound.mp3":    0.20,
+    }
+
     def __init__(self):
         self._cache: dict[str, pygame.mixer.Sound] = {}
-        # Counters: keyed by id(hazard_object) → number of resets/appearances
-        self._hazard_counters: dict[int, int] = {}
 
     # ── internal helpers ────────────────────────────────────────────────────
 
@@ -60,7 +73,16 @@ class SoundManager:
         path = os.path.join(self._MUSIC_DIR, filename)
         try:
             sound = pygame.mixer.Sound(path)
-            sound.set_volume(0.6)
+
+            # Determine volume category, then apply any per-file override
+            if filename == self._SHIELD_POP_FILE:
+                vol = self._SHIELD_VOLUME
+            elif filename in self._POWERUP_SOUNDS.values():
+                vol = self._POWERUP_VOLUME
+            else:
+                vol = self._HAZARD_VOLUME
+            sound.set_volume(self._VOLUME_OVERRIDES.get(filename, vol))
+
             self._cache[filename] = sound
             return sound
         except (pygame.error, FileNotFoundError) as exc:

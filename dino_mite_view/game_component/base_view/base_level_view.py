@@ -95,24 +95,7 @@ class BaseLevelView:
                 controller.handle_player_input(keys, events)
                 controller.apply_player_gravity()
 
-                # Snapshot hazard positions before movement for reset detection
-                _haz_snap = {
-                    id(h): (h.rect.x, h.rect.y)
-                    for h in controller.slowed_hazards
-                }
                 controller.update_movement()
-                # Detect hazard resets and tick SFX counter
-                for hazard in controller.slowed_hazards:
-                    old = _haz_snap.get(id(hazard))
-                    if old:
-                        ox, oy = old
-                        nx, ny = hazard.rect.x, hazard.rect.y
-                        if (
-                            (oy > 100 and ny < 0) or
-                            (ox > 0   and nx < -100) or
-                            (ox < 700 and nx > 800)
-                        ):
-                            self.sound_manager.tick_hazard(hazard, self.level_number)
 
                 # Tick shield / slowdown timers; snapshot shield state before
                 shield_before_tick = controller.level_model.character.shield_active
