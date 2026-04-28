@@ -41,7 +41,7 @@ class ViewLevelTwo(BaseLevelView):
             window.blit(m.hazard_fireballTwo.image_loaded, m.hazard_fireballTwo.rect)
 
         # BigArm (always on screen — hangs, slams, retracts)
-        arm = m.hazard_mammothLeg
+        arm = m.hazard_bigArm
         window.blit(arm.image_loaded, arm.rect)
         # Play stomp sound during slam and hold phases
         if arm._phase in (arm._SLAM, arm._HOLD):
