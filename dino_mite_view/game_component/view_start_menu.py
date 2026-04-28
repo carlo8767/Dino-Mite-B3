@@ -27,6 +27,11 @@ class View_MainMenu:
                                         (255, 255, 255), 30, "green")
         self.exit_button = Button("Exit", 200, 60, (self.screen_width // 2) - 100, 550, (200, 0, 0), (255, 255, 255), 30, "red")
 
+        # --- TEMP TEST BUTTONS (remove before release) ---
+        self.test_level2_button = Button("Test Level 2", 180, 45, (self.screen_width // 2) - 195, 650, (200, 130, 0), (255, 255, 255), 24, "red")
+        self.test_level3_button = Button("Test Level 3", 180, 45, (self.screen_width // 2) + 15,  650, (200, 130, 0), (255, 255, 255), 24, "red")
+        # --------------------------------------------------
+
     def draw_start_menu(self):
         logging.info("Enter in view start menu")
         fps = pygame.time.Clock()
@@ -35,9 +40,13 @@ class View_MainMenu:
         self.two_players_button.draw_function(self.screen)
         self.exit_button.draw_function(self.screen)
         self.rules_button.draw_function(self.screen)
+        # --- TEMP TEST BUTTONS (remove before release) ---
+        self.test_level2_button.draw_function(self.screen)
+        self.test_level3_button.draw_function(self.screen)
+        # --------------------------------------------------
         title = self.font_title.render("Welcome to Dino-Mite!", True, (0, 0, 0))
         self.screen.blit(title, (150, 100))
-        while  True:
+        while True:
             for event in pygame.event.get():
                 if self.one_player_button.is_clicked(event):
                     return "LEVEL_ONE"
@@ -45,6 +54,12 @@ class View_MainMenu:
                     return "EXIT"
                 if self.rules_button.is_clicked(event):
                     return "RULES"
+                # --- TEMP TEST BUTTONS (remove before release) ---
+                if self.test_level2_button.is_clicked(event):
+                    return "LEVEL_TWO"
+                if self.test_level3_button.is_clicked(event):
+                    return "LEVEL_THREE"
+                # --------------------------------------------------
             pygame.display.update()
             fps.tick(60)
 
