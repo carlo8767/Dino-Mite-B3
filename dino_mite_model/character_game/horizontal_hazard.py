@@ -246,6 +246,6 @@ class Drone(BidirectionalHazard):
     image_path = os.path.join("./image/hazard", "DroneT.png")
     name       = "Drone"
     _move_x    = 5
-    size       = (80, 50)
+    size       = (110, 70)
     _start_x   = -300
     _start_y   = 520    
