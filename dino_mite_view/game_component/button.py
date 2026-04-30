@@ -20,18 +20,25 @@ class Button:
             height,
             x_pos,
             y_pos,
+            color=(100, 100, 100),
             text_color=(255, 255, 255),
             font_size=40,
+            red_green = "green",
             font_path = os.path.join("./fonts", "Jersey10-Regular.ttf")
 
     ):
-      
+        if red_green == "green":
+            self.button_fone = os.path.join("./image/menu", "button_green.png")
+        else:
+            self.button_fone = os.path.join("./image/menu", "button_red.png")
+
         self.text = text
+        self.color = color
         self.text_color = text_color
 
         self.normal_image = self.load_image(os.path.join("./image/menu", "button_normal.png"))
         self.halt_image = self.load_image(os.path.join("./image/menu", "button_halt.png"))
-        self.clicked_image = self.load_image(os.path.join("./image/menu", "button_clicked.png"))
+        self.normal_image = self.load_image(os.path.join("./image/menu", "button_clicked.png"))
 
 
         self.font = pygame.font.Font(font_path, font_size)
@@ -40,25 +47,24 @@ class Button:
         self.text_rendered = self.font.render(self.text, True, self.text_color)
 
         self.is_halt = False
-        self._is_clicked = False
+        self.is_clicked = False
+        #image_button = pygame.image.load(self.button_fone).convert_alpha()
+        #self.fone = pygame.transform.scale(image_button, (width, height))
 
-    def update_image(self, surface, events):
+    def update_image(self, events, surface):
         mouse = pygame.mouse.get_pos()
         self.is_halt = self.rect.collidepoint(mouse)
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.is_halt:
-                    self._is_clicked = True
-                    self.draw_function(surface)
-                    pygame.display.update()
-                    pygame.time.delay(280)
+                    self.is_clicked = True
             if event.type == pygame.MOUSEBUTTONUP:
-                self._is_clicked = False
+                self.is_clicked = False
         self.draw_function(surface)
 
     def draw_function(self, surface):
-        if self._is_clicked:
-            button_image = self.clicked_image
+        if self.is_clicked:
+            button_image = self.normal_image
         elif self.is_halt:
             button_image = self.halt_image
         else:
@@ -69,7 +75,7 @@ class Button:
         surface.blit(self.text_rendered, text_rect)
 
     def is_clicked(self, event):
-        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.rect.collidepoint(event.pos):
                 return True
         return False
