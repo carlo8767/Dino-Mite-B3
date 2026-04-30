@@ -38,7 +38,8 @@ class BaseLevelView:
             pygame.image.load("./image/bubble/ShieldBubbleforChar.png").convert_alpha(),
             (150, 150)
         )
-
+        self.active_two_player = False
+        self.active_player_one = False
         self.portal_active = False
         self.portal_rect = None
         self.portal_image = pygame.image.load("./image/portal_2.png").convert_alpha()
@@ -59,6 +60,8 @@ class BaseLevelView:
         pause_menu = PauseMenu(window)
         game_over = False
         delta_time = 0
+        collided_player_two = False
+        collided_player_one = False
 
         while True:
             events = pygame.event.get()
@@ -91,36 +94,88 @@ class BaseLevelView:
 
             # ==================== UPDATE ====================
             if not controller.is_paused and not game_over:
+                # ANOTHER MAGIC
                 keys = pygame.key.get_pressed()
+                if self.active_two_player:
+                    controller.handle_player_input_two(keys, events)
+                    controller.apply_player_gravity_two()
+
                 controller.handle_player_input(keys, events)
                 controller.apply_player_gravity()
-
+                # MAGIC
                 controller.update_movement()
 
                 # Tick shield / slowdown timers; snapshot shield state before
                 shield_before_tick = controller.level_model.character.shield_active
-                controller.update_powerup(delta_time)
+                shield_before_tickPlayerTwo = controller.level_model.characterTwo.shield_active
+                # TA MAGIC
+                controller.update_powerup(delta_time, controller.level_model.character)
+
+                controller.update_powerup(delta_time, controller.level_model.characterTwo)
                 # Shield expired naturally
                 if shield_before_tick and not controller.level_model.character.shield_active:
                     self.sound_manager.play_shield_pop()
-
-                # Powerup collection
-                collected = controller.detection_collision_powerup()
-                if collected == "TimeReduction":
-                    self.time_reduction_ms += 5000
-                if collected:
-                    self.sound_manager.play_powerup_pickup(collected)
-
-                # Hazard collision — snapshot shield before to detect deflect
-                shield_before_hit = controller.level_model.character.shield_active
-                collided, name = controller.detection_collision_character(
-                    controller.level_model.character
-                )
-                # Shield deflected the hit
-                if not collided and shield_before_hit and not controller.level_model.character.shield_active:
+                if shield_before_tickPlayerTwo and  not controller.level_model.characterTwo.shield_active:
                     self.sound_manager.play_shield_pop()
 
-                if collided:
+                # Powerup collectior FIX TAMAGIC POWER UP LOGIC
+                if self.active_player_one:
+                    collected_player_one_power_up = controller.detection_collision_powerup(controller.level_model.character)
+                    if collected_player_one_power_up == "TimeReduction":
+                        self.time_reduction_ms += 5000
+                    if collected_player_one_power_up:
+                        # TAMAGIC
+                        self.sound_manager.play_powerup_pickup(collected_player_one_power_up)
+                # MAGIC DANGEROUS
+                if self.active_two_player:
+                    collected_player_two_power_up = controller.detection_collision_powerup(controller.level_model.characterTwo)
+                    if collected_player_two_power_up == "TimeReduction":
+                        self.time_reduction_ms += 5000
+                    if collected_player_two_power_up:
+                        # TAMAGIC
+                        self.sound_manager.play_powerup_pickup(collected_player_two_power_up)
+                # MAGIC DANGEROUS
+                if self.active_two_player:
+                    collided_player_two, name = controller.detection_collision_character(
+                        controller.level_model.characterTwo
+                    )
+                # Hazard collision — snapshot shield before to detect deflect
+                if self.active_player_one:
+                    shield_before_hit = controller.level_model.character.shield_active
+                    collided_player_one, name = controller.detection_collision_character(
+                        controller.level_model.character
+                    )
+                # Shield deflected the hit
+                if not collided_player_one and shield_before_hit and not controller.level_model.character.shield_active:
+                    self.sound_manager.play_shield_pop()
+                    # Shield deflected the hit
+                # ANOTHER MAGIC
+                if collided_player_one and not  self.active_two_player :
+                    logging.info(f"Collision detected with {name} — game over")
+                    controller.update_collision_position(name)
+                    controller.stop_music()
+                    pygame.mixer.stop()
+                    game_over = True
+
+                if collided_player_one and self.active_two_player:
+                    logging.info(f"Collision detected with {name} — game over")
+                    controller.update_collision_position(name)
+                    controller.stop_music()
+                    pygame.mixer.stop()
+                    self.active_player_one = False
+
+
+                if  collided_player_two:
+                    logging.info(f"Collision detected with {name} — game over")
+                    controller.update_collision_position(name)
+                    controller.stop_music()
+                    self.active_two_player = False
+
+
+                if not collided_player_two and shield_before_hit and not controller.level_model.characterTwo.shield_active:
+                    self.sound_manager.play_shield_pop()
+
+                if collided_player_two and collided_player_one:
                     logging.info(f"Collision detected with {name} — game over")
                     controller.update_collision_position(name)
                     controller.stop_music()
@@ -130,10 +185,13 @@ class BaseLevelView:
                 if self.portal_active and self.portal_rect is not None:
                     if controller.level_model.character.rect.colliderect(self.portal_rect):
                         return self._loading_transition(window, clock, self._next_level())
+                    elif  controller.level_model.characterTwo.rect.colliderect(self.portal_rect):
+                        return self._loading_transition(window, clock, self._next_level())
 
             self.calculate_timer(self.time_duration_level, controller.is_paused)
-            self._draw(window, controller, background)
 
+            self._draw(window, controller, background)
+            #  ADJUST MAGIC POWERUP
             if self.portal_active and self.portal_rect is not None:
                 self._draw_portal(window)
 
@@ -146,6 +204,7 @@ class BaseLevelView:
                 self._spawn_portal(controller)
 
             if game_over:
+                # WHAT DO YOU RETURN EMPTY YOU CAN DELETE
                 return self._lose_sequence(window, controller, clock)
 
             pygame.display.update()
@@ -177,6 +236,11 @@ class BaseLevelView:
             shield_rect = self.shield_bubble_image.get_rect()
             shield_rect.center = controller.level_model.character.rect.center
             window.blit(self.shield_bubble_image, shield_rect)
+        # MAGIC TA
+        if controller.level_model.characterTwo.shield_active:
+            shield_rect = self.shield_bubble_image.get_rect()
+            shield_rect.center = controller.level_model.characterTwo.rect.center
+            window.blit(self.shield_bubble_image, shield_rect)
 
         # Timer text
         font_type = pygame.font.Font(self.font_path, 60)
@@ -200,6 +264,7 @@ class BaseLevelView:
 
     def faded_screen(self, window, controller, clock):
         """Death fade animation — identical for all levels. No text overlay."""
+        # SEE HOW TO ADJUST MAGIC
         fade = pygame.Surface((WIDTH, HEIGHT))
         fade.fill((0, 0, 0))
         pygame.time.delay(500)
@@ -210,6 +275,7 @@ class BaseLevelView:
                 fade.set_alpha(alpha)
                 window.blit(screen_copy, (0, 0))
                 window.blit(fade, (0, 0))
+                # VERIFY IF MODIFY
                 controller.apply_change_player_status(window, "dead")
                 pygame.display.update()
                 clock.tick(60)
@@ -280,19 +346,19 @@ class BaseLevelView:
         return next_state
 
     # ==================== ABSTRACT METHODS ====================
-    # Subclasses MUST implement these
+    # NOT ABSTRACT METHOD IT WORK IN ANY CASE
 
-    def _load_background(self, controller):
-        raise NotImplementedError(f"{self.__class__.__name__} must implement _load_background")
-
-    def _draw(self, window, controller, background):
-        raise NotImplementedError(f"{self.__class__.__name__} must implement _draw")
-
-    def _win_sequence(self, window, controller, background, clock):
-        raise NotImplementedError(f"{self.__class__.__name__} must implement _win_sequence")
-
-    def _lose_sequence(self, window, controller, clock):
-        raise NotImplementedError(f"{self.__class__.__name__} must implement _lose_sequence")
-
-    def _next_level(self):
-        raise NotImplementedError(f"{self.__class__.__name__} must implement _next_level")
+    # def _load_background(self, controller):
+    #     raise NotImplementedError(f"{self.__class__.__name__} must implement _load_background")
+    #
+    # def _draw(self, window, controller, background):
+    #     raise NotImplementedError(f"{self.__class__.__name__} must implement _draw")
+    #
+    # def _win_sequence(self, window, controller, background, clock):
+    #     raise NotImplementedError(f"{self.__class__.__name__} must implement _win_sequence")
+    #
+    # def _lose_sequence(self, window, controller, clock):
+    #     raise NotImplementedError(f"{self.__class__.__name__} must implement _lose_sequence")
+    #
+    # def _next_level(self):
+    #     raise NotImplementedError(f"{self.__class__.__name__} must implement _next_level")

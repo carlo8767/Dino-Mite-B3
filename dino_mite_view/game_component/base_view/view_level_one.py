@@ -34,7 +34,11 @@ class ViewLevelOne(BaseLevelView):
         self._draw_hud(window, controller)
 
         # Character
-        controller.level_model.character.draw(window)
+        if self.active_player_one:
+            controller.level_model.character.draw(window)
+
+        if self.active_two_player:
+            controller.level_model.characterTwo.draw(window)
 
         m = controller.level_model
 

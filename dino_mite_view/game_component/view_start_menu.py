@@ -59,7 +59,9 @@ class View_MainMenu:
                     return "LEVEL_TWO"
                 if self.test_level3_button.is_clicked(event):
                     return "LEVEL_THREE"
-                # --------------------------------------------------
+                if self.two_players_button.is_clicked(event):
+                    return "TWO PLAYERS"
+            # --------------------------------------------------
             pygame.display.update()
             fps.tick(60)
 

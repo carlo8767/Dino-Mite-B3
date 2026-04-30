@@ -3,6 +3,7 @@ import os
 import pygame.sprite
 
 from dino_mite_model.character_game.Character import CharacterDino
+from dino_mite_model.character_game.CharacterTwo import CharacterDinoTwo
 from dino_mite_model.character_game.power_ups import ShieldBubble, TimeReduction, SlowerHazards
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
@@ -28,6 +29,7 @@ class BaseLevelModel(pygame.sprite.Sprite):
         self.screen_width = WIDTH
         self.screen_height = HEIGHT
         self.character = CharacterDino()
+        self.characterTwo = CharacterDinoTwo()
 
         # One instance per powerup type — reused across the level, never re-created mid-game
         self.pw_up_shield_bubble = ShieldBubble()

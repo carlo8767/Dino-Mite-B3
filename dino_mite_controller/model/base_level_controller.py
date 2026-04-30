@@ -84,6 +84,17 @@ class BaseLevelController:
     def apply_change_player_status(self, window, status):
         self.level_model.character.draw_status(window, status)
 
+        # ==================== PLAYER TWO ====================
+
+    def handle_player_input_two(self, keys, events):
+        self.level_model.characterTwo.handle_key_input(keys, events)
+
+    def apply_player_gravity_two(self):
+        self.level_model.characterTwo.gravity()
+
+    def apply_change_player_status_two(self, window, status):
+        self.level_model.characterTwo.draw_status(window, status)
+
     # ==================== MOVEMENT ====================
 
     def update_movement(self):
@@ -98,7 +109,9 @@ class BaseLevelController:
         Derives models_collision from slowed_hazards.
         Called once during __init__ after register_slowable_hazards().
         """
+        # THIS VARIABLE DOES NOT EXIST HERE MAGIC THAT WORK
         self.models_collision[self.level_model.character] = self.level_model.character.name
+        self.models_collision[self.level_model.characterTwo] = self.level_model.characterTwo.name
         for hazard in self.slowed_hazards:
             self.models_collision[hazard] = hazard.name
 
@@ -108,7 +121,7 @@ class BaseLevelController:
         If the shield is active, deflects the hazard and returns (False, '').
         """
         for hazard, name in self.models_collision.items():
-            if hazard is sprite:
+            if name == "Dino"  or name == "Dina":
                 continue
             group = pygame.sprite.Group()
             group.add(hazard)
@@ -149,9 +162,9 @@ class BaseLevelController:
         chosen.activate()
         self.current_powerup = chosen
 
-    def update_powerup(self, delta_time: int):
+    def update_powerup(self, delta_time: int, wild_card_character):
         """Tick shield and slowdown timers; advance the powerup spawn cycle."""
-        character = self.level_model.character
+        character = wild_card_character
 
         if character.shield_active:
             character.shield_timer -= delta_time
@@ -174,16 +187,19 @@ class BaseLevelController:
         else:
             self.current_powerup.update_position()
 
-    def detection_collision_powerup(self) -> str:
+    def detection_collision_powerup(self, wild_card_sprite) -> str:
         """Returns the name of the collected powerup, or '' if none was collected."""
         if self.current_powerup is None or not self.current_powerup.is_active:
             return ""
         group = pygame.sprite.Group()
         group.add(self.current_powerup)
         if pygame.sprite.spritecollide(
-                self.level_model.character, group, False, pygame.sprite.collide_mask):
+            # THIS MAGIC
+                wild_card_sprite, group, False, pygame.sprite.collide_mask):
             name = self.current_powerup.name
-            self.current_powerup.apply_effect(self.level_model.character)
+            #self.current_powerup.apply_effect(self.level_model.character)
+            # EMPTY METHOD  YOU CAN DELETE
+            self.current_powerup.apply_effect(wild_card_sprite)
             if isinstance(self.current_powerup, SlowerHazards):
                 self.slow_hazards_active = True
                 self.slow_hazards_timer  = 5000

@@ -30,8 +30,11 @@ class ViewLevelThree(BaseLevelView):
     def _draw(self, window, controller, background):
         window.blit(background, (0, 0))
         self._draw_hud(window, controller)
-        controller.level_model.character.draw(window)
-
+        if self.active_player_one:
+            controller.level_model.character.draw(window)
+        if self.active_two_player:
+            controller.level_model.characterTwo.draw(window)
+        # WHAT THA M LIME
         m = controller.level_model
 
         # Helicopters (always on screen — fly continuously in opposite directions)

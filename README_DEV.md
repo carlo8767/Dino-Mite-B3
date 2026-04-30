@@ -97,7 +97,7 @@ Example:
 
 * Menu View
 * Level View
-* Game Over View
+* GameOver View
 
 # How to Load an Image
 
