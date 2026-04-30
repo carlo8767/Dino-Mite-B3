@@ -7,7 +7,17 @@ from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
 class ViewDisplayStory:
 
-    def __init__(self):
+    STORY_FILES = {
+        1: "start_story.txt",
+        2: "transition_level1_to_2.txt",
+        3: "transition_level2_to_3.txt",
+        4: "story_success.txt",
+        5: "story_failure.txt",
+    }
+
+    def __init__(self, story_part=1, next_state="MAIN_MENU"):
+        self.story_part = story_part
+        self.next_state = next_state
         self.store_text = self.upload_file()
         self.width_int =  WIDTH
         self.height_int = HEIGHT
@@ -22,8 +32,9 @@ class ViewDisplayStory:
             self.background = pygame.Surface((WIDTH, HEIGHT))
             self.background.fill((50, 50, 50))
 
-        # Create Buttons
-        self.skip_story_button = Button("Go", 200, 60, (self.width_int // 2) - 100, self.height_int - 130, (0, 150, 0),
+        # Create Buttons — "Play Again" for the final success story, "Go" otherwise
+        button_text = "Play Again" if self.story_part == 4 else "Go"
+        self.skip_story_button = Button(button_text, 200, 60, (self.width_int // 2) - 100, self.height_int - 130, (0, 150, 0),
                                         (255, 255, 255), 30)
 
     def draw_story_screen(self, screen):
@@ -42,11 +53,14 @@ class ViewDisplayStory:
         self.skip_story_button.draw_function(screen)
         pygame.display.update()
         index = 0
+        prev_line_time = pygame.time.get_ticks()
         while True:
             for event in pygame.event.get():
                 if self.skip_story_button.is_clicked(event):
-                    return "MAIN_MENU"
-            if index < len(split_text):
+                    return self.next_state
+
+            current_time = pygame.time.get_ticks()
+            if index < len(split_text) and (current_time - prev_line_time) >= 1500:
                 ns = split_text[index]
                 img = text_font.render(ns, True, color_timer)
                 rect = img.get_rect()
@@ -54,16 +68,15 @@ class ViewDisplayStory:
                 screen.blit(img, rect)
                 pos_y += 40
                 index += 1
-                pygame.time.delay(500)
+                prev_line_time = current_time
             pygame.display.update()
             fps.tick(60)
-
-
 
     def upload_file(self):
         try:
             content  = ""
-            os_path  = os.path.join("./text_files", "start_story.txt")
+            filename = self.STORY_FILES.get(self.story_part, "start_story.txt")
+            os_path  = os.path.join("./text_files", filename)
             with open(os_path, 'r', encoding='utf-8') as f:
                 content+= f.read()
         except FileNotFoundError:
