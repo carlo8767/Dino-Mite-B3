@@ -38,8 +38,7 @@ class ViewRules:
         self.powerup_shield_image = pygame.transform.scale(self.powerup_shield_image, (70,70))
 
         # Create Buttons
-        self.go_back_button = Button("Back", 200, 60, (self.width_int // 2) - 100, self.height_int - 130, (0, 150, 0),
-                                        (255, 255, 255), 30, "green")
+        self.go_back_button = Button("Back", 200, 60, (self.width_int // 2) - 100, self.height_int - 130)
 
         self.powerups = [self.powerup_time_image, self.powerup_velocity_image, self.powerup_shield_image]
     def draw_rules_screen(self, screen):
