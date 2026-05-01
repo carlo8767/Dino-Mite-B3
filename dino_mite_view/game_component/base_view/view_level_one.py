@@ -8,7 +8,7 @@ from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 class ViewLevelOne(BaseLevelView):
     """Level One view, only level-specific logic lives here."""
 
-    time_duration_level = 10  # 2 minutes
+    time_duration_level = 12  # 2 minutes
     level_number        = 1
 
     def __init__(self):

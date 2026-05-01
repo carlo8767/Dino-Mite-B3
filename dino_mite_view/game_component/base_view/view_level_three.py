@@ -10,7 +10,7 @@ class ViewLevelThree(BaseLevelView):
     Level Three view, only Level 3 specific rendering lives here.
     """
 
-    time_duration_level = 6  # 60 seconds
+    time_duration_level = 60  # 60 seconds
     level_number        = 3
 
     def __init__(self):
