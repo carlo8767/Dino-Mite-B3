@@ -41,6 +41,7 @@ class CharacterDino(pygame.sprite.Sprite):
         # Shield powerup state
         self.shield_active = False
         self.shield_timer = 0
+        self.duck_start_ticks = 0
 
     def handle_key_input(self, keys, events):
         # Check key press for JUMP and DUCK - one time press actions
@@ -58,6 +59,7 @@ class CharacterDino(pygame.sprite.Sprite):
                     # shift rect.y down by the difference so character
                     # crouches at ground level instead of floating
                     self.rect.y = self.constant_ground + (self.standing_height - self.duck_height)
+                    self.duck_start_ticks = pygame.time.get_ticks()
 
             # S released = stand back up - restores height and position on key release
             if event.type == pygame.KEYUP:
@@ -66,6 +68,12 @@ class CharacterDino(pygame.sprite.Sprite):
                     self.rect.height = self.standing_height
                     # restore y position back to ground level when standing
                     self.rect.y = self.constant_ground
+
+        # Force stand after 5-second duck limit
+        if self.game_state == "duck" and pygame.time.get_ticks() - self.duck_start_ticks >= 3000:
+            self.game_state = "idle"
+            self.rect.height = self.standing_height
+            self.rect.y = self.constant_ground
 
         # Check which keys are pressed for movement
         if keys[pygame.K_a]:
