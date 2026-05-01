@@ -130,8 +130,6 @@ class BaseLevelController:
                 if sprite.shield_active:
                     logging.info(f"Shield blocked collision with {name}")
                     hazard.update_position_collision()
-                    sprite.shield_active = False
-                    sprite.shield_timer  = 0
                     return False, ""
                 return True, name
         return False, ""
