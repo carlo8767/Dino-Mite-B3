@@ -10,26 +10,25 @@ class CharacterDinoTwo(pygame.sprite.Sprite):
         super().__init__()
         # Load all images for dino PNG
         self.images = {
-            "idle":       pygame.transform.scale(pygame.image.load("./image/character/idle.png").convert_alpha(), (120, 120)),
-            "walk_right": pygame.transform.scale(pygame.image.load("./image/character/running.png").convert_alpha(), (120, 120)),
-            "walk_left":  pygame.transform.flip(pygame.transform.scale(pygame.image.load("./image/character/running.png").convert_alpha(), (120, 120)), True, False),
-            "duck":       pygame.transform.scale(pygame.image.load("./image/character/crouch.png").convert_alpha(), (120, 60)),
-            "jump":       pygame.transform.scale(pygame.image.load("./image/character/jump.png").convert_alpha(), (120, 120)),
-            "dead":       pygame.transform.scale(pygame.image.load("./image/character/dead.png").convert_alpha(), (120, 120)),
-            "happy": pygame.transform.scale(pygame.image.load("./image/character/levelpass.png").convert_alpha(),
-                                            (150, 150)),
+            "idle":       pygame.transform.scale(pygame.image.load("./image/character/2ndPlayerIdleT.png").convert_alpha(), (140, 140)),
+            "walk_right": pygame.transform.scale(pygame.image.load("./image/character/2ndPlayerRunningT.png").convert_alpha(), (140, 140)),
+            "walk_left":  pygame.transform.flip(pygame.transform.scale(pygame.image.load("./image/character/2ndPlayerRunningT.png").convert_alpha(), (140, 140)), True, False),
+            "duck":       pygame.transform.scale(pygame.image.load("./image/character/2ndPlayerCrouchT.png").convert_alpha(), (140, 65)),
+            "jump":       pygame.transform.scale(pygame.image.load("./image/character/2ndPlayerJumpT.png").convert_alpha(), (140, 140)),
+            "dead":       pygame.transform.scale(pygame.image.load("./image/character/2ndPlayerDeadT.png").convert_alpha(), (140, 140)),
+            "happy":      pygame.transform.scale(pygame.image.load("./image/character/levelpass.png").convert_alpha(), (140, 140)),
         }
         self.position_x = 370
-        self.constant_ground = 510
+        self.constant_ground = 500
 
         self.game_state = "idle"    # Current game state
         self.rect = self.images[self.game_state].get_rect()
         self.mask = pygame.mask.from_surface(self.images[self.game_state])
         self.speed_y = 0            # For gravity and jumping
         self.png_on_ground = True
-        self.standing_height = 120
+        self.standing_height = 150
         self.rect.center = (self.position_x, self.constant_ground)
-        self.duck_height = 60
+        self.duck_height = 75
 
         self.name = "Dina"
         self.screen_width = WIDTH
