@@ -46,11 +46,11 @@ class ViewGameOverMenu:
         while self.running:
             events = pygame.event.get()
             for event in events:
-                    if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.type == pygame.MOUSEBUTTONUP:
                         if self.play_again_button.is_clicked(event) and not active_player_player_two:
                             pygame.mixer.music.stop()
                             return "LEVEL_ONE"
-                        if  self.play_again_button.is_clicked(event) and active_player_player_two:
+                        if self.play_again_button.is_clicked(event) and active_player_player_two:
                             pygame.mixer.music.stop()
                             return "TWO PLAYERS"
                         if self.exit_button.is_clicked(event):
