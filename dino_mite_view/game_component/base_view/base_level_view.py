@@ -77,7 +77,7 @@ class BaseLevelView:
                         self.pause_time_total += pause_duration
                         controller.toggle_pause_menu()
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.MOUSEBUTTONUP:
                     if controller.is_paused:
                         result = pause_menu.handle_click(event)
                         if result == "CONTINUE":
@@ -138,7 +138,7 @@ class BaseLevelView:
                 self._draw_portal(window)
 
             if controller.is_paused:
-                pause_menu.draw()
+                pause_menu.draw(events)
 
             # ==================== END CONDITIONS ====================
             if self.remaining_time == "00:00" and not self.portal_active:

@@ -61,10 +61,8 @@ class GameStateInteractor:
                  self.GAME_STATE = view_main_menu.draw_start_menu()
             elif self.GAME_STATE == "RULES":
                 logging.info(f'current game state {self.GAME_STATE}')
-                view_rules.draw_rules_screen(window)
-                pygame.display.update()
-                for event in pygame.event.get():
-                    self.GAME_STATE = view_rules.handle_click(event)
+                self.GAME_STATE = view_rules.draw_rules_screen(window)
+             
             # ==================== STATE: LEVEL ONE INIT ====================
             elif self.GAME_STATE == utilities_names.LEVEL_ONE:
                 controller_level_one = init_event.event_level_one_notification()

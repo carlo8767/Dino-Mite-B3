@@ -38,9 +38,10 @@ class ViewRules:
         self.powerup_shield_image = pygame.transform.scale(self.powerup_shield_image, (70,70))
 
         # Create Buttons
-        self.go_back_button = Button("Back", 200, 60, (self.width_int // 2) - 100, self.height_int - 130)
+        self.go_back_button = Button("Back", 200, 60, (self.width_int // 2) - 100, self.height_int - 130, button_type="normal")
 
         self.powerups = [self.powerup_time_image, self.powerup_velocity_image, self.powerup_shield_image]
+
     def draw_rules_screen(self, screen):
         logging.info("Enter in rules screen")
 
@@ -80,16 +81,16 @@ class ViewRules:
         for y, powerup in enumerate(self.powerups):
             image_y_pos = y_pos + y * gap
             screen.blit(powerup, (left_margine, image_y_pos))
+        
+        while True:
+            events = pygame.event.get()
+            for event in events:
+                if self.go_back_button.is_clicked(event):
+                    return "MAIN_MENU"
+                
+            self.go_back_button.update_image(screen, events)
+            pygame.display.update()
 
-        self.go_back_button.draw_function(screen)
-
-
-    def handle_click(self,event):
-   
-        if self.go_back_button.is_clicked(event):
-            return "MAIN_MENU"
-        return "RULES"
-    
     def upload_file(self):
         try:
             content = ""
