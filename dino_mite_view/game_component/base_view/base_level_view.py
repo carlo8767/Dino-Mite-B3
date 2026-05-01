@@ -1,4 +1,5 @@
 import os
+import math
 import pygame
 import logging
 import random
@@ -42,6 +43,7 @@ class BaseLevelView:
         self.active_player_one = False
         self.portal_active = False
         self.portal_rect = None
+        self.portal_countdown_ms = 0
         self.portal_image = pygame.image.load("./image/portal_2.png").convert_alpha()
         self.portal_image = pygame.transform.scale(self.portal_image, (90, 130))
 
@@ -103,7 +105,8 @@ class BaseLevelView:
                 controller.handle_player_input(keys, events)
                 controller.apply_player_gravity()
                 # MAGIC
-                controller.update_movement()
+                if not self.portal_active:
+                    controller.update_movement()
 
                 # Tick shield / slowdown timers; snapshot shield state before
                 shield_before_tick = controller.level_model.character.shield_active
@@ -135,12 +138,12 @@ class BaseLevelView:
                         # TAMAGIC
                         self.sound_manager.play_powerup_pickup(collected_player_two_power_up)
                 # MAGIC DANGEROUS
-                if self.active_two_player:
+                if self.active_two_player and not self.portal_active:
                     collided_player_two, name = controller.detection_collision_character(
                         controller.level_model.characterTwo
                     )
                 # Hazard collision — snapshot shield before to detect deflect
-                if self.active_player_one:
+                if self.active_player_one and not self.portal_active:
                     shield_before_hit = controller.level_model.character.shield_active
                     collided_player_one, name = controller.detection_collision_character(
                         controller.level_model.character
@@ -182,18 +185,12 @@ class BaseLevelView:
                     pygame.mixer.stop()
                     game_over = True
 
-                if self.portal_active and self.portal_rect is not None:
-                    if controller.level_model.character.rect.colliderect(self.portal_rect):
-                        return self._loading_transition(window, clock, self._next_level())
-                    elif  controller.level_model.characterTwo.rect.colliderect(self.portal_rect):
-                        return self._loading_transition(window, clock, self._next_level())
-
             self.calculate_timer(self.time_duration_level, controller.is_paused)
 
-            self._draw(window, controller, background)
-            #  ADJUST MAGIC POWERUP
             if self.portal_active and self.portal_rect is not None:
-                self._draw_portal(window)
+                self._draw_portal_phase(window, controller, background)
+            else:
+                self._draw(window, controller, background)
 
             if controller.is_paused:
                 pause_menu.draw(events)
@@ -201,7 +198,18 @@ class BaseLevelView:
             # ==================== END CONDITIONS ====================
             if self.remaining_time == "00:00" and not self.portal_active:
                 self.portal_active = True
+                self.portal_countdown_ms = 5000
                 self._spawn_portal(controller)
+
+            # Portal collision + countdown — checked AFTER draw so player always sees the phase
+            if self.portal_active and self.portal_rect is not None and not controller.is_paused:
+                self.portal_countdown_ms -= delta_time
+                if self.active_player_one and controller.level_model.character.rect.colliderect(self.portal_rect):
+                    return self._loading_transition(window, clock, self._next_level())
+                if self.active_two_player and controller.level_model.characterTwo.rect.colliderect(self.portal_rect):
+                    return self._loading_transition(window, clock, self._next_level())
+                if self.portal_countdown_ms <= 0:
+                    return self._loading_transition(window, clock, self._next_level())
 
             if game_over:
                 # WHAT DO YOU RETURN EMPTY YOU CAN DELETE
@@ -243,11 +251,11 @@ class BaseLevelView:
             window.blit(self.shield_bubble_image, shield_rect)
 
         # Timer text
-        font_type = pygame.font.Font(self.font_path, 60)
+        font_type = pygame.font.Font(self.font_path, 36)
         color_timer = (255, 255, 0)
         img = font_type.render(self.eventually_time, True, color_timer)
         rect = img.get_rect()
-        rect.center = (400, 20)
+        rect.center = (400, 18)
         window.blit(img, rect)
 
     def draw_text_end(self, window, controller):
@@ -300,6 +308,38 @@ class BaseLevelView:
         portal_draw_rect = self.portal_image.get_rect(center=self.portal_rect.center)
         window.blit(self.portal_image, portal_draw_rect)
 
+    def _draw_portal_phase(self, window, controller, background):
+        window.blit(background, (0, 0))
+        if self.active_player_one:
+            controller.level_model.character.draw(window)
+        if self.active_two_player:
+            controller.level_model.characterTwo.draw(window)
+        self._draw_portal(window)
+        self._draw_portal_prompt(window)
+        self._draw_portal_countdown(window)
+
+    def _draw_portal_countdown(self, window):
+        seconds_left = max(0, math.ceil(self.portal_countdown_ms / 1000))
+        font = pygame.font.Font(self.font_path, 72)
+        text = font.render(str(seconds_left), True, (255, 255, 0))
+        shadow = font.render(str(seconds_left), True, (0, 0, 0))
+        rect = text.get_rect(center=(WIDTH // 2, 110))
+        window.blit(shadow, rect.move(4, 4))
+        window.blit(text, rect)
+
+    def _draw_portal_prompt(self, window):
+        t = pygame.time.get_ticks() / 400.0
+        pulse = (math.sin(t) + 1) / 2          # 0.0 -> 1.0 smooth oscillation
+        b = int(255 * pulse)                    # (255,255,0) yellow - (255,255,255) white
+        color = (255, 255, b)
+
+        font = pygame.font.Font(self.font_path, 42)
+        text = font.render("GO TO THE PORTAL!", True, color)
+        shadow = font.render("GO TO THE PORTAL!", True, (0, 0, 0))
+        rect = text.get_rect(center=(WIDTH // 2, 55))
+        window.blit(shadow, rect.move(3, 3))
+        window.blit(text, rect)
+
     def _spawn_portal(self, controller):
         portal_width = 90
         portal_height = 130
@@ -345,20 +385,4 @@ class BaseLevelView:
         pygame.time.delay(700)
         return next_state
 
-    # ==================== ABSTRACT METHODS ====================
-    # NOT ABSTRACT METHOD IT WORK IN ANY CASE
 
-    # def _load_background(self, controller):
-    #     raise NotImplementedError(f"{self.__class__.__name__} must implement _load_background")
-    #
-    # def _draw(self, window, controller, background):
-    #     raise NotImplementedError(f"{self.__class__.__name__} must implement _draw")
-    #
-    # def _win_sequence(self, window, controller, background, clock):
-    #     raise NotImplementedError(f"{self.__class__.__name__} must implement _win_sequence")
-    #
-    # def _lose_sequence(self, window, controller, clock):
-    #     raise NotImplementedError(f"{self.__class__.__name__} must implement _lose_sequence")
-    #
-    # def _next_level(self):
-    #     raise NotImplementedError(f"{self.__class__.__name__} must implement _next_level")
