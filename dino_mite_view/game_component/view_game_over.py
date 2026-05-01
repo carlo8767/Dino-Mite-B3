@@ -12,7 +12,7 @@ class ViewGameOverMenu:
             self.font = pygame.font.Font(font_path, 42)
         except:
             self.font = pygame.font.SysFont("Arial", 42, bold=True)
-        self.panel_w, self.panel_h = 320, 260
+        self.panel_w, self.panel_h = 400, 280
         self.panel_x = self.screen_w // 2 - self.panel_w // 2
         self.panel_y = self.screen_h // 2 - self.panel_h // 2
 
@@ -20,12 +20,22 @@ class ViewGameOverMenu:
         button_w = 220
         button_x = self.screen_w // 2 - button_w // 2
 
+         #Lable
+        title_path = os.path.join("./image/menu", "game_over_lable.png")
+        self.title_image = pygame.image.load(title_path).convert_alpha()
+        title_w, title_h = 320, 100
+        self.title_image = pygame.transform.scale(self.title_image, (title_w, title_h))
+
+        self.title_x = self.panel_x + (self.panel_w // 2 - title_w //2)
+        self.title_y = self.panel_y + 20
+
+
         self.play_again_button = Button(
-            "Play Again", button_w, 50, button_x, self.panel_y + 80, button_type= "restart"
+            "Play Again", button_w, 50, button_x, self.panel_y + 110, button_type= "restart"
         )
 
         self.exit_button = Button(
-            "Return", button_w, 50, button_x, self.panel_y + 150, button_type= "return"
+            "Return", button_w, 50, button_x, self.panel_y + 190, button_type= "return"
         )
         self.running = True
 
@@ -57,9 +67,8 @@ class ViewGameOverMenu:
         pygame.draw.rect(self.screen, (30, 30, 30), panel_rect, border_radius=12)
         pygame.draw.rect(self.screen, (90, 90, 90), panel_rect, width=2, border_radius=12)
 
-        title = self.font.render("GAME OVER", True, (220, 40, 40))
-        title_x = self.panel_x + (self.panel_w - title.get_width()) // 2
-        self.screen.blit(title, (title_x, self.panel_y + 20))
+          #lable
+        self.screen.blit(self.title_image, (self.title_x, self.title_y))
 
         self.play_again_button.update_image(self.screen, events)
         self.exit_button.update_image(self.screen, events)
