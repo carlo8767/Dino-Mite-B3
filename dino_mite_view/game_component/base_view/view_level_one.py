@@ -34,10 +34,10 @@ class ViewLevelOne(BaseLevelView):
         self._draw_hud(window, controller)
 
         # Character
-        if self.active_player_one:
+        if controller.player_one_active:
             controller.level_model.character.draw(window)
 
-        if self.active_two_player:
+        if controller.player_two_active:
             controller.level_model.characterTwo.draw(window)
 
         m = controller.level_model
@@ -54,10 +54,10 @@ class ViewLevelOne(BaseLevelView):
         # Ambient hazard sounds
         any_meteor = m.hazard_meteor.is_active or m.hazard_meteorOne.is_active or m.hazard_meteorTwo.is_active
         if any_meteor:
-            self.sound_manager.play_looping("Meteor", self.level_number, self._ch_meteor)
+            controller.sound_manager.play_looping("Meteor", self.level_number, self._ch_meteor)
         else:
             self._ch_meteor.stop()
-        self.sound_manager.play_looping("RollingRock", self.level_number, self._ch_rock)
+        controller.sound_manager.play_looping("RollingRock", self.level_number, self._ch_rock)
 
     def _win_sequence(self, window, controller, background, clock):
         pygame.time.delay(500)

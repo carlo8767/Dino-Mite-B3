@@ -2,7 +2,6 @@ import pygame
 import logging
 
 from dino_mite_view.event_game_notifications.event_controller import EventsController
-from dino_mite_view.game_component.base_view.base_level_view import BaseLevelView
 from dino_mite_view.game_component.base_view.view_level_one import ViewLevelOne
 from dino_mite_view.game_component.base_view.view_level_two import ViewLevelTwo
 from dino_mite_view.game_component.base_view.view_level_three import ViewLevelThree
@@ -76,15 +75,15 @@ class GameStateInteractor:
                 logging.info(f'current game state {self.GAME_STATE}')
             elif self.GAME_STATE == "DRAW_LEVEL_ONE":
                 view_level_one = ViewLevelOne()
-                view_level_one.active_player_one = True
+                controller_level_one.player_one_active = True
                 logging.info(f'current game state {self.GAME_STATE}')
                 self.GAME_STATE = view_level_one.draw_screen_level_one(window, controller_level_one)
             elif self.GAME_STATE == "TWO PLAYERS":
                 active_player_player_two = True
                 controller_level_one = init_event.event_level_one_notification()
                 view_level_one = ViewLevelOne()
-                view_level_one.active_two_player = True
-                view_level_one.active_player_one = True
+                controller_level_one.player_two_active = True
+                controller_level_one.player_one_active = True
                 self.GAME_STATE = view_level_one.draw_screen_level_one(window, controller_level_one)
                 logging.info(f'current game state {self.GAME_STATE}')
             # ==================== STATE: LEVEL TWO INIT ====================
@@ -97,9 +96,8 @@ class GameStateInteractor:
                 logging.info(f'current game state {self.GAME_STATE}')
                 view_level_two = ViewLevelTwo()
                 if active_player_player_two:
-                    view_level_two.active_two_player = True
-
-                view_level_two.active_player_one = True
+                    controller_level_two.player_two_active = True
+                controller_level_two.player_one_active = True
                 self.GAME_STATE = view_level_two.draw_screen_level_two(window, controller_level_two)
             # ==================== STATE: LEVEL THREE INIT ====================
             elif self.GAME_STATE == "LEVEL_THREE":
@@ -111,9 +109,8 @@ class GameStateInteractor:
                 logging.info(f'current game state {self.GAME_STATE}')
                 view_level_three = ViewLevelThree()
                 if active_player_player_two:
-                    view_level_three.active_two_player = True
-
-                view_level_three.active_player_one = True
+                    controller_level_three.player_two_active = True
+                controller_level_three.player_one_active = True
                 self.GAME_STATE = view_level_three.draw_screen_level_three(window, controller_level_three)
             # ==================== TRANSITION STORIES ====================
             elif self.GAME_STATE == "STORY_L1_TO_L2":

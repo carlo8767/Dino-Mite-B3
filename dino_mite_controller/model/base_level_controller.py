@@ -4,6 +4,7 @@ import random
 import pygame
 
 from dino_mite_model.character_game.power_ups import SlowerHazards
+from dino_mite_utility.sound_manager import SoundManager
 
 
 class BaseLevelController:
@@ -35,6 +36,10 @@ class BaseLevelController:
 
     def __init__(self):
         self.is_paused = False
+        self.game_over = False
+        self.player_one_active = False
+        self.player_two_active = False
+        self.time_reduction_ms = 0
         self.models_collision = {}
 
         # Slowdown powerup state
@@ -44,15 +49,16 @@ class BaseLevelController:
         self.slowed_hazards      = []
         self.original_hazard_speeds = {}
 
-        # Subclass fills self.slowed_hazards — must run before _build_collision_registry
+        # Subclass fills self.slowed_hazards - must run before _build_collision_registry
         self.register_slowable_hazards()
         self._build_collision_registry()
 
-        # Deck: 3 shields, 1 time reduction, 1 slow — shuffled, auto-refills
+        # Deck: 3 shields, 1 time reduction, 1 slow - shuffled, auto-refills
         self._deck = self._build_deck()
         self.current_powerup        = None
         self.powerup_spawn_timer    = 0
         self.powerup_spawn_interval = 8000  # ms between spawns
+        self.sound_manager          = SoundManager()
 
     # ==================== MUSIC ====================
 
@@ -76,7 +82,24 @@ class BaseLevelController:
     # ==================== PLAYER INPUT ====================
 
     def handle_player_input(self, keys, events):
-        self.level_model.character.handle_key_input(keys, events)
+        char = self.level_model.character
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w and char.png_on_ground:
+                    char.start_jump()
+                if event.key == pygame.K_s and char.png_on_ground:
+                    char.start_duck()
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_s and char.game_state == "duck":
+                    char.stop_duck()
+        if char.game_state == "duck" and pygame.time.get_ticks() - char.duck_start_ticks >= 3000:
+            char.stop_duck()
+        if keys[pygame.K_a]:
+            char.walk_left()
+        elif keys[pygame.K_d]:
+            char.walk_right()
+        else:
+            char.set_idle()
 
     def apply_player_gravity(self):
         self.level_model.character.gravity()
@@ -84,16 +107,113 @@ class BaseLevelController:
     def apply_change_player_status(self, window, status):
         self.level_model.character.draw_status(window, status)
 
-        # ==================== PLAYER TWO ====================
+    # ==================== PLAYER TWO ====================
 
     def handle_player_input_two(self, keys, events):
-        self.level_model.characterTwo.handle_key_input(keys, events)
+        char = self.level_model.characterTwo
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP and char.png_on_ground:
+                    char.start_jump()
+                if event.key == pygame.K_DOWN and char.png_on_ground:
+                    char.start_duck()
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_DOWN and char.game_state == "duck":
+                    char.stop_duck()
+        if char.game_state == "duck" and pygame.time.get_ticks() - char.duck_start_ticks >= 3000:
+            char.stop_duck()
+        if keys[pygame.K_LEFT]:
+            char.walk_left()
+        elif keys[pygame.K_RIGHT]:
+            char.walk_right()
+        else:
+            char.set_idle()
 
     def apply_player_gravity_two(self):
         self.level_model.characterTwo.gravity()
 
     def apply_change_player_status_two(self, window, status):
         self.level_model.characterTwo.draw_status(window, status)
+
+    # ==================== GAME UPDATE ====================
+
+    def update(self, delta_time, keys, events, portal_active):
+        """Single game-logic, called once per frame by the view's main loop."""
+        if self.player_two_active:
+            self.handle_player_input_two(keys, events)
+            self.apply_player_gravity_two()
+        if self.player_one_active:
+            self.handle_player_input(keys, events)
+            self.apply_player_gravity()
+
+        if not portal_active:
+            self.update_movement()
+
+        p1_shield_before = self.level_model.character.shield_active
+        p2_shield_before = self.level_model.characterTwo.shield_active
+        self.update_powerup(delta_time, self.level_model.character)
+        self.update_powerup(delta_time, self.level_model.characterTwo)
+        if p1_shield_before and not self.level_model.character.shield_active:
+            self.sound_manager.play_shield_pop()
+        if p2_shield_before and not self.level_model.characterTwo.shield_active:
+            self.sound_manager.play_shield_pop()
+
+        if self.player_one_active:
+            collected = self.detection_collision_powerup(self.level_model.character)
+            if collected == "TimeReduction":
+                self.time_reduction_ms += 5000
+            if collected:
+                self.sound_manager.play_powerup_pickup(collected)
+        if self.player_two_active:
+            collected = self.detection_collision_powerup(self.level_model.characterTwo)
+            if collected == "TimeReduction":
+                self.time_reduction_ms += 5000
+            if collected:
+                self.sound_manager.play_powerup_pickup(collected)
+
+        if not portal_active:
+            self._check_hazard_collisions()
+
+    def _check_hazard_collisions(self):
+        collided_one, name_one = False, ""
+        collided_two, name_two = False, ""
+
+        if self.player_two_active:
+            p2_shield_before = self.level_model.characterTwo.shield_active
+            collided_two, name_two = self.detection_collision_character(self.level_model.characterTwo)
+            if not collided_two and p2_shield_before and not self.level_model.characterTwo.shield_active:
+                self.sound_manager.play_shield_pop()
+
+        if self.player_one_active:
+            p1_shield_before = self.level_model.character.shield_active
+            collided_one, name_one = self.detection_collision_character(self.level_model.character)
+            if not collided_one and p1_shield_before and not self.level_model.character.shield_active:
+                self.sound_manager.play_shield_pop()
+
+        if collided_one:
+            self.update_collision_position(name_one)
+        if collided_two:
+            self.update_collision_position(name_two)
+
+        if collided_one and collided_two:
+            self.stop_music()
+            pygame.mixer.stop()
+            self.player_one_active = False
+            self.player_two_active = False
+            self.game_over = True
+        elif collided_one:
+            self.stop_music()
+            pygame.mixer.stop()
+            if self.player_two_active:
+                self.player_one_active = False
+            else:
+                self.game_over = True
+        elif collided_two:
+            self.stop_music()
+            self.player_two_active = False
+            if not self.player_one_active:
+                pygame.mixer.stop()
+                self.game_over = True
 
     # ==================== MOVEMENT ====================
 
@@ -109,7 +229,6 @@ class BaseLevelController:
         Derives models_collision from slowed_hazards.
         Called once during __init__ after register_slowable_hazards().
         """
-        # THIS VARIABLE DOES NOT EXIST HERE MAGIC THAT WORK
         self.models_collision[self.level_model.character] = self.level_model.character.name
         self.models_collision[self.level_model.characterTwo] = self.level_model.characterTwo.name
         for hazard in self.slowed_hazards:
@@ -121,7 +240,7 @@ class BaseLevelController:
         If the shield is active, deflects the hazard and returns (False, '').
         """
         for hazard, name in self.models_collision.items():
-            if name == "Dino"  or name == "Dina":
+            if name == "Dino" or name == "Dina":
                 continue
             group = pygame.sprite.Group()
             group.add(hazard)
@@ -191,12 +310,8 @@ class BaseLevelController:
             return ""
         group = pygame.sprite.Group()
         group.add(self.current_powerup)
-        if pygame.sprite.spritecollide(
-            # THIS MAGIC
-                wild_card_sprite, group, False, pygame.sprite.collide_mask):
+        if pygame.sprite.spritecollide(wild_card_sprite, group, False, pygame.sprite.collide_mask):
             name = self.current_powerup.name
-            #self.current_powerup.apply_effect(self.level_model.character)
-            # EMPTY METHOD  YOU CAN DELETE
             self.current_powerup.apply_effect(wild_card_sprite)
             if isinstance(self.current_powerup, SlowerHazards):
                 self.slow_hazards_active = True

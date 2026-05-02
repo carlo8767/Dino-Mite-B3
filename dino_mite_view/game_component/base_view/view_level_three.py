@@ -30,9 +30,9 @@ class ViewLevelThree(BaseLevelView):
     def _draw(self, window, controller, background):
         window.blit(background, (0, 0))
         self._draw_hud(window, controller)
-        if self.active_player_one:
+        if controller.player_one_active:
             controller.level_model.character.draw(window)
-        if self.active_two_player:
+        if controller.player_two_active:
             controller.level_model.characterTwo.draw(window)
         # WHAT THA M LIME
         m = controller.level_model
@@ -40,7 +40,7 @@ class ViewLevelThree(BaseLevelView):
         # Helicopters (always on screen — fly continuously in opposite directions)
         window.blit(m.hazard_helicopter.image_loaded,    m.hazard_helicopter.rect)
         window.blit(m.hazard_helicopterTwo.image_loaded, m.hazard_helicopterTwo.rect)
-        self.sound_manager.play_looping("Helicopter", self.level_number, self._ch_heli)
+        controller.sound_manager.play_looping("Helicopter", self.level_number, self._ch_heli)
 
         # Bombs (only draw when active — inactive bombs are parked off-screen)
         any_bomb = False
@@ -49,11 +49,11 @@ class ViewLevelThree(BaseLevelView):
                 window.blit(bomb.image_loaded, bomb.rect)
                 any_bomb = True
         if any_bomb:
-            self.sound_manager.play_looping("Bomb", self.level_number, self._ch_bomb)
+            controller.sound_manager.play_looping("Bomb", self.level_number, self._ch_bomb)
 
         # Drone (always on screen — flies at mid-height, direction randomised)
         window.blit(m.hazard_drone.image_loaded, m.hazard_drone.rect)
-        self.sound_manager.play_looping("Drone", self.level_number, self._ch_drone)
+        controller.sound_manager.play_looping("Drone", self.level_number, self._ch_drone)
 
     def _win_sequence(self, window, controller, background, clock):
         controller.stop_music()

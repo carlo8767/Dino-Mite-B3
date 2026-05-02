@@ -29,9 +29,9 @@ class ViewLevelTwo(BaseLevelView):
         window.blit(background, (0, 0))
         self._draw_hud(window, controller)
 
-        if self.active_player_one:
+        if controller.player_one_active:
             controller.level_model.character.draw(window)
-        if self.active_two_player:
+        if controller.player_two_active:
             controller.level_model.characterTwo.draw(window)
 
         m = controller.level_model
@@ -49,7 +49,7 @@ class ViewLevelTwo(BaseLevelView):
         window.blit(arm.image_loaded, arm.rect)
         # Play stomp sound during slam and hold phases
         if arm._phase in (arm._SLAM, arm._HOLD):
-            self.sound_manager.play_looping("BigArm", self.level_number, self._ch_arm)
+            controller.sound_manager.play_looping("BigArm", self.level_number, self._ch_arm)
 
     def _win_sequence(self, window, controller, background, clock):
         controller.stop_music()

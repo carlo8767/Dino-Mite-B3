@@ -1,4 +1,3 @@
-
 import pygame
 import random
 
@@ -8,7 +7,6 @@ from dino_mite_utility.utilities_names import HEIGHT, WIDTH
 class CharacterDinoTwo(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        # Load all images for dino PNG
         self.images = {
             "idle":       pygame.transform.scale(pygame.image.load("./image/character/2ndPlayerIdleT.png").convert_alpha(), (140, 140)),
             "walk_right": pygame.transform.scale(pygame.image.load("./image/character/2ndPlayerRunningT.png").convert_alpha(), (140, 140)),
@@ -21,10 +19,10 @@ class CharacterDinoTwo(pygame.sprite.Sprite):
         self.position_x = 370
         self.constant_ground = 500
 
-        self.game_state = "idle"    # Current game state
+        self.game_state = "idle"
         self.rect = self.images[self.game_state].get_rect()
         self.mask = pygame.mask.from_surface(self.images[self.game_state])
-        self.speed_y = 0            # For gravity and jumping
+        self.speed_y = 0
         self.png_on_ground = True
         self.standing_height = 150
         self.rect.center = (self.position_x, self.constant_ground)
@@ -36,85 +34,65 @@ class CharacterDinoTwo(pygame.sprite.Sprite):
         self.move_x = 2
         self.move_y = 2
 
-        # Shield powerup state
         self.shield_active = False
         self.shield_timer = 0
         self.duck_start_ticks = 0
 
-    def handle_key_input(self, keys, events):
-        # Check key press for JUMP and DUCK - one time press actions
-        for event in events:
-            if event.type == pygame.KEYDOWN:
-                # W = Jump
-                if event.key == pygame.K_UP and self.png_on_ground:
-                    self.speed_y = -15  # Launch upward
-                    self.game_state = "jump"
+    # ==================== ACTIONS (called by controller) ====================
 
-                # S = Duck - uses KEYDOWN instead of every frame
-                if event.key == pygame.K_DOWN and self.png_on_ground:
-                    self.game_state = "duck"
-                    self.rect.height = self.duck_height
-                    # shift rect.y down by the difference so character
-                    # crouches at ground level instead of floating
-                    self.rect.y = self.constant_ground + (self.standing_height - self.duck_height)
-                    self.duck_start_ticks = pygame.time.get_ticks()
+    def start_jump(self):
+        self.speed_y = -15
+        self.game_state = "jump"
 
-            # S released = stand back up - restores height and position on key release
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_DOWN and self.game_state == "duck":
-                    self.game_state = "idle"
-                    self.rect.height = self.standing_height
-                    # restore y position back to ground level when standing
-                    self.rect.y = self.constant_ground
+    def start_duck(self):
+        self.game_state = "duck"
+        self.rect.height = self.duck_height
+        self.rect.y = self.constant_ground + (self.standing_height - self.duck_height)
+        self.duck_start_ticks = pygame.time.get_ticks()
 
-        # Force stand after 5-second duck limit
-        if self.game_state == "duck" and pygame.time.get_ticks() - self.duck_start_ticks >= 3000:
-            self.game_state = "idle"
-            self.rect.height = self.standing_height
-            self.rect.y = self.constant_ground
+    def stop_duck(self):
+        self.game_state = "idle"
+        self.rect.height = self.standing_height
+        self.rect.y = self.constant_ground
 
-        # Check which keys are pressed for movement
-        if keys[pygame.K_LEFT]:
-            self.rect.x -= 5
-            # stop character walking off left edge of screen
-            if self.rect.left < 0:
-                self.rect.x += 5
-            if self.game_state not in ("jump", "duck"):
-                self.game_state = "walk_left"   # A = Walk left
-
-        elif keys[pygame.K_RIGHT]:
+    def walk_left(self):
+        self.rect.x -= 5
+        if self.rect.left < 0:
             self.rect.x += 5
-            # stop character walking off right edge of screen
-            if self.rect.right > self.screen_width:
-                self.rect.x -= 5
-            if self.game_state not in ("jump", "duck"):
-                self.game_state = "walk_right"  # D = Walk right
+        if self.game_state not in ("jump", "duck"):
+            self.game_state = "walk_left"
 
-        elif self.png_on_ground and self.game_state not in ("duck", "jump"):
-            self.game_state = "idle"            # Nothing pressed, stay idle
+    def walk_right(self):
+        self.rect.x += 5
+        if self.rect.right > self.screen_width:
+            self.rect.x -= 5
+        if self.game_state not in ("jump", "duck"):
+            self.game_state = "walk_right"
+
+    def set_idle(self):
+        if self.png_on_ground and self.game_state not in ("duck", "jump"):
+            self.game_state = "idle"
+
+    # ==================== PHYSICS ====================
 
     def gravity(self):
-        # This function simulates real gravity
-        # This function is used whenever the player presses jump
-
-        # skip gravity entirely while ducking
         if self.game_state == "duck":
             return
 
         constant_gravity = 0.9
-
-        self.speed_y += constant_gravity    # Gravity pulls down png every frame
-        self.rect.y += self.speed_y         # Apply vertical velocity
+        self.speed_y += constant_gravity
+        self.rect.y += self.speed_y
 
         if self.rect.y >= self.constant_ground:
             self.rect.y = self.constant_ground
             self.speed_y = 0
             self.png_on_ground = True
-            # reset to idle when landing from jump
             if self.game_state == "jump":
                 self.game_state = "idle"
         else:
             self.png_on_ground = False
+
+    # ==================== DRAWING / POSITION ====================
 
     def draw(self, screen):
         screen.blit(self.images[self.game_state], self.rect)
@@ -140,6 +118,5 @@ class CharacterDinoTwo(pygame.sprite.Sprite):
         self.rect.x = random.randint(50, self.screen_width - 50)
 
     def draw_status(self, screen, state):
-        # DRAW BASE ON THE STATE
         self.game_state = state
         screen.blit(self.images[self.game_state], self.rect)

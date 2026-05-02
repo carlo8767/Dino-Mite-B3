@@ -5,24 +5,27 @@ import random
 
 from dino_mite_view.game_component.pause_menu import PauseMenu
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
-from dino_mite_utility.sound_manager import SoundManager
 
 
 class BaseLevelView:
     """
     Base class for all level views.
-    Contains all shared logic - event handling, timer, pause, powerup drawing,
-    shield drawing, death animation, HUD, and all sound effects.
-    Subclasses override only what is level-specific.
+    Responsible only for rendering: timer display, shield bubble, portal phase,
+    death animation, and HUD. All game logic lives in the controller.
 
     Subclass contract
     -----------------
     Set level_number as a class attribute so hazard sounds are routed correctly:
         class ViewLevelTwo(BaseLevelView):
             level_number = 2
+
+    Subclasses must implement:
+        _load_background(controller)
+        _draw(window, controller, background)
+        _lose_sequence(window, controller, clock)
+        _next_level()
     """
 
-    # Subclasses override these two values
     time_duration_level = 120
     level_number        = 0
 
@@ -32,38 +35,30 @@ class BaseLevelView:
         self.eventually_time = ""
         self.remaining_time = ""
         self.remaining_seconds = 0
-        self.time_reduction_ms = 0
         self.start_ticks = 0
         self.font_path = os.path.join("./fonts", "Jersey10-Regular.ttf")
         self.shield_bubble_image = pygame.transform.scale(
             pygame.image.load("./image/bubble/ShieldBubbleforChar.png").convert_alpha(),
             (150, 150)
         )
-        self.active_two_player = False
-        self.active_player_one = False
         self.portal_active = False
         self.portal_rect = None
         self.portal_start_ticks = 0
+        self.portal_countdown_ms = 0
         self.portal_image = pygame.image.load("./image/portal_2.png").convert_alpha()
         self.portal_image = pygame.transform.scale(self.portal_image, (90, 130))
 
-        # Sound effects (powerup pickups, shield, hazard resets)
-        self.sound_manager = SoundManager()
-
     def draw_screen(self, window, controller):
         """
-        Main game loop - identical structure for all levels.
-        Subclasses do not override this - they override the draw/sequence methods.
+        Main game loop — identical structure for all levels.
+        Subclasses do not override this; they override the draw/sequence methods.
         """
         controller.init_music()
         clock = pygame.time.Clock()
         self.start_ticks = pygame.time.get_ticks()
         background = self._load_background(controller)
         pause_menu = PauseMenu(window)
-        game_over = False
         delta_time = 0
-        collided_player_two = False
-        collided_player_one = False
 
         while True:
             events = pygame.event.get()
@@ -95,98 +90,13 @@ class BaseLevelView:
                             return "MAIN_MENU"
 
             # ==================== UPDATE ====================
-            if not controller.is_paused and not game_over:
-                # ANOTHER MAGIC
+            if not controller.is_paused and not controller.game_over:
                 keys = pygame.key.get_pressed()
-                if self.active_two_player:
-                    controller.handle_player_input_two(keys, events)
-                    controller.apply_player_gravity_two()
+                controller.update(delta_time, keys, events, self.portal_active)
 
-                controller.handle_player_input(keys, events)
-                controller.apply_player_gravity()
-                # MAGIC
-                if not self.portal_active:
-                    controller.update_movement()
+            self.calculate_timer(self.time_duration_level, controller.is_paused, controller.time_reduction_ms)
 
-                # Tick shield / slowdown timers; snapshot shield state before
-                shield_before_tick = controller.level_model.character.shield_active
-                shield_before_tickPlayerTwo = controller.level_model.characterTwo.shield_active
-                # TA MAGIC
-                controller.update_powerup(delta_time, controller.level_model.character)
-
-                controller.update_powerup(delta_time, controller.level_model.characterTwo)
-                # Shield expired naturally
-                if shield_before_tick and not controller.level_model.character.shield_active:
-                    self.sound_manager.play_shield_pop()
-                if shield_before_tickPlayerTwo and  not controller.level_model.characterTwo.shield_active:
-                    self.sound_manager.play_shield_pop()
-
-                # Powerup collectior FIX TAMAGIC POWER UP LOGIC
-                if self.active_player_one:
-                    collected_player_one_power_up = controller.detection_collision_powerup(controller.level_model.character)
-                    if collected_player_one_power_up == "TimeReduction":
-                        self.time_reduction_ms += 5000
-                    if collected_player_one_power_up:
-                        # TAMAGIC
-                        self.sound_manager.play_powerup_pickup(collected_player_one_power_up)
-                # MAGIC DANGEROUS
-                if self.active_two_player:
-                    collected_player_two_power_up = controller.detection_collision_powerup(controller.level_model.characterTwo)
-                    if collected_player_two_power_up == "TimeReduction":
-                        self.time_reduction_ms += 5000
-                    if collected_player_two_power_up:
-                        # TAMAGIC
-                        self.sound_manager.play_powerup_pickup(collected_player_two_power_up)
-                # MAGIC DANGEROUS
-                if self.active_two_player and not self.portal_active:
-                    collided_player_two, name = controller.detection_collision_character(
-                        controller.level_model.characterTwo
-                    )
-                # Hazard collision — snapshot shield before to detect deflect
-                if self.active_player_one and not self.portal_active:
-                    shield_before_hit = controller.level_model.character.shield_active
-                    collided_player_one, name = controller.detection_collision_character(
-                        controller.level_model.character
-                    )
-                # Shield deflected the hit
-                if not collided_player_one and shield_before_hit and not controller.level_model.character.shield_active:
-                    self.sound_manager.play_shield_pop()
-                    # Shield deflected the hit
-                # ANOTHER MAGIC
-                if collided_player_one and not  self.active_two_player :
-                    logging.info(f"Collision detected with {name} — game over")
-                    controller.update_collision_position(name)
-                    controller.stop_music()
-                    pygame.mixer.stop()
-                    game_over = True
-
-                if collided_player_one and self.active_two_player:
-                    logging.info(f"Collision detected with {name} — game over")
-                    controller.update_collision_position(name)
-                    controller.stop_music()
-                    pygame.mixer.stop()
-                    self.active_player_one = False
-
-
-                if  collided_player_two:
-                    logging.info(f"Collision detected with {name} — game over")
-                    controller.update_collision_position(name)
-                    controller.stop_music()
-                    self.active_two_player = False
-
-
-                if not collided_player_two and shield_before_hit and not controller.level_model.characterTwo.shield_active:
-                    self.sound_manager.play_shield_pop()
-
-                if collided_player_two and collided_player_one:
-                    logging.info(f"Collision detected with {name} — game over")
-                    controller.update_collision_position(name)
-                    controller.stop_music()
-                    pygame.mixer.stop()
-                    game_over = True
-
-            self.calculate_timer(self.time_duration_level, controller.is_paused)
-
+            # ==================== DRAW ====================
             if self.portal_active and self.portal_rect is not None:
                 self._draw_portal_phase(window, controller, background)
             else:
@@ -201,31 +111,30 @@ class BaseLevelView:
                 self.portal_start_ticks = pygame.time.get_ticks()
                 self._spawn_portal(controller)
 
-            # Portal collision + countdown — checked AFTER draw so player always sees the phase
             if self.portal_active and self.portal_rect is not None and not controller.is_paused:
                 self.portal_countdown_ms = max(0, 5000 - (pygame.time.get_ticks() - self.portal_start_ticks))
-                if self.active_player_one and controller.level_model.character.rect.colliderect(self.portal_rect):
+                if controller.player_one_active and controller.level_model.character.rect.colliderect(self.portal_rect):
                     return self._loading_transition(window, clock, self._next_level())
-                if self.active_two_player and controller.level_model.characterTwo.rect.colliderect(self.portal_rect):
+                if controller.player_two_active and controller.level_model.characterTwo.rect.colliderect(self.portal_rect):
                     return self._loading_transition(window, clock, self._next_level())
                 if self.portal_countdown_ms <= 0:
                     return self._loading_transition(window, clock, self._next_level())
 
-            if game_over:
-                # WHAT DO YOU RETURN EMPTY YOU CAN DELETE
+            if controller.game_over:
                 return self._lose_sequence(window, controller, clock)
 
             pygame.display.update()
             delta_time = clock.tick(60)
 
     # ==================== TIMER ====================
-    def calculate_timer(self, total_seconds, is_paused):
+
+    def calculate_timer(self, total_seconds, is_paused, time_reduction_ms):
         if not is_paused:
             elapsed_ms = (
                 pygame.time.get_ticks()
                 - self.start_ticks
                 - self.pause_time_total
-                + self.time_reduction_ms
+                + time_reduction_ms
             )
             self.remaining_seconds = max(0, total_seconds - elapsed_ms // 1000)
             mins, secs = divmod(self.remaining_seconds, 60)
@@ -233,24 +142,22 @@ class BaseLevelView:
             self.eventually_time = self.remaining_time
 
     # ==================== SHARED DRAW HELPERS ====================
+
     def _draw_hud(self, window, controller):
-        """Draws timer, powerup, shield bubble - identical for all levels."""
-        # Falling powerup
+        """Draws timer, powerup, shield bubbles - identical for all levels."""
         if controller.current_powerup and controller.current_powerup.is_active:
             controller.current_powerup.draw(window)
 
-        # Shield bubble around character
         if controller.level_model.character.shield_active:
             shield_rect = self.shield_bubble_image.get_rect()
             shield_rect.center = controller.level_model.character.rect.center
             window.blit(self.shield_bubble_image, shield_rect)
-        # MAGIC TA
         if controller.level_model.characterTwo.shield_active:
             shield_rect = self.shield_bubble_image.get_rect()
             shield_rect.center = controller.level_model.characterTwo.rect.center
             window.blit(self.shield_bubble_image, shield_rect)
 
-        # Timer - dark oval backdrop then text on top
+        # Timer — dark oval backdrop then text on top
         font_type = pygame.font.Font(self.font_path, 36)
         if self.remaining_seconds <= 10:
             t = pygame.time.get_ticks() % 600
@@ -268,7 +175,7 @@ class BaseLevelView:
         window.blit(img, text_rect)
 
     def draw_text_end(self, window, controller):
-        """Death message text — reads from level model."""
+        """Death message text - reads from level model."""
         split_text = controller.level_model.store_text_end.split("\n")
         pos_x = 400
         font_type = pygame.font.Font(self.font_path, 60)
@@ -280,8 +187,7 @@ class BaseLevelView:
             window.blit(img, rect)
 
     def faded_screen(self, window, controller, clock):
-        """Death fade animation — identical for all levels. No text overlay."""
-        # SEE HOW TO ADJUST MAGIC
+        """Death fade animation - identical for all levels."""
         fade = pygame.Surface((WIDTH, HEIGHT))
         fade.fill((0, 0, 0))
         pygame.time.delay(500)
@@ -292,7 +198,6 @@ class BaseLevelView:
                 fade.set_alpha(alpha)
                 window.blit(screen_copy, (0, 0))
                 window.blit(fade, (0, 0))
-                # VERIFY IF MODIFY
                 controller.apply_change_player_status(window, "dead")
                 pygame.display.update()
                 clock.tick(60)
@@ -319,9 +224,9 @@ class BaseLevelView:
 
     def _draw_portal_phase(self, window, controller, background):
         window.blit(background, (0, 0))
-        if self.active_player_one:
+        if controller.player_one_active:
             controller.level_model.character.draw(window)
-        if self.active_two_player:
+        if controller.player_two_active:
             controller.level_model.characterTwo.draw(window)
         self._draw_portal(window)
         self._draw_portal_prompt(window)
@@ -337,11 +242,10 @@ class BaseLevelView:
         window.blit(text, rect)
 
     def _draw_portal_prompt(self, window):
-        t = pygame.time.get_ticks() % 800      # 0 -> 799 ms cycle
-        pulse = t / 400.0 if t < 400 else (800 - t) / 400.0  # triangle wave 0 -> 1 -> 0
-        b = int(255 * pulse)                   # (255,255,0) yellow <-> (255,255,255) white
+        t = pygame.time.get_ticks() % 800
+        pulse = t / 400.0 if t < 400 else (800 - t) / 400.0
+        b = int(255 * pulse)
         color = (255, 255, b)
-
         font = pygame.font.Font(self.font_path, 42)
         text = font.render("GO TO THE PORTAL!", True, color)
         shadow = font.render("GO TO THE PORTAL!", True, (0, 0, 0))
@@ -393,5 +297,3 @@ class BaseLevelView:
 
         pygame.time.delay(700)
         return next_state
-
-
