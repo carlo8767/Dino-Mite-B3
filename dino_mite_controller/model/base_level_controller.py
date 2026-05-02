@@ -149,26 +149,20 @@ class BaseLevelController:
         if not portal_active:
             self.update_movement()
 
-        p1_shield_before = self.level_model.character.shield_active
-        p2_shield_before = self.level_model.characterTwo.shield_active
         self.update_powerup(delta_time, self.level_model.character)
         self.update_powerup(delta_time, self.level_model.characterTwo)
-        if p1_shield_before and not self.level_model.character.shield_active:
-            self.sound_manager.play_shield_pop()
-        if p2_shield_before and not self.level_model.characterTwo.shield_active:
-            self.sound_manager.play_shield_pop()
 
         if self.player_one_active:
             collected = self.detection_collision_powerup(self.level_model.character)
             if collected == "TimeReduction":
                 self.time_reduction_ms += 5000
-            if collected:
+            if collected == "SlowerHazards":
                 self.sound_manager.play_powerup_pickup(collected)
         if self.player_two_active:
             collected = self.detection_collision_powerup(self.level_model.characterTwo)
             if collected == "TimeReduction":
                 self.time_reduction_ms += 5000
-            if collected:
+            if collected == "SlowerHazards":
                 self.sound_manager.play_powerup_pickup(collected)
 
         if not portal_active:
@@ -179,16 +173,10 @@ class BaseLevelController:
         collided_two, name_two = False, ""
 
         if self.player_two_active:
-            p2_shield_before = self.level_model.characterTwo.shield_active
             collided_two, name_two = self.detection_collision_character(self.level_model.characterTwo)
-            if not collided_two and p2_shield_before and not self.level_model.characterTwo.shield_active:
-                self.sound_manager.play_shield_pop()
 
         if self.player_one_active:
-            p1_shield_before = self.level_model.character.shield_active
             collided_one, name_one = self.detection_collision_character(self.level_model.character)
-            if not collided_one and p1_shield_before and not self.level_model.character.shield_active:
-                self.sound_manager.play_shield_pop()
 
         if collided_one:
             self.update_collision_position(name_one)

@@ -30,17 +30,11 @@ class SoundManager:
     # Lookup table: power-up name → pickup audio filename
     _POWERUP_SOUNDS: dict[str, str] = {
         "SlowerHazards":  "Slow Motion Sound Effect.mp3",
-        "TimeReduction":  "Clock Ticking Sound Effect.mp3",
-        "ShieldBubble":   "ShieldPopSoundEffect.mp3",
     }
-
-    # Audio file played when the shield bubble pops (expires or blocks a hit)
-    _SHIELD_POP_FILE = "Bubble Sound Effect.mp3"
 
     # Default volume levels for each sound category
     _HAZARD_VOLUME  = 0.30
     _POWERUP_VOLUME = 0.55
-    _SHIELD_VOLUME  = 0.55
 
     # Per-file volume overrides (takes priority over the category default)
     _VOLUME_OVERRIDES: dict[str, float] = {
@@ -65,9 +59,7 @@ class SoundManager:
             sound = pygame.mixer.Sound(path)
 
             # Pick the right category volume, then let per-file override win
-            if filename == self._SHIELD_POP_FILE:
-                vol = self._SHIELD_VOLUME
-            elif filename in self._POWERUP_SOUNDS.values():
+            if filename in self._POWERUP_SOUNDS.values():
                 vol = self._POWERUP_VOLUME
             else:
                 vol = self._HAZARD_VOLUME
@@ -86,12 +78,6 @@ class SoundManager:
             logging.debug("SoundManager: no pickup sound for %s", powerup_name)
             return
         sound = self._load(filename)
-        if sound is not None:
-            sound.play()
-
-    def play_shield_pop(self):
-        """Play the bubble-pop effect when a shield expires or blocks a hit."""
-        sound = self._load(self._SHIELD_POP_FILE)
         if sound is not None:
             sound.play()
 
