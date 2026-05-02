@@ -1,3 +1,4 @@
+import pygame
 from dino_mite_controller.model.base_level_controller import BaseLevelController
 from dino_mite_model.level_model.levelthree import LevelThree
 
@@ -17,6 +18,11 @@ class ControllerLevelThree(BaseLevelController):
         self.level_model = LevelThree()
         self.level_number = 3
         super().__init__()
+
+    def init_music(self):
+        pygame.mixer.music.load(self.level_model.sound)
+        pygame.mixer.music.set_volume(0.20)
+        pygame.mixer.music.play(-1, 0.0)
 
     def register_slowable_hazards(self):
         self.slowed_hazards = [
