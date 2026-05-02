@@ -1,4 +1,6 @@
+import logging
 import random
+
 import pygame
 
 from dino_mite_model.character_game.power_ups import SlowerHazards
