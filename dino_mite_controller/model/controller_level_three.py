@@ -19,11 +19,6 @@ class ControllerLevelThree(BaseLevelController):
         self.level_number = 3
         super().__init__()
 
-    def init_music(self):
-        pygame.mixer.music.load(self.level_model.sound)
-        pygame.mixer.music.set_volume(0.20)
-        pygame.mixer.music.play(-1, 0.0)
-
     def register_slowable_hazards(self):
         self.slowed_hazards = [
             self.level_model.hazard_helicopter,

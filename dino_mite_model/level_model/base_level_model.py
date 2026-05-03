@@ -36,6 +36,7 @@ class BaseLevelModel(pygame.sprite.Sprite):
         self.pw_up_time_reduction = TimeReduction()
         self.pw_up_slower_hazard = SlowerHazards()
 
+        self.sound_volume = 0.35
         self.sound_complete_level = os.path.join('./music', 'End_First_Level.mp3')
         self.store_text_end = self._load_text(text_file_path)
 

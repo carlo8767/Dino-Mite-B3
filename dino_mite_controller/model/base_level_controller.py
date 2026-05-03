@@ -65,7 +65,7 @@ class BaseLevelController(ABC):
 
     def init_music(self):
         pygame.mixer.music.load(self.level_model.sound)
-        pygame.mixer.music.set_volume(0.35)
+        pygame.mixer.music.set_volume(self.level_model.sound_volume)
         pygame.mixer.music.play(-1, 0.0)
 
     def init_music_end_level(self):
@@ -150,14 +150,8 @@ class BaseLevelController(ABC):
         if not portal_active:
             self.update_movement()
 
-        p1_shield_before = self.level_model.character.shield_active
-        p2_shield_before = self.level_model.characterTwo.shield_active
         self.update_powerup(delta_time, self.level_model.character)
         self.update_powerup(delta_time, self.level_model.characterTwo)
-        if p1_shield_before and not self.level_model.character.shield_active:
-            self.sound_manager.play_shield_pop()
-        if p2_shield_before and not self.level_model.characterTwo.shield_active:
-            self.sound_manager.play_shield_pop()
 
         if self.player_one_active:
             collected = self.detection_collision_powerup(self.level_model.character)
@@ -180,16 +174,10 @@ class BaseLevelController(ABC):
         collided_two, name_two = False, ""
 
         if self.player_two_active:
-            p2_shield_before = self.level_model.characterTwo.shield_active
             collided_two, name_two = self.detection_collision_character(self.level_model.characterTwo)
-            if not collided_two and p2_shield_before and not self.level_model.characterTwo.shield_active:
-                self.sound_manager.play_shield_pop()
 
         if self.player_one_active:
-            p1_shield_before = self.level_model.character.shield_active
             collided_one, name_one = self.detection_collision_character(self.level_model.character)
-            if not collided_one and p1_shield_before and not self.level_model.character.shield_active:
-                self.sound_manager.play_shield_pop()
 
         if collided_one:
             self.update_collision_position(name_one)

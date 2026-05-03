@@ -17,8 +17,7 @@ class SoundManager:
 
     # Lookup table: (level_number, hazard_name) → audio filename
     _HAZARD_SOUNDS: dict[tuple[int, str], str] = {
-        (1, "Meteor"):       "Level1-MeteorSound.mp3",
-        (2, "Fireball"):     "Level1-MeteorSound.mp3",   # reuses meteor sound
+        (1, "RollingRock"):  "Level1-StoneSound.mp3",
         (2, "BigArm"):       "BigArmSoundEffect.mp3",
         (3, "Helicopter"):   "Level3-HelicopterSound.mp3",
         (3, "HelicopterTwo"):"Level3-HelicopterSound.mp3",
@@ -36,10 +35,10 @@ class SoundManager:
 
     # Per-file volume overrides (takes priority over the category default)
     _VOLUME_OVERRIDES: dict[str, float] = {
-        "Level1-MeteorSound.mp3":     0.06,
+        "Level1-StoneSound.mp3":      0.02,
         "Level3-HelicopterSound.mp3": 0.05,
         "Level3-DroneSound.mp3":      0.10,
-        "BigArmSoundEffect.mp3":     0.20,
+        "BigArmSoundEffect.mp3":      0.20,
     }
 
     def __init__(self):
