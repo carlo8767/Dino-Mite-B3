@@ -60,6 +60,7 @@ class GameStateInteractor:
                 self.GAME_STATE = view_story_screen.draw_story_screen(window)
             elif self.GAME_STATE == "MAIN_MENU":
                  logging.info(f'current game state {self.GAME_STATE}')
+                 active_player_player_two = False
                  self.GAME_STATE = view_main_menu.draw_start_menu()
             elif self.GAME_STATE == "RULES":
                 logging.info(f'current game state {self.GAME_STATE}')
