@@ -1,5 +1,4 @@
 import logging
-import random
 from abc import ABC, abstractmethod
 
 import pygame
@@ -37,7 +36,8 @@ class BaseLevelController(ABC):
 
     def __init__(self):
         self.is_paused = False
-        self.game_over = False
+        self.game_over_one_player_mode = False
+        self.two_players_game_over_mode = False
         self.player_one_active = False
         self.player_two_active = False
         self.time_reduction_ms = 0
@@ -53,7 +53,7 @@ class BaseLevelController(ABC):
 
         # Subclass fills self.slowed_hazards - must run before _build_collision_registry
         self.register_slowable_hazards()
-        self._build_collision_registry()
+        self.add_models_collision_hazard()
 
         # Deck: 3 shields, 1 time reduction, 1 slow - shuffled, auto-refills
         self._deck = self._build_deck()
@@ -63,15 +63,12 @@ class BaseLevelController(ABC):
         self.sound_manager          = SoundManager()
 
     # ==================== MUSIC ====================
-
+    @abstractmethod
     def init_music(self):
-        pygame.mixer.music.load(self.level_model.sound)
-        pygame.mixer.music.set_volume(self.level_model.sound_volume)
-        pygame.mixer.music.play(-1, 0.0)
-
+        pass
+    @abstractmethod
     def init_music_end_level(self):
-        pygame.mixer.music.load(self.level_model.sound_end_game)
-        pygame.mixer.music.play(-1, 0.0)
+        pass
 
     def stop_music(self):
         pygame.mixer.music.stop()
@@ -138,88 +135,77 @@ class BaseLevelController(ABC):
         self.level_model.characterTwo.draw_status(window, status)
 
     # ==================== GAME UPDATE ====================
-
-    def update(self, delta_time, keys, events, portal_active):
-        """Single game-logic, called once per frame by the view's main loop."""
-        if self.player_two_active:
+    def input_players(self, keys, events):
+        if self.get_player_two_status():
             self.handle_player_input_two(keys, events)
             self.apply_player_gravity_two()
-        if self.player_one_active:
+        if self.get_player_one_status():
             self.handle_player_input(keys, events)
             self.apply_player_gravity()
 
-        if not portal_active:
-            self.update_movement()
+    def detection_collision_power_up(self, delta_time):
+            self.update_powerup(delta_time, self.level_model.character)
+            self.update_powerup(delta_time, self.level_model.characterTwo)
 
-        self.update_powerup(delta_time, self.level_model.character)
-        self.update_powerup(delta_time, self.level_model.characterTwo)
+            if self.get_player_one_status():
+                collected = self.detection_collision_powerup(self.level_model.character)
+                if collected == "TimeReduction":
+                    self.time_reduction_ms += 5000
+                    self.show_time_reduction_hud = 2000
+                if collected:
+                    self.sound_manager.play_powerup_pickup(collected)
+            if self.get_player_two_status():
+                collected = self.detection_collision_powerup(self.level_model.characterTwo)
+                if collected == "TimeReduction":
+                    self.time_reduction_ms += 5000
+                    self.show_time_reduction_hud = 2000
+                if collected:
+                    self.sound_manager.play_powerup_pickup(collected)
 
-        if self.player_one_active:
-            collected = self.detection_collision_powerup(self.level_model.character)
-            if collected == "TimeReduction":
-                self.time_reduction_ms += 5000
-                self.show_time_reduction_hud = 2000
-            if collected:
-                self.sound_manager.play_powerup_pickup(collected)
-        if self.player_two_active:
-            collected = self.detection_collision_powerup(self.level_model.characterTwo)
-            if collected == "TimeReduction":
-                self.time_reduction_ms += 5000
-                self.show_time_reduction_hud = 2000
-            if collected:
-                self.sound_manager.play_powerup_pickup(collected)
+            if self.show_time_reduction_hud > 0:
+                self.show_time_reduction_hud = max(0, self.show_time_reduction_hud - delta_time)
 
-        if self.show_time_reduction_hud > 0:
-            self.show_time_reduction_hud = max(0, self.show_time_reduction_hud - delta_time)
 
-        if not portal_active:
-            self._check_hazard_collisions()
 
-    def _check_hazard_collisions(self):
-        collided_one, name_one = False, ""
-        collided_two, name_two = False, ""
+    def update_hazard_movement(self):
+        """Single game-logic, called once per frame by the view's main loop."""
+        self.update_movement_hazard()
 
-        if self.player_two_active:
-            collided_two, name_two = self.detection_collision_character(self.level_model.characterTwo)
 
-        if self.player_one_active:
-            collided_one, name_one = self.detection_collision_character(self.level_model.character)
+    def check_hazard_collisions_update(self, active_player_player_two_mode):
+            collided_one, name_one = False, ""
+            collided_two, name_two = False, ""
 
-        if collided_one:
-            self.update_collision_position(name_one)
-        if collided_two:
-            self.update_collision_position(name_two)
+            if self.get_player_two_status():
+                collided_two, name_two = self.detection_collision_character(self.level_model.characterTwo)
 
-        if collided_one and collided_two:
-            self.stop_music()
-            pygame.mixer.stop()
-            self.player_one_active = False
-            self.player_two_active = False
-            self.game_over = True
-        elif collided_one:
-            self.stop_music()
-            pygame.mixer.stop()
-            if self.player_two_active:
-                self.player_one_active = False
-            else:
-                self.game_over = True
-        elif collided_two:
-            self.stop_music()
-            self.player_two_active = False
-            if not self.player_one_active:
+            if self.get_player_one_status():
+                collided_one, name_one = self.detection_collision_character(self.level_model.character)
+            if collided_one :
+                self.set_player_one_status(False)
+                self.update_collision_position(name_one)
+            if collided_two:
+                self.set_player_two_status(False)
+                self.update_collision_position(name_two)
+            if not active_player_player_two_mode and collided_one:
+                self.stop_music()
                 pygame.mixer.stop()
-                self.game_over = True
+                self.set_game_over_one_player_mode(True)
+            if active_player_player_two_mode and not self.get_player_two_status() and not self.get_player_one_status():
+                self.stop_music()
+                pygame.mixer.stop()
+                self.set_game_over_two_players_mode(True)
 
     # ==================== MOVEMENT ====================
 
-    def update_movement(self):
+    def update_movement_hazard(self):
         """Move every hazard in the level."""
         for hazard in self.slowed_hazards:
             hazard.update_position()
 
     # ==================== COLLISION ====================
 
-    def _build_collision_registry(self):
+    def add_models_collision_hazard(self):
         """
         Derives models_collision from slowed_hazards.
         Called once during __init__ after register_slowable_hazards().
@@ -256,16 +242,6 @@ class BaseLevelController(ABC):
 
     # ==================== POWERUP LOGIC ====================
 
-    def _build_deck(self) -> list:
-        """One deck = 5 cards: 3 shields, 1 time reduction, 1 slow.
-        Shuffled so the order is unpredictable but the 60/20/20 ratio is exact."""
-        deck = (
-            [self.level_model.pw_up_shield_bubble]  * 3 +
-            [self.level_model.pw_up_time_reduction] * 1 +
-            [self.level_model.pw_up_slower_hazard]  * 1
-        )
-        random.shuffle(deck)
-        return deck
 
     def _spawn_powerup(self):
         if not self._deck:
@@ -344,24 +320,48 @@ class BaseLevelController(ABC):
             if attr is not None:
                 setattr(hazard, attr, original_speed)
 
-    # ==================== LEVEL RESET ====================
+    def set_player_two_status(self, status):
+        self. player_two_active = status
 
-    def reset_level(self):
-        """Reset the character and all hazards to their starting positions."""
-        char = self.level_model.character
-        char.rect.center  = (char.position_x, char.constant_ground)
-        char.game_state   = "idle"
-        char.speed_y      = 0
-        char.png_on_ground = True
-        char.shield_active = False
-        char.shield_timer  = 0
+    def get_player_two_status(self)->bool:
+        return self.player_two_active
 
-        for hazard in self.slowed_hazards:
-            hazard.update_position_collision()
+    def set_player_one_status(self, status):
+        self.player_one_active = status
 
-        self.slow_hazards_active = False
-        self.slow_hazards_timer  = 0
-        self.restore_hazard_speeds()
+    def get_player_one_status(self):
+        return self.player_one_active
+
+    def set_game_over_one_player_mode(self, status):
+        self.game_over_one_player_mode = status
+
+    def get_game_over_one_player_mode(self):
+        return self.game_over_one_player_mode
+
+    def set_game_over_two_players_mode(self, status):
+        self.two_players_game_over_mode = status
+
+    def get_two_players_game_over_mode(self):
+        return self.two_players_game_over_mode
+
+    # # ==================== LEVEL RESET ====================
+    #
+    # def reset_level(self):
+    #     """Reset the character and all hazards to their starting positions."""
+    #     char = self.level_model.character
+    #     char.rect.center  = (char.position_x, char.constant_ground)
+    #     char.game_state   = "idle"
+    #     char.speed_y      = 0
+    #     char.png_on_ground = True
+    #     char.shield_active = False
+    #     char.shield_timer  = 0
+    #
+    #     for hazard in self.slowed_hazards:
+    #         hazard.update_position_collision()
+    #
+    #     self.slow_hazards_active = False
+    #     self.slow_hazards_timer  = 0
+    #     self.restore_hazard_speeds()
 
     # ==================== ABSTRACT ====================
 
@@ -378,3 +378,9 @@ class BaseLevelController(ABC):
                     self.level_model.hazard_rollingRock,
                 ]
         """
+
+    @abstractmethod
+    def _build_deck(self) -> list:
+        """One deck = 5 cards: 3 shields, 1 time reduction, 1 slow.
+        Shuffled so the order is unpredictable but the 60/20/20 ratio is exact."""
+

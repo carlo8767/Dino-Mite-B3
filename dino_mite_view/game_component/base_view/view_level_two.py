@@ -21,7 +21,7 @@ class ViewLevelTwo(BaseLevelView):
         img = pygame.image.load(controller.level_model.image).convert()
         return pygame.transform.scale(img, (WIDTH, HEIGHT))
 
-    def _draw(self, window, controller, background):
+    def _draw_elements_view(self, window, controller, background):
         window.blit(background, (0, 0))
         self._draw_hud(window, controller)
 
@@ -46,12 +46,6 @@ class ViewLevelTwo(BaseLevelView):
         # Play stomp sound during slam and hold phases
         if arm._phase in (arm._SLAM, arm._HOLD):
             controller.sound_manager.play_looping("BigArm", self.level_number, self._ch_arm)
-
-    def _win_sequence(self, window, controller, background, clock):
-        controller.stop_music()
-        pygame.mixer.stop()
-        # TODO: add Level 2 win animation when assets are ready
-        return "STORY_L2_TO_L3"
 
     def _lose_sequence(self, window, controller, clock):
         controller.init_music_end_level()

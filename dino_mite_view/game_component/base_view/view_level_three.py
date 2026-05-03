@@ -23,7 +23,7 @@ class ViewLevelThree(BaseLevelView):
         img = pygame.image.load(controller.level_model.image).convert()
         return pygame.transform.scale(img, (WIDTH, HEIGHT))
 
-    def _draw(self, window, controller, background):
+    def _draw_elements_view(self, window, controller, background):
         window.blit(background, (0, 0))
         self._draw_hud(window, controller)
         if controller.player_one_active:
@@ -51,11 +51,11 @@ class ViewLevelThree(BaseLevelView):
         window.blit(m.hazard_drone.image_loaded, m.hazard_drone.rect)
         controller.sound_manager.play_looping("Drone", self.level_number, self._ch_drone)
 
-    def _win_sequence(self, window, controller, background, clock):
-        controller.stop_music()
-        pygame.mixer.stop()
-        # TODO: add Level 3 win animation when assets are ready
-        return "STORY_SUCCESS"  # Level 3 is the final level
+    # def _win_sequence(self, window, controller, background, clock):
+    #     controller.stop_music()
+    #     pygame.mixer.stop()
+    #     # TODO: add Level 3 win animation when assets are ready
+    #     return "STORY_SUCCESS"  # Level 3 is the final level
 
     def _lose_sequence(self, window, controller, clock):
         controller.init_music_end_level()

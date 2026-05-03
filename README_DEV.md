@@ -171,5 +171,5 @@ window.blit(
 )
 
 # UPDATE DISPLAY
-pygame.display.update()
+pygame.display.update_hazard_movement()
 ```

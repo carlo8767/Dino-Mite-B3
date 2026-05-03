@@ -48,7 +48,7 @@ class BaseLevelView(ABC):
         self.portal_image = pygame.image.load("./image/portal_2.png").convert_alpha()
         self.portal_image = pygame.transform.scale(self.portal_image, (90, 130))
 
-    def draw_screen(self, window, controller):
+    def draw_screen(self, window, controller,active_player_player_two_mode):
         """
         Main game loop — identical structure for all levels.
         Subclasses do not override this; they override the draw/sequence methods.
@@ -56,9 +56,9 @@ class BaseLevelView(ABC):
         controller.init_music()
         clock = pygame.time.Clock()
         self.start_ticks = pygame.time.get_ticks()
-        background = self._load_background(controller)
         pause_menu = PauseMenu(window)
         delta_time = 0
+        background = self._load_background(controller)
 
         while True:
             events = pygame.event.get()
@@ -90,9 +90,13 @@ class BaseLevelView(ABC):
                             return "MAIN_MENU"
 
             # ==================== UPDATE ====================
-            if not controller.is_paused and not controller.game_over:
+            if not controller.is_paused and not controller.get_game_over_one_player_mode() or not controller.get_two_players_game_over_mode() :
                 keys = pygame.key.get_pressed()
-                controller.update(delta_time, keys, events, self.portal_active)
+                controller.input_players(keys, events)
+                controller.update_hazard_movement()
+                if not self.portal_active:
+                    controller.detection_collision_power_up(delta_time)
+                    controller.check_hazard_collisions_update(active_player_player_two_mode)
 
             self.calculate_timer(self.time_duration_level, controller.is_paused, controller.time_reduction_ms)
 
@@ -100,7 +104,7 @@ class BaseLevelView(ABC):
             if self.portal_active and self.portal_rect is not None:
                 self._draw_portal_phase(window, controller, background)
             else:
-                self._draw(window, controller, background)
+                self._draw_elements_view(window, controller, background)
 
             if controller.is_paused:
                 pause_menu.draw(events)
@@ -113,14 +117,14 @@ class BaseLevelView(ABC):
 
             if self.portal_active and self.portal_rect is not None and not controller.is_paused:
                 self.portal_countdown_ms = max(0, 5000 - (pygame.time.get_ticks() - self.portal_start_ticks))
-                if controller.player_one_active and controller.level_model.character.rect.colliderect(self.portal_rect):
+                if controller.get_player_one_status() and controller.level_model.character.rect.colliderect(self.portal_rect):
                     return self._loading_transition(window, clock, self._next_level())
-                if controller.player_two_active and controller.level_model.characterTwo.rect.colliderect(self.portal_rect):
+                if controller.get_player_two_status() and controller.level_model.characterTwo.rect.colliderect(self.portal_rect):
                     return self._loading_transition(window, clock, self._next_level())
                 if self.portal_countdown_ms <= 0:
                     return self._loading_transition(window, clock, self._next_level())
 
-            if controller.game_over:
+            if  controller.get_game_over_one_player_mode() or controller.get_two_players_game_over_mode():
                 return self._lose_sequence(window, controller, clock)
 
             pygame.display.update()
@@ -203,14 +207,22 @@ class BaseLevelView(ABC):
                 fade.set_alpha(alpha)
                 window.blit(screen_copy, (0, 0))
                 window.blit(fade, (0, 0))
-                controller.apply_change_player_status(window, "dead")
+                if controller.get_game_over_one_player_mode():
+                    controller.apply_change_player_status(window, "dead")
+                if controller.get_two_players_game_over_mode():
+                    controller.apply_change_player_status(window, "dead")
+                    controller.apply_change_player_status_two(window, "dead")
                 pygame.display.update()
                 clock.tick(60)
             for alpha in range(255, 0, 20):
                 fade.set_alpha(alpha)
                 window.blit(screen_copy, (0, 0))
                 window.blit(fade, (0, 0))
-                controller.apply_change_player_status(window, "dead")
+                if not controller.get_player_one_status():
+                    controller.apply_change_player_status(window, "dead")
+                if controller.get_two_players_game_over_mode():
+                    controller.apply_change_player_status(window, "dead")
+                    controller.apply_change_player_status_two(window, "dead")
                 pygame.display.update()
                 clock.tick(60)
             countdown -= 300
@@ -218,7 +230,11 @@ class BaseLevelView(ABC):
             fade.set_alpha(alpha)
             window.blit(screen_copy, (0, 0))
             window.blit(fade, (0, 0))
-            controller.apply_change_player_status(window, "dead")
+            if not controller.get_player_one_status():
+                controller.apply_change_player_status(window, "dead")
+            if controller.get_two_players_game_over_mode():
+                controller.apply_change_player_status(window, "dead")
+                controller.apply_change_player_status_two(window, "dead")
             pygame.display.update()
             pygame.time.delay(10)
             clock.tick(60)
@@ -229,9 +245,9 @@ class BaseLevelView(ABC):
 
     def _draw_portal_phase(self, window, controller, background):
         window.blit(background, (0, 0))
-        if controller.player_one_active:
+        if controller.get_player_one_status():
             controller.level_model.character.draw(window)
-        if controller.player_two_active:
+        if controller.get_player_two_status():
             controller.level_model.characterTwo.draw(window)
         self._draw_portal(window)
         self._draw_portal_prompt(window)
@@ -282,23 +298,6 @@ class BaseLevelView(ABC):
             portal_height
         )
 
-    # ==================== ABSTRACT METHODS ====================
-
-    @abstractmethod
-    def _load_background(self, controller):
-        ...
-
-    @abstractmethod
-    def _draw(self, window, controller, background):
-        ...
-
-    @abstractmethod
-    def _lose_sequence(self, window, controller, clock):
-        ...
-
-    @abstractmethod
-    def _next_level(self):
-        ...
 
     def _loading_transition(self, window, clock, next_state):
         pygame.mixer.music.stop()
@@ -320,3 +319,23 @@ class BaseLevelView(ABC):
 
         pygame.time.delay(700)
         return next_state
+
+
+
+    @abstractmethod
+    def _lose_sequence(self, window, controller, clock ):
+        ...
+
+    @abstractmethod
+    def _draw_elements_view(self, window, controller, background):
+        ...
+
+    @abstractmethod
+    def _load_background(self, controller):
+        ...
+
+    @abstractmethod
+    def _next_level(self):
+        ...
+
+
