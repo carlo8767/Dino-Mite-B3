@@ -174,6 +174,11 @@ class BaseLevelView(ABC):
         window.blit(oval_surf, oval_rect)
         window.blit(img, text_rect)
 
+        if controller.show_time_reduction_hud > 0:
+            font_hud = pygame.font.Font(self.font_path, 44)
+            hud_img = font_hud.render("-5", True, (255, 80, 0))
+            window.blit(hud_img, hud_img.get_rect(center=(WIDTH // 2, 58)))
+
     def draw_text_end(self, window, controller):
         """Death message text - reads from level model."""
         split_text = controller.level_model.store_text_end.split("\n")

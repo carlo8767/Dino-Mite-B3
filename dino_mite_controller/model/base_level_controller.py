@@ -41,6 +41,7 @@ class BaseLevelController(ABC):
         self.player_one_active = False
         self.player_two_active = False
         self.time_reduction_ms = 0
+        self.show_time_reduction_hud = 0
         self.models_collision = {}
 
         # Slowdown powerup state
@@ -157,14 +158,19 @@ class BaseLevelController(ABC):
             collected = self.detection_collision_powerup(self.level_model.character)
             if collected == "TimeReduction":
                 self.time_reduction_ms += 5000
+                self.show_time_reduction_hud = 2000
             if collected:
                 self.sound_manager.play_powerup_pickup(collected)
         if self.player_two_active:
             collected = self.detection_collision_powerup(self.level_model.characterTwo)
             if collected == "TimeReduction":
                 self.time_reduction_ms += 5000
+                self.show_time_reduction_hud = 2000
             if collected:
                 self.sound_manager.play_powerup_pickup(collected)
+
+        if self.show_time_reduction_hud > 0:
+            self.show_time_reduction_hud = max(0, self.show_time_reduction_hud - delta_time)
 
         if not portal_active:
             self._check_hazard_collisions()
