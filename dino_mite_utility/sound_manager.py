@@ -8,9 +8,7 @@ class SoundManager:
     """
     Centralised sound-effect manager for hazard and power-up sounds.
 
-    All sound files live under ``./music/``.  Sounds are loaded lazily on
-    first use (after ``pygame.mixer`` has been initialised) and cached for
-    re-use.
+    All sound files live under ``./music/``
     """
 
     _MUSIC_DIR = os.path.join(".", "music")
@@ -23,7 +21,7 @@ class SoundManager:
         (3, "Drone"):        "Level3-DroneSound.mp3",
     }
 
-    # Lookup table: power-up name → pickup audio filename
+    # Lookup table: power-up name -> pickup audio filename
     _POWERUP_SOUNDS: dict[str, str] = {
         "SlowerHazards":  "Slow Motion Sound Effect.mp3",
     }
