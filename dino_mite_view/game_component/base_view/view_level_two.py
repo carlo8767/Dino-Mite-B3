@@ -17,10 +17,6 @@ class ViewLevelTwo(BaseLevelView):
         super().__init__()
         self._ch_arm = pygame.mixer.Channel(2)
 
-    def draw_screen_level_two(self, window, controller):
-        """Entry point called by GameStateInteractor."""
-        return self.draw_screen(window, controller)
-
     def _load_background(self, controller):
         img = pygame.image.load(controller.level_model.image).convert()
         return pygame.transform.scale(img, (WIDTH, HEIGHT))

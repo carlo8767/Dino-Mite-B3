@@ -19,10 +19,6 @@ class ViewLevelThree(BaseLevelView):
         self._ch_drone = pygame.mixer.Channel(4)
         self._ch_bomb  = pygame.mixer.Channel(5)
 
-    def draw_screen_level_three(self, window, controller):
-        """Entry point called by GameStateInteractor."""
-        return self.draw_screen(window, controller)
-
     def _load_background(self, controller):
         img = pygame.image.load(controller.level_model.image).convert()
         return pygame.transform.scale(img, (WIDTH, HEIGHT))

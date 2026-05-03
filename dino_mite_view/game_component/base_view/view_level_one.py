@@ -16,10 +16,6 @@ class ViewLevelOne(BaseLevelView):
         self._ch_meteor = pygame.mixer.Channel(0)
         self._ch_rock   = pygame.mixer.Channel(1)
 
-    def draw_screen_level_one(self, window, controller):
-        """Entry point kept for backwards compatibility with GameStateInteractor."""
-        return self.draw_screen(window, controller)
-
     # ==================== LEVEL ONE SPECIFIC ====================
 
     def _load_background(self, controller):

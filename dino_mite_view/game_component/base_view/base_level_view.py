@@ -1,13 +1,13 @@
 import os
 import pygame
-import logging
 import random
+from abc import ABC, abstractmethod
 
 from dino_mite_view.game_component.pause_menu import PauseMenu
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
 
-class BaseLevelView:
+class BaseLevelView(ABC):
     """
     Base class for all level views.
     Responsible only for rendering: timer display, shield bubble, portal phase,
@@ -276,6 +276,24 @@ class BaseLevelView:
             portal_width,
             portal_height
         )
+
+    # ==================== ABSTRACT METHODS ====================
+
+    @abstractmethod
+    def _load_background(self, controller):
+        ...
+
+    @abstractmethod
+    def _draw(self, window, controller, background):
+        ...
+
+    @abstractmethod
+    def _lose_sequence(self, window, controller, clock):
+        ...
+
+    @abstractmethod
+    def _next_level(self):
+        ...
 
     def _loading_transition(self, window, clock, next_state):
         pygame.mixer.music.stop()

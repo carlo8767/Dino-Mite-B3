@@ -1,5 +1,6 @@
 import logging
 import random
+from abc import ABC, abstractmethod
 
 import pygame
 
@@ -7,7 +8,7 @@ from dino_mite_model.character_game.power_ups import SlowerHazards
 from dino_mite_utility.sound_manager import SoundManager
 
 
-class BaseLevelController:
+class BaseLevelController(ABC):
     """
     Shared logic for all level controllers: music, pause, player input,
     collision detection, powerup deck system, and hazard slowdown.
@@ -370,6 +371,7 @@ class BaseLevelController:
 
     # ==================== ABSTRACT ====================
 
+    @abstractmethod
     def register_slowable_hazards(self):
         """
         Subclasses must override this to populate self.slowed_hazards with
@@ -382,6 +384,3 @@ class BaseLevelController:
                     self.level_model.hazard_rollingRock,
                 ]
         """
-        raise NotImplementedError(
-            f"{self.__class__.__name__} must implement register_slowable_hazards()"
-        )
