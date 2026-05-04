@@ -90,7 +90,7 @@ class BaseLevelView(ABC):
                             return "MAIN_MENU"
 
             # ==================== UPDATE ====================
-            if not controller.is_paused and not controller.get_game_over_one_player_mode() or not controller.get_two_players_game_over_mode() :
+            if not controller.is_paused and not (controller.get_game_over_one_player_mode() or controller.get_two_players_game_over_mode()):
                 keys = pygame.key.get_pressed()
                 controller.input_players(keys, events)
                 controller.update_hazard_movement()
