@@ -91,7 +91,7 @@ class BaseLevelController(ABC):
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_s and char.game_state == "duck":
                     char.stop_duck()
-        if char.game_state == "duck" and pygame.time.get_ticks() - char.duck_start_ticks >= 3000:
+        if char.game_state == "duck" and pygame.time.get_ticks() - char.duck_start_ticks >= 1000:
             char.stop_duck()
         if keys[pygame.K_a]:
             char.walk_left()
@@ -119,7 +119,7 @@ class BaseLevelController(ABC):
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_DOWN and char.game_state == "duck":
                     char.stop_duck()
-        if char.game_state == "duck" and pygame.time.get_ticks() - char.duck_start_ticks >= 3000:
+        if char.game_state == "duck" and pygame.time.get_ticks() - char.duck_start_ticks >= 1000:
             char.stop_duck()
         if keys[pygame.K_LEFT]:
             char.walk_left()
@@ -151,7 +151,7 @@ class BaseLevelController(ABC):
                 collected = self.detection_collision_powerup(self.level_model.character)
                 if collected == "TimeReduction":
                     self.time_reduction_ms += 5000
-                    self.show_time_reduction_hud = 2000
+                    self.show_time_reduction_hud = 1000
                 if collected:
                     self.sound_manager.play_powerup_pickup(collected)
             if self.get_player_two_status():
