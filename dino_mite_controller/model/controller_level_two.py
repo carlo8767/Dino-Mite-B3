@@ -29,7 +29,7 @@ class ControllerLevelTwo(BaseLevelController):
     def update_movement_hazard(self):
         for hazard in self.slowed_hazards:
             if isinstance(hazard, BigArm):
-                hazard.update_position(player_centerx=self.level_model.character.rect.centerx)
+                hazard.update_position_big_arm(player_centerx=self.level_model.character.rect.centerx)
             else:
                 hazard.update_position()
 

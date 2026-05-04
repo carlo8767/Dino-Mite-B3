@@ -134,12 +134,10 @@ class BigArm(VerticalHazard):
         super().__init__()
         self._phase       = self._FOLLOW
         self._phase_timer = 0
-        # Position leg so only the bottom _HANG_BOTTOM pixels are visible
-        self.position_x   = random.randint(100, WIDTH - 100)
         self.rect.centerx = self.position_x
         self.rect.bottom  = self._HANG_BOTTOM
 
-    def update_position(self, player_centerx):
+    def update_position_big_arm(self, player_centerx):
         if self._phase == self._FOLLOW:
             pos_to_go = player_centerx
             pos_to_go = max(self.rect.width // 2, min (WIDTH - self.rect.width // 2, pos_to_go)) #prevents from going out of the screen

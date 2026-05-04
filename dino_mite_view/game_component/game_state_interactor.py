@@ -54,12 +54,11 @@ class GameStateInteractor:
         view_rules = ViewRules()
 
         self.GAME_STATE = STORY
-        controller_level_one = None
-        # ANOTHER MAGIC
+
         active_player_player_two_mode = False
-        controller_level_one = ""
-        controller_level_two = ""
-        controller_level_three = ""
+        controller_level_one = None
+        controller_level_two = None
+        controller_level_three = None
         while self.RUN_GAME:
             # ==================== STATE: MAIN MENU ====================
             if self.GAME_STATE == "STORY":
