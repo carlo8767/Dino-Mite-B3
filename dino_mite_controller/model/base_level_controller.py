@@ -158,7 +158,7 @@ class BaseLevelController(ABC):
                 collected = self.detection_collision_powerup(self.level_model.characterTwo)
                 if collected == "TimeReduction":
                     self.time_reduction_ms += 5000
-                    self.show_time_reduction_hud = 2000
+                    self.show_time_reduction_hud = 1000
                 if collected:
                     self.sound_manager.play_powerup_pickup(collected)
 
