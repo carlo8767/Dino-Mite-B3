@@ -31,12 +31,17 @@ class ControllerLevelTwo(BaseLevelController):
         player1 = self.level_model.character
         player2 = self.level_model.characterTwo
 
-        two_player_mode = self.get_player_two_status()
+        #two_player_mode = self.get_player_two_status()
+
+        player1_alive = self.get_player_one_status()
+        player2_alive = self.get_player_two_status()
 
         for hazard in self.slowed_hazards:
             if isinstance(hazard, BigArm):
-                if two_player_mode:
+                if player1_alive and player2_alive:
                     hazard.update_position(player_centerx=(player1.rect.centerx, player2.rect.centerx))
+                elif player2_alive:
+                    hazard.update_position(player_centerx=player2.rect.centerx)
                 else:
                     hazard.update_position(player_centerx=player1.rect.centerx)
             else:
