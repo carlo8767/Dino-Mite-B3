@@ -27,9 +27,18 @@ class ControllerLevelTwo(BaseLevelController):
             self.level_model.hazard_bigArm,
         ]
     def update_movement_hazard(self):
+
+        player1 = self.level_model.character
+        player2 = self.level_model.characterTwo
+
+        two_player_mode = self.get_player_two_status()
+
         for hazard in self.slowed_hazards:
             if isinstance(hazard, BigArm):
-                hazard.update_position(player_centerx=self.level_model.character.rect.centerx)
+                if two_player_mode:
+                    hazard.update_position(player_centerx=(player1.rect.centerx, player2.rect.centerx))
+                else:
+                    hazard.update_position(player_centerx=player1.rect.centerx)
             else:
                 hazard.update_position()
 
