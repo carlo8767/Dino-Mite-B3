@@ -94,7 +94,7 @@ class BaseLevelController(ABC):
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_s and char.game_state == "duck":
                     char.stop_duck()
-        if char.game_state == "duck" and pygame.time.get_ticks() - char.duck_start_ticks >= 3000:
+        if char.game_state == "duck" and pygame.time.get_ticks() - char.duck_start_ticks >= 2000:
             char.stop_duck()
         if keys[pygame.K_a]:
             char.walk_left()
@@ -122,7 +122,7 @@ class BaseLevelController(ABC):
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_DOWN and char.game_state == "duck":
                     char.stop_duck()
-        if char.game_state == "duck" and pygame.time.get_ticks() - char.duck_start_ticks >= 3000:
+        if char.game_state == "duck" and pygame.time.get_ticks() - char.duck_start_ticks >= 2000:
             char.stop_duck()
         if keys[pygame.K_LEFT]:
             char.walk_left()
