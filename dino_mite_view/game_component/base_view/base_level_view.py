@@ -122,7 +122,18 @@ class BaseLevelView(ABC):
                 if controller.get_player_two_status() and controller.level_model.characterTwo.rect.colliderect(self.portal_rect):
                     return self._loading_transition(window, clock, self._next_level())
                 if self.portal_countdown_ms <= 0:
-                    return self._loading_transition(window, clock, self._next_level())
+                    if controller.get_player_two_status() and controller.get_player_one_status:
+                        controller.set_game_over_one_player_mode(True)
+                        controller.set_game_over_two_players_mode(True)
+                        controller.set_player_one_status(False)
+                        controller.set_player_two_status(False)
+                    elif controller.get_player_one_status:
+                        controller.set_game_over_one_player_mode(True)
+                        controller.set_player_one_status(False)
+                    elif controller.get_player_two_status:
+                        controller.set_game_over_two_players_mode(True)
+                        controller.set_player_two_status(False)
+                    return self._lose_sequence(window, controller, clock)
 
             if  controller.get_game_over_one_player_mode() or controller.get_two_players_game_over_mode():
                 return self._lose_sequence(window, controller, clock)
