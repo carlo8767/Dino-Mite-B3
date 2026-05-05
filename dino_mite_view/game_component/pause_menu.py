@@ -33,7 +33,6 @@ class PauseMenu:
 
     def draw(self, events):
         logging.info("Doing pause menu")
-        fps = pygame.time.Clock()
 
         overlay = pygame.Surface((self.screen_w, self.screen_h), pygame.SRCALPHA)
         overlay.fill((0,0,0,150))

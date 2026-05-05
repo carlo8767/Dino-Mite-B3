@@ -10,7 +10,7 @@ class ViewGameOverMenu:
         font_path = os.path.join("./fonts", "Jersey10-Regular.ttf")
         try:
             self.font = pygame.font.Font(font_path, 42)
-        except:
+        except OSError:
             self.font = pygame.font.SysFont("Arial", 42, bold=True)
         self.panel_w, self.panel_h = 400, 280
         self.panel_x = self.screen_w // 2 - self.panel_w // 2
@@ -40,16 +40,19 @@ class ViewGameOverMenu:
         self.running = True
 
 
-    def init_game_over(self):
+    def init_game_over(self, active_player_player_two):
         logging.info(f'init game over ')
         clock = pygame.time.Clock()
         while self.running:
             events = pygame.event.get()
             for event in events:
                     if event.type == pygame.MOUSEBUTTONUP:
-                        if self.play_again_button.is_clicked(event):
+                        if self.play_again_button.is_clicked(event) and not active_player_player_two:
                             pygame.mixer.music.stop()
                             return "LEVEL_ONE"
+                        if self.play_again_button.is_clicked(event) and active_player_player_two:
+                            pygame.mixer.music.stop()
+                            return "TWO PLAYERS"
                         if self.exit_button.is_clicked(event):
                             pygame.mixer.music.stop()
                             return "MAIN_MENU"

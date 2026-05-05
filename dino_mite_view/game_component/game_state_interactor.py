@@ -2,12 +2,13 @@ import pygame
 import logging
 
 from dino_mite_view.event_game_notifications.event_controller import EventsController
+from dino_mite_view.game_component.base_view.base_level_view import BaseLevelView
 from dino_mite_view.game_component.base_view.view_level_one import ViewLevelOne
 from dino_mite_view.game_component.base_view.view_level_two import ViewLevelTwo
 from dino_mite_view.game_component.base_view.view_level_three import ViewLevelThree
 from dino_mite_utility import utilities_names
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT, STORY
-from dino_mite_view.game_component.view_start_menu import View_MainMenu
+from dino_mite_view.game_component.view_start_menu import ViewMainMenu
 from dino_mite_view.game_component.display_story import ViewDisplayStory
 from dino_mite_view.game_component.view_game_over import ViewGameOverMenu
 from dino_mite_view.game_component.view_rules import ViewRules
@@ -32,6 +33,9 @@ class GameStateInteractor:
     RUN_GAME = True
     GAME_STATE = ""
 
+    def __init__(self):
+        self.self_execution = ""
+
     def init_game(self):
         logging.basicConfig(
             level=logging.INFO,
@@ -45,12 +49,16 @@ class GameStateInteractor:
         pygame.display.set_caption(utilities_names.INIT_GAME)
         init_event = EventsController()
 
-        view_main_menu = View_MainMenu(window)
+        view_main_menu = ViewMainMenu(window)
         view_story_screen = ViewDisplayStory()
         view_rules = ViewRules()
 
         self.GAME_STATE = STORY
+
+        active_player_player_two_mode = False
         controller_level_one = None
+        controller_level_two = None
+        controller_level_three = None
         while self.RUN_GAME:
             # ==================== STATE: MAIN MENU ====================
             if self.GAME_STATE == "STORY":
@@ -58,6 +66,7 @@ class GameStateInteractor:
                 self.GAME_STATE = view_story_screen.draw_story_screen(window)
             elif self.GAME_STATE == "MAIN_MENU":
                  logging.info(f'current game state {self.GAME_STATE}')
+                 active_player_player_two_mode = False
                  self.GAME_STATE = view_main_menu.draw_start_menu()
             elif self.GAME_STATE == "RULES":
                 logging.info(f'current game state {self.GAME_STATE}')
@@ -73,8 +82,20 @@ class GameStateInteractor:
                 logging.info(f'current game state {self.GAME_STATE}')
             elif self.GAME_STATE == "DRAW_LEVEL_ONE":
                 view_level_one = ViewLevelOne()
+                controller_level_one.player_one_active = True
+                self.set_view_strategy(view_level_one)
+
+                self.GAME_STATE = self.exectuion_view_strategy(view_level_one, window, controller_level_one, active_player_player_two_mode)
                 logging.info(f'current game state {self.GAME_STATE}')
-                self.GAME_STATE = view_level_one.draw_screen_level_one(window, controller_level_one)
+            elif self.GAME_STATE == "TWO PLAYERS":
+                active_player_player_two_mode = True
+                controller_level_one = init_event.event_level_one_notification()
+                view_level_one = ViewLevelOne()
+                self.set_view_strategy(view_level_one)
+                controller_level_one.player_two_active = True
+                controller_level_one.player_one_active = True
+                self.GAME_STATE = self.exectuion_view_strategy(view_level_one, window, controller_level_one, active_player_player_two_mode)
+                logging.info(f'current game state {self.GAME_STATE}')
             # ==================== STATE: LEVEL TWO INIT ====================
             elif self.GAME_STATE == "LEVEL_TWO":
                 logging.info(f'current game state {self.GAME_STATE}')
@@ -84,7 +105,11 @@ class GameStateInteractor:
             elif self.GAME_STATE == "DRAW_LEVEL_TWO":
                 logging.info(f'current game state {self.GAME_STATE}')
                 view_level_two = ViewLevelTwo()
-                self.GAME_STATE = view_level_two.draw_screen_level_two(window, controller_level_two)
+                self.set_view_strategy(view_level_two)
+                if active_player_player_two_mode:
+                    controller_level_two.player_two_active = True
+                controller_level_two.player_one_active = True
+                self.GAME_STATE = self.exectuion_view_strategy(view_level_two, window, controller_level_two, active_player_player_two_mode)
             # ==================== STATE: LEVEL THREE INIT ====================
             elif self.GAME_STATE == "LEVEL_THREE":
                 logging.info(f'current game state {self.GAME_STATE}')
@@ -94,7 +119,11 @@ class GameStateInteractor:
             elif self.GAME_STATE == "DRAW_LEVEL_THREE":
                 logging.info(f'current game state {self.GAME_STATE}')
                 view_level_three = ViewLevelThree()
-                self.GAME_STATE = view_level_three.draw_screen_level_three(window, controller_level_three)
+                self.set_view_strategy(view_level_three)
+                if active_player_player_two_mode:
+                    controller_level_three.player_two_active = True
+                controller_level_three.player_one_active = True
+                self.GAME_STATE =  self.exectuion_view_strategy(view_level_three, window, controller_level_three, active_player_player_two_mode)
             # ==================== TRANSITION STORIES ====================
             elif self.GAME_STATE == "STORY_L1_TO_L2":
                 logging.info(f'current game state {self.GAME_STATE}')
@@ -120,6 +149,13 @@ class GameStateInteractor:
             elif self.GAME_STATE == "GAME OVER":
                 view_level_game_over = ViewGameOverMenu(window)
                 logging.info(f'current game state {self.GAME_STATE}')
-                result = view_level_game_over.init_game_over()
+                result = view_level_game_over.init_game_over(active_player_player_two_mode)
                 self.GAME_STATE = result
         pygame.quit()
+
+
+    def set_view_strategy(self, base_level :BaseLevelView):
+        self.self_execution = base_level
+
+    def exectuion_view_strategy(self, base_level :BaseLevelView, window, controller, active_player_player_two_mode):
+         return base_level.draw_screen(window, controller, active_player_player_two_mode)

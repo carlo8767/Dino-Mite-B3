@@ -44,3 +44,4 @@ class LevelThree(BaseLevelModel):
         self.image          = os.path.join('./image/level_three/', 'backgroundLevelThree.jpg')
         self.sound          = os.path.join('./music', 'Level3-BackgroundMusic.mp3')
         self.sound_end_game = os.path.join('./music', 'EndGameLevelOne.mp3')
+        self.sound_volume   = 0.20

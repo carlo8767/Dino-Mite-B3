@@ -1,3 +1,5 @@
+import random
+import pygame
 from dino_mite_controller.model.base_level_controller import BaseLevelController
 from dino_mite_model.level_model.levelthree import LevelThree
 
@@ -28,9 +30,9 @@ class ControllerLevelThree(BaseLevelController):
             self.level_model.hazard_drone,
         ]
 
-    def update_movement(self):
+    def update_movement_hazard(self):
         """Move all hazards, then check each helicopter's drop timer."""
-        super().update_movement()
+        super().update_movement_hazard()
 
         bombs = (
             self.level_model.hazard_bomb,
@@ -49,3 +51,24 @@ class ControllerLevelThree(BaseLevelController):
                     if not bomb.is_active:
                         bomb.activate_at(drop_x, drop_y)
                         break
+
+    def _build_deck(self) -> list:
+        """One deck = 5 cards: 3 shields, 1 time reduction, 1 slow.
+        Shuffled so the order is unpredictable but the 60/20/20 ratio is exact."""
+        deck = (
+                [self.level_model.pw_up_shield_bubble] * 3 +
+                [self.level_model.pw_up_time_reduction] * 1 +
+                [self.level_model.pw_up_slower_hazard] * 1
+        )
+        random.shuffle(deck)
+        return deck
+
+
+    def init_music(self):
+        pygame.mixer.music.load(self.level_model.sound)
+        pygame.mixer.music.set_volume(self.level_model.sound_volume)
+        pygame.mixer.music.play(-1, 0.0)
+
+    def init_music_end_level(self):
+        pygame.mixer.music.load(self.level_model.sound_end_game)
+        pygame.mixer.music.play(-1, 0.0)

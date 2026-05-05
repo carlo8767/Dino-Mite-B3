@@ -1,28 +1,31 @@
 import os
 import pygame
-import logging
 import random
+from abc import ABC, abstractmethod
 
 from dino_mite_view.game_component.pause_menu import PauseMenu
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
-from dino_mite_utility.sound_manager import SoundManager
 
 
-class BaseLevelView:
+class BaseLevelView(ABC):
     """
     Base class for all level views.
-    Contains all shared logic - event handling, timer, pause, powerup drawing,
-    shield drawing, death animation, HUD, and all sound effects.
-    Subclasses override only what is level-specific.
+    Responsible only for rendering: timer display, shield bubble, portal phase,
+    death animation, and HUD. All game logic lives in the controller.
 
     Subclass contract
     -----------------
     Set level_number as a class attribute so hazard sounds are routed correctly:
         class ViewLevelTwo(BaseLevelView):
             level_number = 2
+
+    Subclasses must implement:
+        _load_background(controller)
+        _draw(window, controller, background)
+        _lose_sequence(window, controller, clock)
+        _next_level()
     """
 
-    # Subclasses override these two values
     time_duration_level = 120
     level_number        = 0
 
@@ -31,34 +34,31 @@ class BaseLevelView:
         self.pause_start = 0
         self.eventually_time = ""
         self.remaining_time = ""
-        self.time_reduction_ms = 0
+        self.remaining_seconds = 0
         self.start_ticks = 0
         self.font_path = os.path.join("./fonts", "Jersey10-Regular.ttf")
         self.shield_bubble_image = pygame.transform.scale(
             pygame.image.load("./image/bubble/ShieldBubbleforChar.png").convert_alpha(),
             (150, 150)
         )
-
         self.portal_active = False
         self.portal_rect = None
+        self.portal_start_ticks = 0
+        self.portal_countdown_ms = 0
         self.portal_image = pygame.image.load("./image/portal_2.png").convert_alpha()
         self.portal_image = pygame.transform.scale(self.portal_image, (90, 130))
 
-        # Sound effects (powerup pickups, shield, hazard resets)
-        self.sound_manager = SoundManager()
-
-    def draw_screen(self, window, controller):
+    def draw_screen(self, window, controller,active_player_player_two_mode):
         """
-        Main game loop - identical structure for all levels.
-        Subclasses do not override this - they override the draw/sequence methods.
+        Main game loop — identical structure for all levels.
+        Subclasses do not override this; they override the draw/sequence methods.
         """
         controller.init_music()
         clock = pygame.time.Clock()
         self.start_ticks = pygame.time.get_ticks()
-        background = self._load_background(controller)
         pause_menu = PauseMenu(window)
-        game_over = False
         delta_time = 0
+        background = self._load_background(controller)
 
         while True:
             events = pygame.event.get()
@@ -90,52 +90,21 @@ class BaseLevelView:
                             return "MAIN_MENU"
 
             # ==================== UPDATE ====================
-            if not controller.is_paused and not game_over:
+            if not controller.is_paused and not (controller.get_game_over_one_player_mode() or controller.get_two_players_game_over_mode()):
                 keys = pygame.key.get_pressed()
-                controller.handle_player_input(keys, events)
-                controller.apply_player_gravity()
+                controller.input_players(keys, events)
+                controller.update_hazard_movement()
+                if not self.portal_active:
+                    controller.detection_collision_power_up(delta_time)
+                    controller.check_hazard_collisions_update(active_player_player_two_mode)
 
-                controller.update_movement()
+            self.calculate_timer(self.time_duration_level, controller.is_paused, controller.time_reduction_ms)
 
-                # Tick shield / slowdown timers; snapshot shield state before
-                shield_before_tick = controller.level_model.character.shield_active
-                controller.update_powerup(delta_time)
-                # Shield expired naturally
-                if shield_before_tick and not controller.level_model.character.shield_active:
-                    self.sound_manager.play_shield_pop()
-
-                # Powerup collection
-                collected = controller.detection_collision_powerup()
-                if collected == "TimeReduction":
-                    self.time_reduction_ms += 5000
-                if collected:
-                    self.sound_manager.play_powerup_pickup(collected)
-
-                # Hazard collision — snapshot shield before to detect deflect
-                shield_before_hit = controller.level_model.character.shield_active
-                collided, name = controller.detection_collision_character(
-                    controller.level_model.character
-                )
-                # Shield deflected the hit
-                if not collided and shield_before_hit and not controller.level_model.character.shield_active:
-                    self.sound_manager.play_shield_pop()
-
-                if collided:
-                    logging.info(f"Collision detected with {name} — game over")
-                    controller.update_collision_position(name)
-                    controller.stop_music()
-                    pygame.mixer.stop()
-                    game_over = True
-
-                if self.portal_active and self.portal_rect is not None:
-                    if controller.level_model.character.rect.colliderect(self.portal_rect):
-                        return self._loading_transition(window, clock, self._next_level())
-
-            self.calculate_timer(self.time_duration_level, controller.is_paused)
-            self._draw(window, controller, background)
-
+            # ==================== DRAW ====================
             if self.portal_active and self.portal_rect is not None:
-                self._draw_portal(window)
+                self._draw_portal_phase(window, controller, background)
+            else:
+                self._draw_elements_view(window, controller, background)
 
             if controller.is_paused:
                 pause_menu.draw(events)
@@ -143,51 +112,90 @@ class BaseLevelView:
             # ==================== END CONDITIONS ====================
             if self.remaining_time == "00:00" and not self.portal_active:
                 self.portal_active = True
+                self.portal_start_ticks = pygame.time.get_ticks()
                 self._spawn_portal(controller)
 
-            if game_over:
+            if self.portal_active and self.portal_rect is not None and not controller.is_paused:
+                self.portal_countdown_ms = max(0, 5000 - (pygame.time.get_ticks() - self.portal_start_ticks))
+                if controller.get_player_one_status() and controller.level_model.character.rect.colliderect(self.portal_rect):
+                    return self._loading_transition(window, clock, self._next_level())
+                if controller.get_player_two_status() and controller.level_model.characterTwo.rect.colliderect(self.portal_rect):
+                    return self._loading_transition(window, clock, self._next_level())
+                if self.portal_countdown_ms <= 0:
+                    if controller.get_player_two_status() and controller.get_player_one_status:
+                        controller.set_game_over_one_player_mode(True)
+                        controller.set_game_over_two_players_mode(True)
+                        controller.set_player_one_status(False)
+                        controller.set_player_two_status(False)
+                    elif controller.get_player_one_status:
+                        controller.set_game_over_one_player_mode(True)
+                        controller.set_player_one_status(False)
+                    elif controller.get_player_two_status:
+                        controller.set_game_over_two_players_mode(True)
+                        controller.set_player_two_status(False)
+                    return self._lose_sequence(window, controller, clock)
+
+            if  controller.get_game_over_one_player_mode() or controller.get_two_players_game_over_mode():
                 return self._lose_sequence(window, controller, clock)
 
             pygame.display.update()
             delta_time = clock.tick(60)
 
     # ==================== TIMER ====================
-    def calculate_timer(self, total_seconds, is_paused):
+
+    def calculate_timer(self, total_seconds, is_paused, time_reduction_ms):
         if not is_paused:
             elapsed_ms = (
                 pygame.time.get_ticks()
                 - self.start_ticks
                 - self.pause_time_total
-                + self.time_reduction_ms
+                + time_reduction_ms
             )
-            remaining_seconds = max(0, total_seconds - elapsed_ms // 1000)
-            mins, secs = divmod(remaining_seconds, 60)
+            self.remaining_seconds = max(0, total_seconds - elapsed_ms // 1000)
+            mins, secs = divmod(self.remaining_seconds, 60)
             self.remaining_time = f"{mins:02d}:{secs:02d}"
-            self.eventually_time = f"Time to jump: {mins:02d}:{secs:02d}"
+            self.eventually_time = self.remaining_time
 
     # ==================== SHARED DRAW HELPERS ====================
+
     def _draw_hud(self, window, controller):
-        """Draws timer, powerup, shield bubble — identical for all levels."""
-        # Falling powerup
+        """Draws timer, powerup, shield bubbles - identical for all levels."""
         if controller.current_powerup and controller.current_powerup.is_active:
             controller.current_powerup.draw(window)
 
-        # Shield bubble around character
         if controller.level_model.character.shield_active:
             shield_rect = self.shield_bubble_image.get_rect()
             shield_rect.center = controller.level_model.character.rect.center
             window.blit(self.shield_bubble_image, shield_rect)
+        if controller.level_model.characterTwo.shield_active:
+            shield_rect = self.shield_bubble_image.get_rect()
+            shield_rect.center = controller.level_model.characterTwo.rect.center
+            window.blit(self.shield_bubble_image, shield_rect)
 
-        # Timer text
-        font_type = pygame.font.Font(self.font_path, 60)
-        color_timer = (255, 255, 0)
+        # Timer — dark oval backdrop then text on top
+        font_type = pygame.font.Font(self.font_path, 36)
+        if self.remaining_seconds <= 10:
+            t = pygame.time.get_ticks() % 600
+            pulse = t / 300.0 if t < 300 else (600 - t) / 300.0
+            color_timer = (255, int(255 * (1 - pulse)), 0)
+        else:
+            color_timer = (255, 255, 0)
         img = font_type.render(self.eventually_time, True, color_timer)
-        rect = img.get_rect()
-        rect.center = (400, 20)
-        window.blit(img, rect)
+        text_rect = img.get_rect(center=(WIDTH // 2, 22))
+        pad_x, pad_y = 22, 10
+        oval_surf = pygame.Surface((text_rect.width + pad_x * 2, text_rect.height + pad_y * 2), pygame.SRCALPHA)
+        pygame.draw.ellipse(oval_surf, (0, 0, 0, 140), oval_surf.get_rect())
+        oval_rect = oval_surf.get_rect(center=text_rect.center)
+        window.blit(oval_surf, oval_rect)
+        window.blit(img, text_rect)
+
+        if controller.show_time_reduction_hud > 0:
+            font_hud = pygame.font.Font(self.font_path, 44)
+            hud_img = font_hud.render("-5s", True, (255, 80, 0))
+            window.blit(hud_img, hud_img.get_rect(center=(WIDTH // 2, 58)))
 
     def draw_text_end(self, window, controller):
-        """Death message text — reads from level model."""
+        """Death message text - reads from level model."""
         split_text = controller.level_model.store_text_end.split("\n")
         pos_x = 400
         font_type = pygame.font.Font(self.font_path, 60)
@@ -199,7 +207,7 @@ class BaseLevelView:
             window.blit(img, rect)
 
     def faded_screen(self, window, controller, clock):
-        """Death fade animation — identical for all levels. No text overlay."""
+        """Death fade animation - identical for all levels."""
         fade = pygame.Surface((WIDTH, HEIGHT))
         fade.fill((0, 0, 0))
         pygame.time.delay(500)
@@ -210,14 +218,22 @@ class BaseLevelView:
                 fade.set_alpha(alpha)
                 window.blit(screen_copy, (0, 0))
                 window.blit(fade, (0, 0))
-                controller.apply_change_player_status(window, "dead")
+                if controller.get_game_over_one_player_mode():
+                    controller.apply_change_player_status(window, "dead")
+                if controller.get_two_players_game_over_mode():
+                    controller.apply_change_player_status(window, "dead")
+                    controller.apply_change_player_status_two(window, "dead")
                 pygame.display.update()
                 clock.tick(60)
             for alpha in range(255, 0, 20):
                 fade.set_alpha(alpha)
                 window.blit(screen_copy, (0, 0))
                 window.blit(fade, (0, 0))
-                controller.apply_change_player_status(window, "dead")
+                if not controller.get_player_one_status():
+                    controller.apply_change_player_status(window, "dead")
+                if controller.get_two_players_game_over_mode():
+                    controller.apply_change_player_status(window, "dead")
+                    controller.apply_change_player_status_two(window, "dead")
                 pygame.display.update()
                 clock.tick(60)
             countdown -= 300
@@ -225,7 +241,11 @@ class BaseLevelView:
             fade.set_alpha(alpha)
             window.blit(screen_copy, (0, 0))
             window.blit(fade, (0, 0))
-            controller.apply_change_player_status(window, "dead")
+            if not controller.get_player_one_status():
+                controller.apply_change_player_status(window, "dead")
+            if controller.get_two_players_game_over_mode():
+                controller.apply_change_player_status(window, "dead")
+                controller.apply_change_player_status_two(window, "dead")
             pygame.display.update()
             pygame.time.delay(10)
             clock.tick(60)
@@ -233,6 +253,37 @@ class BaseLevelView:
     def _draw_portal(self, window):
         portal_draw_rect = self.portal_image.get_rect(center=self.portal_rect.center)
         window.blit(self.portal_image, portal_draw_rect)
+
+    def _draw_portal_phase(self, window, controller, background):
+        window.blit(background, (0, 0))
+        if controller.get_player_one_status():
+            controller.level_model.character.draw(window)
+        if controller.get_player_two_status():
+            controller.level_model.characterTwo.draw(window)
+        self._draw_portal(window)
+        self._draw_portal_prompt(window)
+        self._draw_portal_countdown(window)
+
+    def _draw_portal_countdown(self, window):
+        seconds_left = max(0, (self.portal_countdown_ms + 999) // 1000)
+        font = pygame.font.Font(self.font_path, 72)
+        text = font.render(str(seconds_left), True, (255, 255, 0))
+        shadow = font.render(str(seconds_left), True, (0, 0, 0))
+        rect = text.get_rect(center=(WIDTH // 2, 110))
+        window.blit(shadow, rect.move(4, 4))
+        window.blit(text, rect)
+
+    def _draw_portal_prompt(self, window):
+        t = pygame.time.get_ticks() % 800
+        pulse = t / 400.0 if t < 400 else (800 - t) / 400.0
+        b = int(255 * pulse)
+        color = (255, 255, b)
+        font = pygame.font.Font(self.font_path, 42)
+        text = font.render("GO TO THE PORTAL!", True, color)
+        shadow = font.render("GO TO THE PORTAL!", True, (0, 0, 0))
+        rect = text.get_rect(center=(WIDTH // 2, 55))
+        window.blit(shadow, rect.move(3, 3))
+        window.blit(text, rect)
 
     def _spawn_portal(self, controller):
         portal_width = 90
@@ -258,6 +309,7 @@ class BaseLevelView:
             portal_height
         )
 
+
     def _loading_transition(self, window, clock, next_state):
         pygame.mixer.music.stop()
         pygame.mixer.stop()
@@ -279,20 +331,22 @@ class BaseLevelView:
         pygame.time.delay(700)
         return next_state
 
-    # ==================== ABSTRACT METHODS ====================
-    # Subclasses MUST implement these
 
+
+    @abstractmethod
+    def _lose_sequence(self, window, controller, clock ):
+        ...
+
+    @abstractmethod
+    def _draw_elements_view(self, window, controller, background):
+        ...
+
+    @abstractmethod
     def _load_background(self, controller):
-        raise NotImplementedError(f"{self.__class__.__name__} must implement _load_background")
+        ...
 
-    def _draw(self, window, controller, background):
-        raise NotImplementedError(f"{self.__class__.__name__} must implement _draw")
-
-    def _win_sequence(self, window, controller, background, clock):
-        raise NotImplementedError(f"{self.__class__.__name__} must implement _win_sequence")
-
-    def _lose_sequence(self, window, controller, clock):
-        raise NotImplementedError(f"{self.__class__.__name__} must implement _lose_sequence")
-
+    @abstractmethod
     def _next_level(self):
-        raise NotImplementedError(f"{self.__class__.__name__} must implement _next_level")
+        ...
+
+

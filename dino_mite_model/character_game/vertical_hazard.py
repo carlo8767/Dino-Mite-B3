@@ -139,9 +139,19 @@ class BigArm(VerticalHazard):
         self.rect.centerx = self.position_x
         self.rect.bottom  = self._HANG_BOTTOM
 
-    def update_position(self, player_centerx):
+        self.current_target = 1 #set first to player 1.
+
+    def update_position_big_arm(self, player_centerx):
+        if isinstance(player_centerx, (tuple)): # 2-player mode
+            if self.current_target == 1:
+                target = player_centerx[0]
+            else:
+                target = player_centerx[1]
+        else:
+            target = player_centerx # 1-player mode
+
         if self._phase == self._FOLLOW:
-            pos_to_go = player_centerx
+            pos_to_go = target
             pos_to_go = max(self.rect.width // 2, min (WIDTH - self.rect.width // 2, pos_to_go)) #prevents from going out of the screen
             self.rect.centerx += int((pos_to_go - self.rect.centerx) * self._FOLLOW_DELAY) #follow player with a small delay
             self._phase_timer += 1
@@ -186,6 +196,10 @@ class BigArm(VerticalHazard):
         self._phase       = self._FOLLOW
         self._phase_timer = 0
         self.is_active    = True
+        if self.current_target == 1:
+            self.current_target = 2
+        else:
+            self.current_target = 1
 
 
 # ──────────────────────────────────────────────────────────────────────────────
