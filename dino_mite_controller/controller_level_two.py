@@ -1,4 +1,4 @@
-from dino_mite_controller.model.base_level_controller import BaseLevelController
+from dino_mite_controller.base_level_controller import BaseLevelController
 from dino_mite_model.level_model.leveltwo import LevelTwo
 from dino_mite_model.character_game.vertical_hazard import BigArm
 import random

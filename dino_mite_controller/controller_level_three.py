@@ -1,6 +1,6 @@
 import random
 import pygame
-from dino_mite_controller.model.base_level_controller import BaseLevelController
+from dino_mite_controller.base_level_controller import BaseLevelController
 from dino_mite_model.level_model.levelthree import LevelThree
 
 

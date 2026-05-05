@@ -1,6 +1,6 @@
-from dino_mite_controller.model.controller_level_one   import ControllerLevelOne
-from dino_mite_controller.model.controller_level_two   import ControllerLevelTwo
-from dino_mite_controller.model.controller_level_three import ControllerLevelThree
+from dino_mite_controller.controller_level_one import ControllerLevelOne
+from dino_mite_controller.controller_level_two import ControllerLevelTwo
+from dino_mite_controller.controller_level_three import ControllerLevelThree
 
 
 class EventsController:

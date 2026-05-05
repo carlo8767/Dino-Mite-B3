@@ -16,7 +16,7 @@ class CharacterDinoTwo(pygame.sprite.Sprite):
             "dead":       pygame.transform.scale(pygame.image.load("./image/character/2ndPlayerDeadT.png").convert_alpha(), (140, 140)),
             "happy":      pygame.transform.scale(pygame.image.load("./image/character/levelpass.png").convert_alpha(), (140, 140)),
         }
-        self.position_x = 370
+        self.position_x = 460
         self.constant_ground = 500
 
         self.game_state = "idle"
