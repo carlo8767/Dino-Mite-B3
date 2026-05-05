@@ -10,7 +10,7 @@ class ViewGameOverMenu:
         font_path = os.path.join("./fonts", "Jersey10-Regular.ttf")
         try:
             self.font = pygame.font.Font(font_path, 42)
-        except:
+        except OSError:
             self.font = pygame.font.SysFont("Arial", 42, bold=True)
         self.panel_w, self.panel_h = 400, 280
         self.panel_x = self.screen_w // 2 - self.panel_w // 2

@@ -8,7 +8,7 @@ from dino_mite_view.game_component.base_view.view_level_two import ViewLevelTwo
 from dino_mite_view.game_component.base_view.view_level_three import ViewLevelThree
 from dino_mite_utility import utilities_names
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT, STORY
-from dino_mite_view.game_component.view_start_menu import View_MainMenu
+from dino_mite_view.game_component.view_start_menu import ViewMainMenu
 from dino_mite_view.game_component.display_story import ViewDisplayStory
 from dino_mite_view.game_component.view_game_over import ViewGameOverMenu
 from dino_mite_view.game_component.view_rules import ViewRules
@@ -49,17 +49,16 @@ class GameStateInteractor:
         pygame.display.set_caption(utilities_names.INIT_GAME)
         init_event = EventsController()
 
-        view_main_menu = View_MainMenu(window)
+        view_main_menu = ViewMainMenu(window)
         view_story_screen = ViewDisplayStory()
         view_rules = ViewRules()
 
         self.GAME_STATE = STORY
-        controller_level_one = None
-        # ANOTHER MAGIC
+
         active_player_player_two_mode = False
-        controller_level_one = ""
-        controller_level_two = ""
-        controller_level_three = ""
+        controller_level_one = None
+        controller_level_two = None
+        controller_level_three = None
         while self.RUN_GAME:
             # ==================== STATE: MAIN MENU ====================
             if self.GAME_STATE == "STORY":

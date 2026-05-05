@@ -141,7 +141,7 @@ class BigArm(VerticalHazard):
 
         self.current_target = 1 #set first to player 1.
 
-    def update_position(self, player_centerx):
+    def update_position_big_arm(self, player_centerx):
         if isinstance(player_centerx, (tuple)): # 2-player mode
             if self.current_target == 1:
                 target = player_centerx[0]

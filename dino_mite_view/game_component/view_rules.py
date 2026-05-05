@@ -14,13 +14,13 @@ class ViewRules:
         self.font_path = os.path.join("./fonts", "Jersey10-Regular.ttf")
         try:
             self.text_font = pygame.font.Font(self.font_path, 25)
-        except:
+        except OSError:
             self.text_font = pygame.font.SysFont("Arial", 25, True)
         try:
             self.image_path = os.path.join("./image/menu", "story_background.png")
             self.background = pygame.image.load(self.image_path).convert_alpha()
             self.background = pygame.transform.scale(self.background, (WIDTH, HEIGHT))
-        except:
+        except OSError:
             self.background = pygame.Surface((WIDTH, HEIGHT))
             self.background.fill((50, 50, 50))
 
@@ -66,7 +66,7 @@ class ViewRules:
                 rect.midleft = (pos_x, pos_y)
             screen.blit(img, rect)
 
-            if heading == True:
+            if heading:
                 pos_y += 50
                 heading = False
             elif ns.startswith ("PU"):

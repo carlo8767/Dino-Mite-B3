@@ -4,7 +4,7 @@ import pygame
 from dino_mite_view.game_component.button import Button
 import os
 
-class View_MainMenu:
+class ViewMainMenu:
     def __init__(self, screen):
         self.screen = screen
         self.screen_width, self.screen_height = screen.get_size()
@@ -15,7 +15,7 @@ class View_MainMenu:
             self.image_path = os.path.join("./image", "menu", "story_background.png")
             self.background = pygame.image.load(self.image_path).convert_alpha()
             self.background = pygame.transform.scale(self.background, (self.screen_width, self.screen_height))
-        except:
+        except OSError:
             self.background = pygame.Surface((self.screen_width, self.screen_height))
             self.background.fill((50, 50, 50))
 

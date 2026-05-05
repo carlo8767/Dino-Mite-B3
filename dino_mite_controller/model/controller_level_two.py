@@ -39,11 +39,11 @@ class ControllerLevelTwo(BaseLevelController):
         for hazard in self.slowed_hazards:
             if isinstance(hazard, BigArm):
                 if player1_alive and player2_alive:
-                    hazard.update_position(player_centerx=(player1.rect.centerx, player2.rect.centerx))
+                    hazard.update_position_big_arm(player_centerx=(player1.rect.centerx, player2.rect.centerx))
                 elif player2_alive:
-                    hazard.update_position(player_centerx=player2.rect.centerx)
+                    hazard.update_position_big_arm(player_centerx=player2.rect.centerx)
                 else:
-                    hazard.update_position(player_centerx=player1.rect.centerx)
+                    hazard.update_position_big_arm(player_centerx=player1.rect.centerx)
             else:
                 hazard.update_position()
 

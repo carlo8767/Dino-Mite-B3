@@ -27,7 +27,7 @@ class ViewDisplayStory:
             self.image_path = os.path.join("./image/menu", "story_background.png")
             self.background = pygame.image.load(self.image_path).convert_alpha()
             self.background = pygame.transform.scale(self.background, (WIDTH, HEIGHT))
-        except:
+        except OSError:
             self.background = pygame.Surface((WIDTH, HEIGHT))
             self.background.fill((50, 50, 50))
 
