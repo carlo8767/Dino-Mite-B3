@@ -1,4 +1,4 @@
-# INSTALL VIRTUAL VIRTUAL ENVIROMENT
+# INSTALL VIRTUAL ENVIROMENT
 python -m venv dino_virtual_enviroment
 # WINDOW
 WINDOW_PATH dino_virtual_enviroment\Scripts\activate 
