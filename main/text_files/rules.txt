@@ -1,12 +1,12 @@
 ﻿Rules for the Time-Rangers:
-Keys:
-A – move left
-D – move right
-W – jump
-S – dodge 
+P1:   P2:
+A     left arrow    – move left
+D     right arrow   – move right
+W     up arrow      – jump
+S     down arrow    – duck
 Escape – Pause game
-
-If Dino gets hit by a hazard – Dino’s Game is Over!
+1. If Dino gets hit by a hazard – Dino’s Game is Over!
+2. When portal appears, you need to get there in 5 seconds!
 
 Catch Power-Ups! 
 
