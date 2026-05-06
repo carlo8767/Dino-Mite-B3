@@ -1,0 +1,15 @@
+AI usage
+
+Gimini:
+big_arm.png
+fireball.png
+meteor.png
+rolling_rock.png
+story_background.png
+restart, continue, return, button - all animations
+paused_lable.png
+game_over_lable.png
+Dino-Mite_logo.png
+backgroundLevelOne,Two,Three.jpg
+
+
