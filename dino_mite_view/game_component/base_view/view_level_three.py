@@ -49,6 +49,7 @@ class ViewLevelThree(BaseLevelView):
 
         # Drone (always on screen — flies at mid-height, direction randomised)
         window.blit(m.hazard_drone.image_loaded, m.hazard_drone.rect)
+        self._ch_drone.set_volume(0.2)
         controller.sound_manager.play_looping("Drone", self.level_number, self._ch_drone)
 
     # def _win_sequence(self, window, controller, background, clock):
