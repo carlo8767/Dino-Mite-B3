@@ -1,20 +1,15 @@
 # INSTALL VIRTUAL VIRTUAL ENVIROMENT
-python -m venv dino_mite
+python -m venv dino_virtual_enviroment
 # WINDOW
-WINDOW_PATH dino_mite\Scripts\activate 
+WINDOW_PATH dino_virtual_enviroment\Scripts\activate 
 # LINUX
-source dino_mite/bin/activate 
+source dino_virtual_enviroment/bin/activate 
 #MAC
 INSTALL PYGAME
 pip install pygame
 
 
-
-
-
-
-#OPTIONAL
-# How to install poetry
+# OPTIONAL How to install poetry
 # MAC 
 Install trough pipx : command pipx install poetry
 # WINDOWS
