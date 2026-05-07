@@ -20,7 +20,7 @@ The game is structured into three sequential levels:
 
 ### Stone Age  
 - Fireballs  
-- Mammoth Shockwaves  
+- Monster Arm  
 
 ### Modern Age  
 - Bombs  
@@ -38,7 +38,8 @@ If the player collides with a hazard:
 - The game resets to **Menu**
 - No checkpoints are saved
 
-Survive long enough, and the portal activates.
+Survive long enough, and the portal activates. 
+The player must enter in the portal within 5 second. Alternatively, it will die. 
 
 ---
 
@@ -59,6 +60,11 @@ MENU → RULES → STORYLINE → LEVEL ONE
 → TRANSITION → LEVEL THREE
 → WIN / LOSE
 
+
+## Notes
+The user manual is under the rules section in the main menu or 
+written inside rules.txt
+(/Dino-Mite-B3/main/text_files/rules.txt)
 
 
 
