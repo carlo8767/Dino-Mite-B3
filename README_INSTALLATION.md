@@ -3,9 +3,9 @@
 # 1.INSTALL VIRTUAL ENVIRONMENT
 python -m venv dino_virtual_environment
 #  WINDOW ACTIVATE VIRTUAL ENVIRONMENT
-WINDOW_PATH dino_virtual_enviroment\Scripts\activate 
+WINDOW_PATH dino_virtual_environment\Scripts\activate 
 #  LINUX  ACTIVATE VIRTUAL ENVIRONMENT
-source dino_virtual_enviroment/bin/activate
+source dino_virtual_environment/bin/activate
 #  MAC  ACTIVATE VIRTUAL ENVIRONMENT
 source dino_virtual_environment/bin/activate
 # 2.INSTALL PYGAME
