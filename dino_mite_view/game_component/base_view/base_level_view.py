@@ -87,6 +87,7 @@ class BaseLevelView(ABC):
                         elif result == RETURN_TO_MENU:
                             controller.toggle_pause_menu()
                             controller.stop_music()
+                            pygame.mixer.stop()
                             return MAIN_MENU
 
             # ==================== UPDATE ====================
