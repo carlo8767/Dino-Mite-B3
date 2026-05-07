@@ -30,8 +30,8 @@ class BaseLevelController(ABC):
                 ...
             ]
 
-    Everything else (collision registry, movement, reset) is derived
-    automatically from self.slowed_hazards.
+    Everything else (collision registry, movement) is derived
+    automatically from self.slowed_hazards via add_models_collision_hazard().
     """
 
     def __init__(self):
@@ -168,7 +168,7 @@ class BaseLevelController(ABC):
 
 
     def update_hazard_movement(self):
-        """Single game-logic, called once per frame by the view's main loop."""
+        """Move all hazards one step. Called once per frame by the view's main loop."""
         self.update_movement_hazard()
 
 
@@ -362,6 +362,5 @@ class BaseLevelController(ABC):
 
     @abstractmethod
     def _build_deck(self) -> list:
-        """One deck = 5 cards: 3 shields, 1 time reduction, 1 slow.
-        Shuffled so the order is unpredictable but the 60/20/20 ratio is exact."""
+        """Subclasses must return a shuffled list of powerup instances for the level deck."""
 

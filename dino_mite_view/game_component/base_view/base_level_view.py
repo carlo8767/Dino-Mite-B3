@@ -21,7 +21,7 @@ class BaseLevelView(ABC):
 
     Subclasses must implement:
         _load_background(controller)
-        _draw(window, controller, background)
+        _draw_elements_view(window, controller, background)
         _lose_sequence(window, controller, clock)
         _next_level()
     """
