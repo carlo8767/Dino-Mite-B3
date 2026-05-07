@@ -4,7 +4,7 @@ import random
 from abc import ABC, abstractmethod
 
 from dino_mite_view.game_component.pause_menu import PauseMenu
-from dino_mite_utility.utilities_names import WIDTH, HEIGHT
+from dino_mite_utility.utilities_names import *
 
 
 class BaseLevelView(ABC):
@@ -66,7 +66,7 @@ class BaseLevelView(ABC):
             # ==================== EVENT HANDLING ====================
             for event in events:
                 if event.type == pygame.QUIT:
-                    return "EXIT"
+                    return EXIT
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE and not controller.is_paused:
@@ -80,14 +80,14 @@ class BaseLevelView(ABC):
                 if event.type == pygame.MOUSEBUTTONUP:
                     if controller.is_paused:
                         result = pause_menu.handle_click(event)
-                        if result == "CONTINUE":
+                        if result == CONTINUE:
                             controller.toggle_pause_menu()
                             pause_duration = pygame.time.get_ticks() - self.pause_start
                             self.pause_time_total += pause_duration
-                        elif result == "RETURN_TO_MENU":
+                        elif result == RETURN_TO_MENU:
                             controller.toggle_pause_menu()
                             controller.stop_music()
-                            return "MAIN_MENU"
+                            return MAIN_MENU
 
             # ==================== UPDATE ====================
             if not controller.is_paused and not (controller.get_game_over_one_player_mode() or controller.get_two_players_game_over_mode()):

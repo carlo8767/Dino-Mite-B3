@@ -1,6 +1,8 @@
 import logging
 
 import pygame
+
+from dino_mite_utility.utilities_names import *
 from dino_mite_view.game_component.button import Button
 import os
 
@@ -55,18 +57,18 @@ class ViewMainMenu:
 
             for event in events:
                 if self.one_player_button.is_clicked(event):
-                    return "LEVEL_ONE"
+                    return LEVEL_ONE
                 if self.exit_button.is_clicked(event):
                     return "EXIT"
                 if self.rules_button.is_clicked(event):
-                    return "RULES"
+                    return RULES
                 # --- TEMP TEST BUTTONS (remove before release) ---
                 if self.test_level2_button.is_clicked(event):
-                    return "LEVEL_TWO"
+                    return LEVEL_TWO
                 if self.test_level3_button.is_clicked(event):
-                    return "LEVEL_THREE"
+                    return LEVEL_THREE
                 if self.two_players_button.is_clicked(event):
-                    return "TWO PLAYERS"
+                    return TWO_PLAYERS
             # --------------------------------------------------
             pygame.display.update()
             fps.tick(60)

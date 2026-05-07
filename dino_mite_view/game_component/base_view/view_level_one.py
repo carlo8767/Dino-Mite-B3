@@ -69,14 +69,14 @@ class ViewLevelOne(BaseLevelView):
     #     self.draw_elements_pass_level(window, controller, background, clock)
     #     controller.stop_music()
     #     pygame.mixer.stop()
-    #     return "STORY_L1_TO_L2"
+    #     return STORY_L1_TO_L2
 
     def _lose_sequence(self, window, controller, clock):
         controller.init_music_end_level()
         self.faded_screen(window, controller, clock)
         logging.info("game over")
         controller.stop_music()
-        return "STORY_FAILURE"
+        return STORY_FAILURE
 
     # # ==================== LEVEL ONE ANIMATIONS ====================
     #
@@ -127,4 +127,4 @@ class ViewLevelOne(BaseLevelView):
     #     window.blit(img, rect)
 
     def _next_level(self):
-        return "STORY_L1_TO_L2"
+        return STORY_L1_TO_L2

@@ -1,4 +1,6 @@
 import pygame
+
+from dino_mite_utility.utilities_names import *
 from dino_mite_view.game_component.button import Button
 import os
 import logging
@@ -51,9 +53,9 @@ class PauseMenu:
        
     def handle_click(self, event):
         if self.continue_button.is_clicked(event):
-            return "CONTINUE"
+            return CONTINUE
         if self.exit_button.is_clicked(event):
-            return "RETURN_TO_MENU"
+            return RETURN_TO_MENU
         return None
         
 

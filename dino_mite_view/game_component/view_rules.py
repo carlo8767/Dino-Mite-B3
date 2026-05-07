@@ -3,7 +3,7 @@ import logging
 import pygame
 from dino_mite_view.game_component.button import Button
 import os
-from dino_mite_utility.utilities_names import WIDTH, HEIGHT
+from dino_mite_utility.utilities_names import WIDTH, HEIGHT, MAIN_MENU
 
 
 class ViewRules:
@@ -86,7 +86,7 @@ class ViewRules:
             events = pygame.event.get()
             for event in events:
                 if self.go_back_button.is_clicked(event):
-                    return "MAIN_MENU"
+                    return MAIN_MENU
                 
             self.go_back_button.update_image(screen, events)
             pygame.display.update()

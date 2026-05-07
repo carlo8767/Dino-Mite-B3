@@ -52,7 +52,7 @@ class ViewLevelTwo(BaseLevelView):
         self.faded_screen(window, controller, clock)
         logging.info("game over level two")
         controller.stop_music()
-        return "STORY_FAILURE"
+        return STORY_FAILURE
 
     def _next_level(self):
-        return "STORY_L2_TO_L3"
+        return STORY_L2_TO_L3

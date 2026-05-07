@@ -150,7 +150,7 @@ The shared game loop. Subclasses never override `draw_screen()` — they overrid
 | `_load_background` | `(controller) → Surface` | Load and scale the background image |
 | `_draw` | `(window, controller, background)` | Blit background, HUD, character, hazards |
 | `_win_sequence` | `(window, controller, background, clock) → str` | Win animation, return next state string |
-| `_lose_sequence` | `(window, controller, clock) → str` | Lose animation, return `"GAME OVER"` |
+| `_lose_sequence` | `(window, controller, clock) → str` | Lose animation, return `GAME_OVER` |
 | `_next_level` | `() → str` | Return the state string for the next level |
 
 **`time_duration_level` class attribute** — set this on the subclass to change the timer:
@@ -190,10 +190,10 @@ MAIN_MENU  →  STORY  →  LEVEL_ONE  →  DRAW_LEVEL_ONE
                                                            │
                                                        LEVEL_THREE  →  DRAW_LEVEL_THREE
                                                                             │
-                                                                        GAME OVER
+                                                                        GAME_OVER
 ```
 
-Any level can also go to `GAME OVER` on a loss, or `MAIN_MENU` via the pause menu.
+Any level can also go to `GAME_OVER` on a loss, or `MAIN_MENU` via the pause menu.
 
 The `EventsController` factory is called each time a level state is entered — it always returns a fresh controller instance, so state is fully reset between playthroughs.
 

@@ -1,6 +1,8 @@
 import logging
 import pygame
 import os
+
+from dino_mite_utility.utilities_names import *
 from dino_mite_view.game_component.button import Button
 
 class ViewGameOverMenu:
@@ -49,13 +51,13 @@ class ViewGameOverMenu:
                     if event.type == pygame.MOUSEBUTTONUP:
                         if self.play_again_button.is_clicked(event) and not active_player_player_two:
                             pygame.mixer.music.stop()
-                            return "LEVEL_ONE"
+                            return LEVEL_ONE
                         if self.play_again_button.is_clicked(event) and active_player_player_two:
                             pygame.mixer.music.stop()
-                            return "TWO PLAYERS"
+                            return TWO_PLAYERS
                         if self.exit_button.is_clicked(event):
                             pygame.mixer.music.stop()
-                            return "MAIN_MENU"
+                            return MAIN_MENU
             self.draw_game_over(events)
             pygame.display.update()
             clock.tick(60)
