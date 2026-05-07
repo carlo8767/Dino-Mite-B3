@@ -1,0 +1,36 @@
+AI usage
+
+Gimini:
+big_arm.png
+fireball.png
+meteor.png
+rolling_rock.png
+story_background.png
+restart, continue, return, button - all animations
+paused_lable.png
+game_over_lable.png
+Dino-Mite_logo.png
+backgroundLevelOne,Two,Three.jpg
+
+meteor.png                    - ChatGPT
+rolling_rock.png              - ChatGPT
+idle.png                      - ChatGPT
+jump.png                      - ChatGPT
+dead.png                      - ChatGPT
+crouch.png                    - ChatGPT
+running.png                   - ChatGPT
+ShieldBubbleIcon.png          - ChatGPT
+ShieldBubbleforChar.png       - ChatGPT
+ExtraTimeIcon.png             - ChatGPT
+ReducedVelocityIcon.png       - ChatGPT
+BombT.png                     - ChatGPT
+DroneT.png                    - ChatGPT
+HelicopterT.png               - ChatGPT
+
+
+Music References:
+Helicopter - Sound MAster Effects (2023) YouTube. Available at: https://www.youtube.com/watch?v=-w48pX8KJBI&list=LL&index=16 (Accessed: 06 May 2026).
+Drone - Musa Qureshi (2022a) YouTube. Available at: https://www.youtube.com/watch?v=-dM35Fuy1bc&list=LL&index=4 (Accessed: 06 May 2026).
+BigArm - ZapSplat Sound Effects (2024) YouTube. Available at: https://www.youtube.com/watch?v=goNcpgc7v6M&list=LL&index=8 (Accessed: 06 May 2026).
+Meteor - Jochi SFX (2021) YouTube. Available at: https://www.youtube.com/watch?v=WFN9tUtrq-s&list=LL&index=13 (Accessed: 06 May 2026).
+Level3-Background - Sr Music - Música sin Copyright (2021) YouTube. Available at: https://www.youtube.com/watch?v=e9aUN8mHgXw&list=LL&index=10 (Accessed: 06 May 2026).
