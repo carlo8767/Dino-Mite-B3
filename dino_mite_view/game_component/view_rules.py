@@ -3,7 +3,7 @@ import logging
 import pygame
 from dino_mite_view.game_component.button import Button
 import os
-from dino_mite_utility.utilities_names import WIDTH, HEIGHT
+from dino_mite_utility.utilities_names import WIDTH, HEIGHT, MAIN_MENU
 
 
 class ViewRules:
@@ -14,13 +14,13 @@ class ViewRules:
         self.font_path = os.path.join("./fonts", "Jersey10-Regular.ttf")
         try:
             self.text_font = pygame.font.Font(self.font_path, 25)
-        except:
+        except OSError:
             self.text_font = pygame.font.SysFont("Arial", 25, True)
         try:
             self.image_path = os.path.join("./image/menu", "story_background.png")
             self.background = pygame.image.load(self.image_path).convert_alpha()
             self.background = pygame.transform.scale(self.background, (WIDTH, HEIGHT))
-        except:
+        except OSError:
             self.background = pygame.Surface((WIDTH, HEIGHT))
             self.background.fill((50, 50, 50))
 
@@ -38,10 +38,10 @@ class ViewRules:
         self.powerup_shield_image = pygame.transform.scale(self.powerup_shield_image, (70,70))
 
         # Create Buttons
-        self.go_back_button = Button("Back", 200, 60, (self.width_int // 2) - 100, self.height_int - 130, (0, 150, 0),
-                                        (255, 255, 255), 30, "green")
+        self.go_back_button = Button("Back", 200, 60, (self.width_int // 2) - 100, self.height_int - 130, button_type="normal")
 
         self.powerups = [self.powerup_time_image, self.powerup_velocity_image, self.powerup_shield_image]
+
     def draw_rules_screen(self, screen):
         logging.info("Enter in rules screen")
 
@@ -66,7 +66,7 @@ class ViewRules:
                 rect.midleft = (pos_x, pos_y)
             screen.blit(img, rect)
 
-            if heading == True:
+            if heading:
                 pos_y += 50
                 heading = False
             elif ns.startswith ("PU"):
@@ -81,16 +81,16 @@ class ViewRules:
         for y, powerup in enumerate(self.powerups):
             image_y_pos = y_pos + y * gap
             screen.blit(powerup, (left_margine, image_y_pos))
+        
+        while True:
+            events = pygame.event.get()
+            for event in events:
+                if self.go_back_button.is_clicked(event):
+                    return MAIN_MENU
+                
+            self.go_back_button.update_image(screen, events)
+            pygame.display.update()
 
-        self.go_back_button.draw_function(screen)
-
-
-    def handle_click(self,event):
-   
-        if self.go_back_button.is_clicked(event):
-            return "MAIN_MENU"
-        return "RULES"
-    
     def upload_file(self):
         try:
             content = ""

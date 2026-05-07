@@ -62,7 +62,7 @@ class Meteor(VerticalHazard):
     image_path = os.path.join("./image/hazard", "meteor.png")
     name = "Meteor"
     _speed = 6
-    size   = (55, 55)
+    size   = (130, 130)
 
     def update_position(self):
         self.rect.y += self.speed
@@ -116,6 +116,8 @@ class BigArm(VerticalHazard):
     _speed        = 22          # slam speed (px/frame); slowed by powerup
     size          = (200, 800)
 
+    _FOLLOW_FRAMES = 130
+    _FOLLOW_DELAY = 0.07
     _WARN_FRAMES  = 90          # frames to hang at top (~1.5 s at 60 fps)
     _HOLD_FRAMES  = 25          # frames to rest at ground after slam
     _RISE_SPEED   = 14          # retract speed - not affected by slow powerup
@@ -126,18 +128,38 @@ class BigArm(VerticalHazard):
     _SLAM = "slam"
     _HOLD = "hold"
     _RISE = "rise"
+    _FOLLOW = "follow"
 
     def __init__(self):
         super().__init__()
-        self._phase       = self._WARN
+        self._phase       = self._FOLLOW
         self._phase_timer = 0
         # Position leg so only the bottom _HANG_BOTTOM pixels are visible
         self.position_x   = random.randint(100, WIDTH - 100)
         self.rect.centerx = self.position_x
         self.rect.bottom  = self._HANG_BOTTOM
 
-    def update_position(self):
-        if self._phase == self._WARN:
+        self.current_target = 1 #set first to player 1.
+
+    def update_position_big_arm(self, player_centerx):
+        if isinstance(player_centerx, (tuple)): # 2-player mode
+            if self.current_target == 1:
+                target = player_centerx[0]
+            else:
+                target = player_centerx[1]
+        else:
+            target = player_centerx # 1-player mode
+
+        if self._phase == self._FOLLOW:
+            pos_to_go = target
+            pos_to_go = max(self.rect.width // 2, min (WIDTH - self.rect.width // 2, pos_to_go)) #prevents from going out of the screen
+            self.rect.centerx += int((pos_to_go - self.rect.centerx) * self._FOLLOW_DELAY) #follow player with a small delay
+            self._phase_timer += 1
+            if self._phase_timer >= self._FOLLOW_FRAMES:
+                self._phase = self._WARN
+                self._phase_timer = 0
+
+        elif self._phase == self._WARN:
             self.rect.x  += random.randint(-2, 2)   # slight shake as warning
             self._phase_timer += 1
             if self._phase_timer >= self._WARN_FRAMES:
@@ -171,9 +193,13 @@ class BigArm(VerticalHazard):
         self.position_x   = random.randint(100, WIDTH - 100)
         self.rect.centerx = self.position_x
         self.rect.bottom  = self._HANG_BOTTOM
-        self._phase       = self._WARN
+        self._phase       = self._FOLLOW
         self._phase_timer = 0
         self.is_active    = True
+        if self.current_target == 1:
+            self.current_target = 2
+        else:
+            self.current_target = 1
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -193,7 +219,7 @@ class Bomb(VerticalHazard):
 
     image_path = os.path.join("./image/hazard", "BombT.png")
     name = "Bomb"
-    _speed = 10
+    _speed = 9
     size = (65, 90)
 
     def __init__(self):

@@ -21,21 +21,19 @@ class ViewDisplayStory:
         self.store_text = self.upload_file()
         self.width_int =  WIDTH
         self.height_int = HEIGHT
-        self.font_title = pygame.font.SysFont("Arial", 20, bold=True)
         self.story_text  = self.store_text
         # Load background
         try:
             self.image_path = os.path.join("./image/menu", "story_background.png")
             self.background = pygame.image.load(self.image_path).convert_alpha()
             self.background = pygame.transform.scale(self.background, (WIDTH, HEIGHT))
-        except:
+        except OSError:
             self.background = pygame.Surface((WIDTH, HEIGHT))
             self.background.fill((50, 50, 50))
 
         # Create Buttons — "Play Again" for the final success story, "Go" otherwise
         button_text = "Play Again" if self.story_part == 4 else "Go"
-        self.skip_story_button = Button(button_text, 200, 60, (self.width_int // 2) - 100, self.height_int - 130, (0, 150, 0),
-                                        (255, 255, 255), 30)
+        self.skip_story_button = Button(button_text, 200, 60, (self.width_int // 2) - 100, self.height_int - 130)
 
     def draw_story_screen(self, screen):
         logging.info("Enter in view story screen")
@@ -48,14 +46,18 @@ class ViewDisplayStory:
             text_font = pygame.font.Font(font_path, 30)
         except FileNotFoundError:
             text_font = pygame.font.SysFont("Comic Sans MS", 30)
+
         color_timer = (0, 0, 0)
         screen.blit(self.background, (0, 0))
         self.skip_story_button.draw_function(screen)
         pygame.display.update()
         index = 0
         prev_line_time = pygame.time.get_ticks()
+
         while True:
-            for event in pygame.event.get():
+            events = pygame.event.get()
+
+            for event in events:
                 if self.skip_story_button.is_clicked(event):
                     return self.next_state
 
@@ -69,6 +71,9 @@ class ViewDisplayStory:
                 pos_y += 40
                 index += 1
                 prev_line_time = current_time
+
+            self.skip_story_button.update_image(screen, events)
+            
             pygame.display.update()
             fps.tick(60)
 

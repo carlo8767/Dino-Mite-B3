@@ -24,17 +24,9 @@ class LevelTwo(BaseLevelModel):
         self.hazard_fireball    = Fireball()
         self.hazard_fireballOne = Fireball()
         self.hazard_fireballTwo = Fireball()
-        self.hazard_mammothLeg  = BigArm()
+        self.hazard_bigArm  = BigArm()
 
-        # ── Win-sequence animation (placeholder — replace when Level 2 asset is ready) ──
-        self.image_loaded = pygame.transform.scale(
-            pygame.image.load(
-                os.path.join('./image/level_one', 'wormhole.png')
-            ).convert_alpha(),
-            (450, 450)
-        )
-        self.rect = self.image_loaded.get_rect()
-        self.rect.center = (400, 300)
+
 
         # ── Assets ────────────────────────────────────────────────────────────
         self.image          = os.path.join('./image/level_two/', 'backgroundlevelTwo.jpeg')

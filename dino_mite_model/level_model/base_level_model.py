@@ -3,6 +3,7 @@ import os
 import pygame.sprite
 
 from dino_mite_model.character_game.Character import CharacterDino
+from dino_mite_model.character_game.CharacterTwo import CharacterDinoTwo
 from dino_mite_model.character_game.power_ups import ShieldBubble, TimeReduction, SlowerHazards
 from dino_mite_utility.utilities_names import WIDTH, HEIGHT
 
@@ -28,12 +29,14 @@ class BaseLevelModel(pygame.sprite.Sprite):
         self.screen_width = WIDTH
         self.screen_height = HEIGHT
         self.character = CharacterDino()
+        self.characterTwo = CharacterDinoTwo()
 
         # One instance per powerup type — reused across the level, never re-created mid-game
         self.pw_up_shield_bubble = ShieldBubble()
         self.pw_up_time_reduction = TimeReduction()
         self.pw_up_slower_hazard = SlowerHazards()
 
+        self.sound_volume = 0.35
         self.sound_complete_level = os.path.join('./music', 'End_First_Level.mp3')
         self.store_text_end = self._load_text(text_file_path)
 

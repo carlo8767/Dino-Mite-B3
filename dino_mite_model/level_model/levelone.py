@@ -18,16 +18,6 @@ class LevelOne(BaseLevelModel):
         self.hazard_meteorTwo = Meteor()
         self.hazard_rollingRock = RollingRock()
 
-        # Win-sequence animation image (wormhole portal)
-        self.image_loaded = pygame.transform.scale(
-            pygame.image.load(
-                os.path.join('./image/level_one', 'wormhole.png')
-            ).convert_alpha(),
-            (450, 450)
-        )
-        self.rect = self.image_loaded.get_rect()
-        self.rect.center = (400, 300)
-
         self.image         = os.path.join('./image/level_one/', 'backgroundLevelOne.jpeg')
         self.sound         = os.path.join('./music', 'Level1-BackgroundMusic.mp3')
         self.sound_end_game = os.path.join('./music', 'EndGameLevelOne.mp3')

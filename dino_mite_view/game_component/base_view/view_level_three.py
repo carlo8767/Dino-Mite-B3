@@ -2,7 +2,7 @@ import pygame
 import logging
 
 from dino_mite_view.game_component.base_view.base_level_view import BaseLevelView
-from dino_mite_utility.utilities_names import WIDTH, HEIGHT
+from dino_mite_utility.utilities_names import WIDTH, HEIGHT, STORY_FAILURE, STORY_SUCCESS
 
 
 class ViewLevelThree(BaseLevelView):
@@ -10,7 +10,7 @@ class ViewLevelThree(BaseLevelView):
     Level Three view, only Level 3 specific rendering lives here.
     """
 
-    time_duration_level = 6  # 60 seconds
+    time_duration_level = 120  # 60 seconds
     level_number        = 3
 
     def __init__(self):
@@ -19,25 +19,24 @@ class ViewLevelThree(BaseLevelView):
         self._ch_drone = pygame.mixer.Channel(4)
         self._ch_bomb  = pygame.mixer.Channel(5)
 
-    def draw_screen_level_three(self, window, controller):
-        """Entry point called by GameStateInteractor."""
-        return self.draw_screen(window, controller)
-
     def _load_background(self, controller):
         img = pygame.image.load(controller.level_model.image).convert()
         return pygame.transform.scale(img, (WIDTH, HEIGHT))
 
-    def _draw(self, window, controller, background):
+    def _draw_elements_view(self, window, controller, background):
         window.blit(background, (0, 0))
         self._draw_hud(window, controller)
-        controller.level_model.character.draw(window)
-
+        if controller.player_one_active:
+            controller.level_model.character.draw(window)
+        if controller.player_two_active:
+            controller.level_model.characterTwo.draw(window)
+        # WHAT THA M LIME
         m = controller.level_model
 
         # Helicopters (always on screen — fly continuously in opposite directions)
         window.blit(m.hazard_helicopter.image_loaded,    m.hazard_helicopter.rect)
         window.blit(m.hazard_helicopterTwo.image_loaded, m.hazard_helicopterTwo.rect)
-        self.sound_manager.play_looping("Helicopter", self.level_number, self._ch_heli)
+        controller.sound_manager.play_looping("Helicopter", self.level_number, self._ch_heli)
 
         # Bombs (only draw when active — inactive bombs are parked off-screen)
         any_bomb = False
@@ -46,24 +45,24 @@ class ViewLevelThree(BaseLevelView):
                 window.blit(bomb.image_loaded, bomb.rect)
                 any_bomb = True
         if any_bomb:
-            self.sound_manager.play_looping("Bomb", self.level_number, self._ch_bomb)
+            controller.sound_manager.play_looping("Bomb", self.level_number, self._ch_bomb)
 
         # Drone (always on screen — flies at mid-height, direction randomised)
         window.blit(m.hazard_drone.image_loaded, m.hazard_drone.rect)
-        self.sound_manager.play_looping("Drone", self.level_number, self._ch_drone)
+        self._ch_drone.set_volume(0.2)
+        controller.sound_manager.play_looping("Drone", self.level_number, self._ch_drone)
 
-    def _win_sequence(self, window, controller, background, clock):
-        controller.stop_music()
-        pygame.mixer.stop()
-        # TODO: add Level 3 win animation when assets are ready
-        return "STORY_SUCCESS"  # Level 3 is the final level
+    # def _win_sequence(self, window, controller, background, clock):
+    #     controller.stop_music()
+    #     pygame.mixer.stop()
+    #     return STORY_SUCCESS  # Level 3 is the final level
 
     def _lose_sequence(self, window, controller, clock):
         controller.init_music_end_level()
         self.faded_screen(window, controller, clock)
         logging.info("game over level three")
         controller.stop_music()
-        return "STORY_FAILURE"
+        return STORY_FAILURE
 
     def _next_level(self):
-        return "STORY_SUCCESS"
+        return STORY_SUCCESS

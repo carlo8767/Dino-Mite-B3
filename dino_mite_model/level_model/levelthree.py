@@ -30,17 +30,8 @@ class LevelThree(BaseLevelModel):
         self.hazard_bombTwo       = Bomb()
         self.hazard_drone         = Drone()
 
-        # ── Win-sequence animation (placeholder — replace when Level 3 asset is ready) ──
-        self.image_loaded = pygame.transform.scale(
-            pygame.image.load(
-                os.path.join('./image/level_one', 'wormhole.png')
-            ).convert_alpha(),
-            (450, 450)
-        )
-        self.rect = self.image_loaded.get_rect()
-        self.rect.center = (400, 300)
-
         # ── Assets ────────────────────────────────────────────────────────────
         self.image          = os.path.join('./image/level_three/', 'backgroundLevelThree.jpg')
         self.sound          = os.path.join('./music', 'Level3-BackgroundMusic.mp3')
         self.sound_end_game = os.path.join('./music', 'EndGameLevelOne.mp3')
+        self.sound_volume   = 0.20
