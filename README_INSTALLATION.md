@@ -1,7 +1,7 @@
 # For run the code you need to install the virtual environment
 # under the path main
 # 1.INSTALL VIRTUAL ENVIRONMENT
-python -m venv dino_virtual_enviroment
+python -m venv dino_virtual_environment
 #  WINDOW ACTIVATE VIRTUAL ENVIRONMENT
 WINDOW_PATH dino_virtual_enviroment\Scripts\activate 
 #  LINUX  ACTIVATE VIRTUAL ENVIRONMENT
