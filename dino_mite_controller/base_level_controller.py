@@ -344,25 +344,6 @@ class BaseLevelController(ABC):
     def get_two_players_game_over_mode(self):
         return self.two_players_game_over_mode
 
-    # # ==================== LEVEL RESET ====================
-    #
-    # def reset_level(self):
-    #     """Reset the character and all hazards to their starting positions."""
-    #     char = self.level_model.character
-    #     char.rect.center  = (char.position_x, char.constant_ground)
-    #     char.game_state   = "idle"
-    #     char.speed_y      = 0
-    #     char.png_on_ground = True
-    #     char.shield_active = False
-    #     char.shield_timer  = 0
-    #
-    #     for hazard in self.slowed_hazards:
-    #         hazard.update_position_collision()
-    #
-    #     self.slow_hazards_active = False
-    #     self.slow_hazards_timer  = 0
-    #     self.restore_hazard_speeds()
-
     # ==================== ABSTRACT ====================
 
     @abstractmethod

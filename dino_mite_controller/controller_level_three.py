@@ -30,7 +30,7 @@ class ControllerLevelThree(BaseLevelController):
             self.level_model.hazard_drone,
         ]
 
-    def update_movement_hazard(self):
+    def update_movement_hazard(self) -> None:
         """Move all hazards, then check each helicopter's drop timer."""
         super().update_movement_hazard()
 

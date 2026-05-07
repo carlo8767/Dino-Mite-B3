@@ -2,7 +2,7 @@ import pygame
 import logging
 
 from dino_mite_view.game_component.base_view.base_level_view import BaseLevelView
-from dino_mite_utility.utilities_names import WIDTH, HEIGHT
+from dino_mite_utility.utilities_names import WIDTH, HEIGHT, STORY_FAILURE, STORY_L2_TO_L3
 
 
 class ViewLevelTwo(BaseLevelView):
@@ -10,7 +10,7 @@ class ViewLevelTwo(BaseLevelView):
     Level Two view, only Level 2 specific rendering lives here.
     """
 
-    time_duration_level = 90  # Level 2 is 90 seconds, adjust when confirmed
+    time_duration_level = 120  # Level 2 is 90 seconds, adjust when confirmed
     level_number        = 2
 
     def __init__(self):

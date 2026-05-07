@@ -14,7 +14,6 @@ class CharacterDino(pygame.sprite.Sprite):
             "duck":       pygame.transform.scale(pygame.image.load("./image/character/crouch.png").convert_alpha(), (120, 60)),
             "jump":       pygame.transform.scale(pygame.image.load("./image/character/jump.png").convert_alpha(), (120, 120)),
             "dead":       pygame.transform.scale(pygame.image.load("./image/character/dead.png").convert_alpha(), (120, 120)),
-            "happy":      pygame.transform.scale(pygame.image.load("./image/character/levelpass.png").convert_alpha(), (150, 150)),
         }
         self.position_x = 370
         self.constant_ground = 510
